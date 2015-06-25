@@ -1,0 +1,122 @@
+<html>
+<head>
+	<title>BuildDesign Space</title>
+	<script type="text/javascript" src="JS/mscorlib.js"></script>
+	<script type="text/javascript" src="JS/DesignSpace.Lib.debug.js"></script>
+	<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+	<h1>Design Space Document</h1>
+	<div class="spacer"><h2>Designer</h2></div>
+	<div id="designSpace" class="canvas">
+		
+		<div class="subhead">
+			<div class="h2">Sources</div>
+			<div class="tools"><button class="add" id="add" title="Add">+</button></div>
+		</div>
+		<ol id="sources" class="sources"></ol>
+
+
+
+
+		<div class="subhead">
+			<div class="h2">Instance</div>
+		</div>
+		<br/>
+		<br />
+		<ul id="instance" class="instances">
+			<div class="h2">
+				<code class="html">
+					Instance Deigner to be added
+				</code>
+			</div>
+		</ul>
+
+		<div class="subhead compute">
+			<div class="h2">
+				<div class="output">
+					<code class="html">
+						The button next to this text will be used to generate the
+						<b>Design Space Docuemnt.</b>
+					</code>
+				</div>
+			</div>
+			<div class="tools"><button class="add" id="compute" title="Compute">&#9660;</button> </div>
+		</div>
+
+	</div>
+
+
+	<div class="spacer"><h2>Generated Design Space Document</h2></div>
+	<div class="output" id="output">
+		<pre>
+		<code class="html" id="code">
+					Generated XML documented will be made available for download or copy from this area.
+			</code>
+		</pre>
+	</div>
+
+	<script type="text/template" id="SourceTemplate">
+		<div id="source_{ID}" class="source">
+
+			<span id="buttons_{ID}" class="info">
+				<button class="remove" id="remove_{ID}" title="Delete">X</button>
+			</span>
+			<span class="space3"></span>
+
+			<input type="text" id="name_{ID}" class="text" value="Master{ID}" />
+			<span id="Info_1" class="info">
+				<input type="checkbox" id="copyInfo_{ID}" checked="checked" name="copyInfo_{ID}" /> <label for="copyInfo_{ID}">Copy Info</label>
+				<span class="space3"></span>
+				<input type="checkbox" id="muteInfo_{ID}" name="muteInfo_{ID}" /> <label for="muteInfo_{ID}">Mute Info</label>
+			</span>
+			<span class="space2"></span>
+
+			<input type="checkbox" id="copyLib_{ID}" name="copyLib_{ID}" /> <label for="copyLib_{ID}">Copy Lib</label>
+			<span class="space"></span>
+			<input type="checkbox" id="copyGroups_{ID}" name="copyGroups_{ID}" /> <label for="copyGroups_{ID}">Copy Groups</label>
+			<span class="space"></span>
+			<input type="checkbox" id="muteKerning_{ID}" name="muteKerning_{ID}" /> <label for="muteKerning_{ID}">Mute Kerning</label>
+			<span class="space2"></span>
+
+			<select id="dimension_{ID}">
+				<option value="width">Width</option>
+				<option value="weight">Weight</option>
+			</select>
+			<span class="space"></span>
+			<span id="dimentions_{ID}" class="info">
+				<button class="add2" id="add2_{ID}" title="Add">+</button>
+			</span>
+			<div class="dimensions">
+				<ol id="metrics_{ID}" class="metrics"></ol>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/template" id="DimensionTemplate">
+		<div id="dimension_{value}_{ID}" name="{value}">
+			<label class="space4">{text}</label>
+
+			<span class="space3"></span>
+
+			<span class="space5">X-Val:</span>
+			<input type="text" id="x_{value}_{ID}" class="text2" value="" />
+
+			<span class="space3"></span>
+
+			<span class="space5">Y-Val:</span>
+			<input type="text" id="y_{value}_{ID}" class="text2" value="" />
+
+			<span class="space2"></span>
+
+			<span id="buttons_{ID}" class="info">
+				<button class="remove" id="remove2_{value}_{ID}" title="Delete">X</button>
+			</span>
+			
+		</div>
+	</script>
+
+
+	<script type="text/javascript" src="JS/DesignSpace.app.js"></script>
+</body>
+</html>
