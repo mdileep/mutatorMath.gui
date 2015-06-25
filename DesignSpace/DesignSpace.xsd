@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="designspace">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="sources"  maxOccurs="1" minOccurs="1" type="sources" />
+				<xs:element name="instances"  minOccurs="1"  maxOccurs="1" type="instances" />
+			</xs:sequence>
+			<xs:attribute name="format" type="xs:unsignedByte" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="sources">
+		<xs:sequence>
+			<xs:element name="source"  maxOccurs="unbounded" minOccurs="1"  type="source" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType  name="instances">
+		<xs:sequence>
+			<xs:element name="instance" minOccurs="1" maxOccurs="unbounded" type="instance" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="source">
+		<xs:sequence>
+			<xs:element name="location" minOccurs="0"  maxOccurs="unbounded" type="location" />
+			<xs:element name="lib"  maxOccurs="1" minOccurs="0" type="copyOnly" />
+			<xs:element name="groups"   maxOccurs="1" minOccurs="0" type="copyOnly"  />
+			<xs:element name="info"   maxOccurs="1" minOccurs="0"  type="copyAndMute" />
+			<xs:element name="kerning"  maxOccurs="1" minOccurs="0" type="muteOnly" />
+			<xs:element name="glyph"  maxOccurs="1" minOccurs="0"  type="muteGlyph" />
+		</xs:sequence>
+		<xs:attribute name="filename" type="xs:string" use="required" />
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType mixed="true" name="instance">
+		<xs:sequence>
+			<xs:element name="location"  minOccurs="0" maxOccurs="1"  type="location" />
+			<xs:element name="info" minOccurs="0" maxOccurs="1"  type="info"  />
+			<xs:element name="kerning" minOccurs="0" maxOccurs="1"  type="kerning" />
+			<xs:element name="glyphs"  minOccurs="0" maxOccurs="1"  type="glyphs" />
+		</xs:sequence>
+		<xs:attribute name="filename" type="xs:string" use="required" />
+		<xs:attribute name="familyname" type="xs:string" use="required" />
+		<xs:attribute name="stylename" type="xs:string" use="required" />
+		<xs:attribute name="postscriptfontname" type="xs:string" use="optional" />
+		<xs:attribute name="stylemapfamilyname" type="xs:string" use="optional" />
+		<xs:attribute name="stylemapstylename" type="xs:string" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="location">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded"  minOccurs="0" name="dimension">
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required" />
+					<xs:attribute name="xvalue" type="xs:decimal" use="required" />
+					<xs:attribute name="yvalue" type="xs:decimal" use="required" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="copyOnly">
+		<xs:attribute name="copy" type="xs:unsignedByte" use="required" />
+	</xs:complexType>
+	<xs:complexType name="muteOnly">
+		<xs:attribute name="mute" type="xs:unsignedByte" use="optional"   />
+	</xs:complexType>
+	<xs:complexType  name="copyAndMute">
+		<xs:attribute name="copy" type="xs:unsignedByte" use="optional" />
+		<xs:attribute name="mute" type="xs:unsignedByte" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="muteGlyph">
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="mute" type="xs:unsignedByte" use="required" />
+	</xs:complexType>
+	<xs:complexType  name="glyphs">
+		<xs:sequence>
+			<xs:element name="glyph" minOccurs="1"  maxOccurs="unbounded" type="glyph" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType  name="masters">
+		<xs:sequence>
+			<xs:element name="master" minOccurs="1" maxOccurs="unbounded"  type="master" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="master">
+		<xs:sequence>
+			<xs:element name="location" minOccurs="0" maxOccurs="1" type="location" />
+		</xs:sequence>
+		<xs:attribute name="source" type="xs:string" use="required" />
+		<xs:attribute name="glyphname" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType  name="glyph">
+		<xs:sequence>
+			<xs:element name="location" minOccurs="0"  maxOccurs="1"  type="location" />
+			<xs:element name="note" type="xs:string" minOccurs="0"  maxOccurs="1" />
+			<xs:element name="masters" minOccurs="0" maxOccurs="1"  type="masters" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="unicode" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="info">
+		<xs:sequence>
+			<xs:element name="location"  minOccurs="0" maxOccurs="1"  type="location" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="kerning">
+		<xs:sequence>
+			<xs:element name="location"  minOccurs="0" maxOccurs="1"  type="location" />
+		</xs:sequence>
+	</xs:complexType>
+
+	
+	
+</xs:schema>

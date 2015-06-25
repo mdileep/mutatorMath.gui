@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" ?>
+<designspace format="3">
+	<sources>
+		<source
+			filename="" 
+			name="">
+			<location>
+				<dimension name="weight" xvalue="1.000000"  yvalue="0.000"/>
+				<dimension name="width" xvalue="0.000000"   yvalue="0.000" />
+			</location>
+			<lib copy="1"/>
+			<groups copy="1"/>
+			<info copy="1" mute="1"/>
+			<kerning mute="1"/>
+			<glyph name="" mute="1"/>
+		</source>
+	</sources>
+	<instances>
+		<instance
+			filename=""
+			familyname=""
+			stylename=""
+			postscriptfontname=""
+			stylemapfamilyname=""
+			stylemapstylename="">
+			<location>
+				<dimension name="weight" xvalue="1.000000"  yvalue="0.000"/>
+				<dimension name="width" xvalue="0.000000"   yvalue="0.000" />
+			</location>
+			<info>
+				<location>
+					<dimension name="weight" xvalue="1.000000"  yvalue="0.000"/>
+					<dimension name="width" xvalue="0.000000"   yvalue="0.000" />
+				</location>
+			</info>
+			<kerning>
+				<location>
+					<dimension name="weight" xvalue="1.000000"  yvalue="0.000"/>
+					<dimension name="width" xvalue="0.000000"   yvalue="0.000" />
+				</location>
+			</kerning>
+			<glyphs>
+				<glyph name="" unicode="">
+					<location>
+						<dimension name="weight" xvalue="1.000000"  yvalue="0.000"/>
+						<dimension name="width" xvalue="0.000000"   yvalue="0.000" />
+					</location>
+					<note>Nice </note>
+					<masters>
+						<master source="" glyphname="">
+							<location>
+								<dimension name="weight" xvalue="1.000000"  yvalue="0.000"/>
+								<dimension name="width" xvalue="0.000000"   yvalue="0.000" />
+							</location>
+						</master>
+					</masters>
+				</glyph>
+			</glyphs>]
+		</instance>
+	</instances>
+</designspace>

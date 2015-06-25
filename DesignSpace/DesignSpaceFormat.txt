@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" ?>
+<designspace format="3">
+	<!-- required: one sources element -->
+	<sources>
+		<!-- required: one or more source elements -->
+		<source
+			<!-- required: path to UFO source -->
+			filename=""
+			<!-- optional: unique identifier for this source -->
+			name=""
+		>
+			<!-- required location element -->
+			<location/>
+
+			<!-- optional: flags for which data this master should provide or mute -->
+			[<lib copy="1"/>]
+			[<groups copy="1"/>]
+			[<info [copy="1"][mute="1"]/>]
+			[<kerning mute="1"/>]
+
+			<!-- optional: flag to mute a specific source glyph -->
+			[<glyph name="" mute="1"/>]
+		</source>
+	</sources>
+	<!-- required: one instances element -->
+	<instances>
+		<!-- required: one ore more instance elements -->
+		<instance
+			<!-- required: path to UFO instance -->
+			filename=""
+			<!-- required: familyname and stylename -->
+			familyname=""
+			stylename=""
+			<!-- optional: some more names -->
+			[postscriptfontname=""]
+			[stylemapfamilyname=""]
+			[stylemapstylename=""]
+		>
+			<!-- required location element -->
+			<location/>
+
+			<!-- if present, calculate the font.info for this instance -->
+			[<info>
+				<!-- if location is present, calculate the font.info at this location -->
+				[<location/>]
+			</info>]
+
+			<!-- if present, calculate the font.kerning for this instance -->
+			[<kerning>
+				<!-- if location is present, calculate the kerning at this location -->
+				[<location/>]
+			</kerning>]
+
+			<!-- optional: special definitions for specific glyphs.
+				It is expected that an instance will always generate all glyphs.
+				The special definitions in the **glyphs** element are expected
+				to complement the basic glyphset.
+			-->
+			[<glyphs>
+				<!-- required: one or more glyph elements -->
+				<glyph
+					<!-- required: the AGL glyphname -->
+					name=""
+					<!-- optional: unicode value for this glyph -->
+					[unicode=""]
+				>
+
+					<!-- optional: alternative location for this glyph. -->
+					[<location/>]
+
+					<!-- optional: a note for this glyph -->
+					[<note>
+						nice glyph!
+					</note>]
+
+
+					<!-- optional: a list of alternative sources for this glyph. 
+						If present these masters supersede any masters defined by the instance.
+						This expects these masters to form a complete designspace.
+					-->
+					[<masters>
+						<!-- required: one or more master elements -->
+						<master
+							<!-- required: source identifier for this master -->
+							source=""
+							<!-- optional: alternative glyph for this master -->
+							[glyphname=""]
+						>
+							<!-- required alternative location for this master -->
+							<location/>
+						</master>
+					</masters>]
+
+				</glyph>
+			</glyphs>]
+
+		</instance>
+	</instances>
+
+</designspace>
