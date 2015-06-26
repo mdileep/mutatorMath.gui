@@ -1,2 +1,1 @@
-﻿var d = new DesignSpace.Canvas();
-d.init();
+﻿Worker.init();
