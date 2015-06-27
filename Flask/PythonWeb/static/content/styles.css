@@ -1,0 +1,206 @@
+﻿body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-size: 12px;
+	min-width: 700px;
+}
+
+h1 {
+	font-size: 24px;
+}
+
+h2 {
+	font-size: 22px;
+}
+
+.canvas {
+	font-size: 20px;
+}
+
+
+h1 {
+	color: gray;
+}
+
+h1 {
+	width: 100%;
+	text-align: center;
+}
+
+.h2 {
+	text-align: center;
+	font-weight: bold;
+	float: left;
+	width: 60%;
+	vertical-align: middle;
+}
+
+label {
+	font-size: 11px;
+}
+
+.canvas {
+	color: black;
+	font-weight: 100;
+	width: 100%;
+}
+
+.subhead {
+	margin-top: 10px;
+	clear: both;
+}
+
+.tools {
+	float: left;
+	right: 5px;
+	width: 5%;
+	min-width: 30px;
+	text-align: right;
+}
+
+.instances {
+	clear: both;
+	overflow: auto;
+	height: 50px;
+}
+
+	.instances li {
+		margin: 10px;
+		font-size: 12px;
+	}
+
+.compute {
+	clear: both;
+	height: 40px;
+}
+
+.sources {
+	clear: both;
+	overflow: auto;
+	/*height: 200px;*/
+}
+
+	.sources li {
+		margin: 10px;
+		font-size: 12px;
+	}
+
+.metrics {
+}
+
+	.metrics li {
+		list-style-type:lower-latin;
+	}
+
+.text2 {
+	font-size: 11px;
+	border: 1px solid gray;
+	text-align: center;
+	color: black;
+}
+
+	.text2:focus {
+		font-weight: bold;
+	}
+
+.text {
+	font-size: 11px;
+	border: 0px solid white;
+	text-align: center;
+	color: black;
+}
+
+	.text:focus {
+		border-bottom: 1px solid black;
+		font-weight: bold;
+	}
+
+.space {
+	margin-left: 5px;
+	margin-right: 5px;
+	border-left: 1px solid gray;
+	border-right: 1px solid gray;
+}
+
+.spacer {
+	width: 100%;
+	margin: 2px;
+	text-align: center;
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+}
+
+.space2 {
+	margin-left: 5px;
+	margin-right: 5px;
+	border-left: 2px solid gray;
+	border-right: 2px solid gray;
+}
+
+.space3 {
+	margin-left: 5px;
+}
+
+.space4 {
+	font-size: 12px;
+	font-weight: bold;
+	display: inline-block;
+	min-width: 40px;
+}
+
+.space5 {
+	font-size: 11px;
+	color: blue;
+	font-weight: bold;
+}
+
+.add2 {
+	cursor: pointer;
+	color: green;
+	font-size: 16px;
+}
+
+	.add2:hover {
+		font-weight: bold;
+	}
+
+
+
+.remove {
+	cursor: pointer;
+	color: red;
+	font-size: 14px;
+}
+
+	.remove:hover {
+		font-weight: bold;
+	}
+
+
+.add {
+	cursor: pointer;
+	color: green;
+	font-size: 24px;
+}
+
+	.add:hover {
+		font-weight: bold;
+	}
+
+.info {
+}
+
+.hidden {
+	display: none;
+}
+
+code {
+	color: blue;
+	font-size:12px;
+	word-wrap:break-word;
+}
+
+.dimensions {
+	clear: both;
+	width: 100%;
+	margin: 5px;
+}
