@@ -6,7 +6,7 @@ An Attempt to create Web based GUI for Mutator math Project.
 * Mutator Math https://github.com/LettError/MutatorMath/
 * Ensures the resulting designspace.designspace is valid against Web\DesignSpace.xsd 
 
-##In-ACtion
+##In-Action
 * OpenShift http://gui-designspace.rhcloud.com/  [Flask]
 * AppHarbor http://designspace.apphb.com/ [HTML]
 
