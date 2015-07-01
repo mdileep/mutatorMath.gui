@@ -1,16 +1,17 @@
-﻿Events = {};
+﻿Events = function () { }
 Events.click = 'click';
 Events.change = 'change';
 
-Util = {};
-Util.isChecked = function(Id) {
+
+Util = function () { }
+Util.isChecked = function (Id) {
 
 	if (document.getElementById(Id) == null) {
 		return false;
 	}
 	return document.getElementById(Id).checked;
 }
-Util.getValue = function(Id){
+Util.getValue = function (Id) {
 	if (document.getElementById(Id) == null) {
 		return '';
 	}
@@ -24,27 +25,27 @@ Util.setChecked = function (Id) {
 	document.getElementById(Id).checked = true;
 }
 
-Util.setDisabled = function(Id) {
+Util.setDisabled = function (Id) {
 	if (document.getElementById(Id) == null) {
 		return;
 	}
 	document.getElementById(Id).setAttribute('disabled', 'disabled');
 }
-Util.setEnabled = function(Id) {
+Util.setEnabled = function (Id) {
 	if (document.getElementById(Id) == null) {
 		return;
 	}
 	document.getElementById(Id).removeAttribute('disabled');
 }
-Util.setValue = function(Id, D) {
-	
+Util.setValue = function (Id, D) {
+
 	if (document.getElementById(Id) == null) {
 		return;
 	}
 	document.getElementById(Id).value = D;
 }
 
-Util.addOptionItem = function(Name, Value, isGroup) {
+Util.addOptionItem = function (Name, Value, isGroup) {
 	var O = window.document.createElement((isGroup) ? 'optgroup' : 'option');
 	if (!isGroup) {
 		O.innerHTML = Name;
@@ -53,7 +54,7 @@ Util.addOptionItem = function(Name, Value, isGroup) {
 	return O;
 }
 
-Util.setOption = function(id, value) {
+Util.setOption = function (id, value) {
 	var E = document.getElementById(id);
 	for (var i = 0; i < E.children.length; i++) {
 		var OG = E.children[i];
@@ -82,7 +83,21 @@ Util.setOption = function(id, value) {
 		}
 	}
 }
-Util.selectedValue = function(id) {
+
+Util.removeOption = function (id, index) {
+	var E = window.document.getElementById(id);
+	E.remove(index);;
+}
+
+
+Util.selectedIndex = function (id) {
+	var E = window.document.getElementById(id);
+	var v = E.selectedIndex;
+	return v;
+}
+
+
+Util.selectedValue = function (id) {
 	var E = window.document.getElementById(id);
 	if (E.selectedIndex == -1) {
 		return null;
@@ -91,7 +106,7 @@ Util.selectedValue = function(id) {
 	return v;
 }
 
-Util.selectedText = function(id) {
+Util.selectedText = function (id) {
 	var E = window.document.getElementById(id);
 	if (E.selectedIndex == -1) {
 		return null;
@@ -99,17 +114,17 @@ Util.selectedText = function(id) {
 	var v = E.options[E.selectedIndex].text;
 	return v;
 }
-Util.setUnChecked = function(Id) {
+Util.setUnChecked = function (Id) {
 	if (document.getElementById(Id) == null) {
 		return;
 	}
 	document.getElementById(Id).checked = false;
 }
-Util.registerEvent = function(E, eventName, elementEventListener) {
+Util.registerEvent = function (E, eventName, elementEventListener) {
 	Util.registerEvent2(document.getElementById(E), eventName, elementEventListener);
 }
 
-Util.registerClick = function(id, elementEventListener) {
+Util.registerClick = function (id, elementEventListener) {
 	Util.registerEvent2(document.getElementById(id), 'click', elementEventListener);
 }
 
@@ -121,10 +136,10 @@ Util.registerClick2 = function (Elemes, elementEventListener) {
 	}
 }
 
-Util.deRegisterClick = function(id, elementEventListener) {
+Util.deRegisterClick = function (id, elementEventListener) {
 	Util.deRegisterEvent2(document.getElementById(id), 'click', elementEventListener);
 }
-Util.registerEvent2 = function(E, eventName, elementEventListener) {
+Util.registerEvent2 = function (E, eventName, elementEventListener) {
 	if (E == null) {
 		return;
 	}
@@ -139,7 +154,7 @@ Util.registerEvent2 = function(E, eventName, elementEventListener) {
 	}
 }
 
-Util.deRegisterEvent2 = function(E, eventName, elementEventListener) {
+Util.deRegisterEvent2 = function (E, eventName, elementEventListener) {
 	if (E == null) {
 		return;
 	}
@@ -153,7 +168,7 @@ Util.deRegisterEvent2 = function(E, eventName, elementEventListener) {
 		E['on' + eventName] = elementEventListener;
 	}
 }
-Util.findByClass = function(elem, className) {
+Util.findByClass = function (elem, className) {
 	var coll = elem.children;
 	for (var i = 0; i < coll.length; i++) {
 		var e2 = coll[i];
@@ -167,21 +182,64 @@ Util.findByClass = function(elem, className) {
 	}
 	return null;
 }
-Util.registerClick3 = function(Elem, elementEventListener) {
+
+Util.findByTagName = function (elem, tagName) {
+	var coll = elem.children;
+	for (var i = 0; i < coll.length; i++) {
+		var e2 = coll[i];
+		if (e2.tagName.toLowerCase() === tagName.toLowerCase()) {
+			return e2;
+		}
+		var e3 = Util.findByClass(e2, tagName);
+		if (e3 != null) {
+			return e3;
+		}
+	}
+	return null;
+}
+
+Util.registerClick3 = function (Elem, elementEventListener) {
 	Util.registerEvent2(Elem, 'click', elementEventListener);
 }
 
-Util.registerChange = function(E, elementEventListener) {
+Util.registerChange = function (E, elementEventListener) {
 	Util.registerEvent2(document.getElementById(E), 'change', elementEventListener);
 }
 
-Util.prevent = function(e) {
+Util.prevent = function (e) {
 	e.preventDefault();
 	e.stopPropagation();
 	e.stopImmediatePropagation();
 }
 
-Util.setVisible = function(Id) {
+Util.findQuery = function (key) {
+	try {
+		var Q = Util.buildQuery();
+		return Q[key];
+	}
+	catch ($e1) {
+		return '';
+	}
+}
+
+Util.buildQuery = function () {
+	var queryString = window.location.search;
+	queryString = queryString.substr(1);
+	var D = queryString.split('&');
+	var Dict = {};
+	var $enum1 = ss.IEnumerator.getEnumerator(D);
+	while ($enum1.moveNext()) {
+		var d = $enum1.current;
+		var lr = d.split('=');
+		if (!!lr[0]) {
+			Dict[lr[0]] = lr[1];
+		}
+	}
+	return Dict;
+}
+
+
+Util.setVisible = function (Id) {
 	var Elem = window.document.getElementById(Id);
 	if (Elem == null) {
 		return;
@@ -197,7 +255,7 @@ Util.setDisplay = function setDisplay(Id) {
 	Elem.style.display = 'block';
 }
 
-Util.noDisplay = function(Id) {
+Util.noDisplay = function (Id) {
 	var Elem = window.document.getElementById(Id);
 	if (Elem == null) {
 		return;
@@ -205,23 +263,23 @@ Util.noDisplay = function(Id) {
 	Elem.style.display = 'none';
 }
 
-Util.isAvailable = function(Id) {
+Util.isAvailable = function (Id) {
 	return window.document.getElementById(Id) != null;
 }
 
-Util.setClass = function(Id, className) {
+Util.setClass = function (Id, className) {
 	if (Util._isAvailable(Id)) {
 		document.getElementById(Id).className = className;
 	}
 }
 
-Util.hide = function(Id) {
+Util.hide = function (Id) {
 	if (Util.isAvailable(Id)) {
 		window.document.getElementById(Id).style.visibility = 'hidden';
 	}
 }
 
-Util.scrollTo = function(Id) {
+Util.scrollTo = function (Id) {
 	if (Util.isAvailable(Id)) {
 		try {
 			window.document.getElementById(Id).scrollIntoView();
@@ -231,7 +289,7 @@ Util.scrollTo = function(Id) {
 	}
 }
 
-Util.setFocus = function(Id) {
+Util.setFocus = function (Id) {
 	if (document.getElementById(Id) == null) {
 		return;
 	}
@@ -240,7 +298,7 @@ Util.setFocus = function(Id) {
 	}
 }
 
-Util.setCheckedValue = function(Id, value) {
+Util.setCheckedValue = function (Id, value) {
 	if (value) {
 		Util.setChecked(Id);
 	}
@@ -249,7 +307,7 @@ Util.setCheckedValue = function(Id, value) {
 	}
 }
 
-Util.noOfChildElements = function(Parent, id) {
+Util.noOfChildElements = function (Parent, id) {
 	var count = 0;
 	for (var i = 0; i < Parent.children.length; i++) {
 		var e = Parent.children[i];
@@ -264,31 +322,30 @@ Util.noOfChildElements = function(Parent, id) {
 	return count;
 }
 
-Util.registerHover = function(id, MouseEnter, MouseLeave) {
+Util.registerHover = function (id, MouseEnter, MouseLeave) {
 	Util.registerEvent(id, 'mouseenter', MouseEnter);
 	Util.registerEvent(id, 'mouseleave', MouseLeave);
 }
 
-Util.isEnalbed = function(id) {
+Util.isEnalbed = function (id) {
 	return !document.getElementById(id).hasAttribute('disabled');
 }
 
-Util.isDisabled = function(id) {
+Util.isDisabled = function (id) {
 	return !Util.isEnalbed(id);
 }
 
-Util.applyTemplate = function(templateId, Dict) {
+Util.applyTemplate = function (templateId, Dict) {
 	var template = document.getElementById(templateId).innerHTML;
 	var html = template;
-	for (var Key in Dict)
-	{
+	for (var Key in Dict) {
 		html = html.replace(new RegExp('{' + Key + '}', 'g'), Dict[Key].toString());
 	}
 	return html;
 }
 
-Util.setFocusOnEditableChild = function(E) {
-	
+Util.setFocusOnEditableChild = function (E) {
+
 	for (var i = 0; i < E.children.length; i++) {
 		var OG = E.children[i];
 		switch (OG.tagName.toLowerCase()) {

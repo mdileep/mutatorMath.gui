@@ -57,17 +57,6 @@ label {
 	text-align: right;
 }
 
-.instances {
-	clear: both;
-	overflow: auto;
-	height: 50px;
-}
-
-	.instances li {
-		margin: 10px;
-		font-size: 12px;
-	}
-
 .compute {
 	clear: both;
 	height: 40px;
@@ -76,7 +65,6 @@ label {
 .sources {
 	clear: both;
 	overflow: auto;
-	/*height: 200px;*/
 }
 
 	.sources li {
@@ -84,11 +72,23 @@ label {
 		font-size: 12px;
 	}
 
+.instances {
+	clear: both;
+	overflow: auto;
+	list-style: none;
+}
+
+	.instances li {
+		margin: 10px;
+		font-size: 12px;
+	}
+
+
 .metrics {
 }
 
 	.metrics li {
-		list-style-type:lower-latin;
+		list-style-type: lower-latin;
 	}
 
 .text2 {
@@ -96,22 +96,26 @@ label {
 	border: 1px solid gray;
 	text-align: center;
 	color: black;
+	width: 30px;
 }
 
 	.text2:focus {
 		font-weight: bold;
+		width: 30px;
 	}
 
 .text {
 	font-size: 11px;
-	border: 0px solid white;
+	border: 1px solid gray;
 	text-align: center;
 	color: black;
+	width: 60px;
 }
 
 	.text:focus {
-		border-bottom: 1px solid black;
+		border: 1px solid black;
 		font-weight: bold;
+		width: 60px;
 	}
 
 .space {
@@ -147,11 +151,38 @@ label {
 	min-width: 40px;
 }
 
+.space6 {
+	font-size: 12px;
+	font-weight: bold;
+	display: inline-block;
+	min-width: 100px;
+}
+
 .space5 {
 	font-size: 11px;
 	color: blue;
 	font-weight: bold;
 }
+label.space5 {
+	font-size: 11px;
+	color: blue;
+	font-weight: bold;
+	font-style:italic;
+	text-align:center;
+	display:inline-block;
+}
+
+.select {
+	font-size: 12px;
+	display: inline-block;
+	min-width: 130px;
+}
+.select2 {
+	font-size: 12px;
+	display: inline-block;
+	min-width: 80px;
+}
+
 
 .add2 {
 	cursor: pointer;
@@ -195,8 +226,8 @@ label {
 
 code {
 	color: blue;
-	font-size:12px;
-	word-wrap:break-word;
+	font-size: 12px;
+	word-wrap: break-word;
 }
 
 .dimensions {
