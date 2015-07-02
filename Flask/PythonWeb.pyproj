@@ -29,6 +29,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="PythonWeb\lib.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PythonWeb\uploader.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="runserver.py" />
     <Compile Include="PythonWeb\__init__.py" />
     <Compile Include="PythonWeb\views.py" />
@@ -45,6 +51,7 @@
     <Content Include="PythonWeb\static\scripts\DesignSpace.app.js" />
     <Content Include="PythonWeb\static\scripts\DesignSpace.Util.js" />
     <Content Include="PythonWeb\static\scripts\DesignSpace.Worker.js" />
+    <Content Include="PythonWeb\templates\uploader.html" />
     <Content Include="requirements.txt" />
     <Content Include="PythonWeb\templates\index.html" />
     <Content Include="PythonWeb\templates\layout.html" />
