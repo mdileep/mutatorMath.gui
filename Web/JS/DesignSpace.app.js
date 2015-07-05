@@ -1,2 +1,2 @@
-﻿var _canvas = new PageWorker();
-_canvas.init();
+﻿var pageWorker = new PageWorker();
+pageWorker.init();

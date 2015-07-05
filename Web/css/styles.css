@@ -33,6 +33,13 @@ h1 {
 	width: 60%;
 	vertical-align: middle;
 }
+.h3 {
+	text-align: center;
+	font-weight: bold;
+	float: left;
+	width: 30%;
+	vertical-align: middle;
+}
 
 label {
 	font-size: 11px;

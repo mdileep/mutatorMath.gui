@@ -10,10 +10,11 @@ def appHomePage():
 def appUploader():
     return  uploader.uploadForm()
 
+@app.route('/upload', methods=['POST'])
+def appUpload():
+    return uploader.upload('appGetFile')
+
 @app.route('/uploads/<filename>')
 def appGetFile(filename):
     return uploader.uploaded_file(filename)
 
-@app.route('/upload', methods=['POST'])
-def appUpload():
-    return uploader.upload('appGetFile')

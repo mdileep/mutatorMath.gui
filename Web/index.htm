@@ -4,6 +4,11 @@
 	<script type="text/javascript" src="JS/DesignSpace.Util.js"></script>
 	<script type="text/javascript" src="JS/DesignSpace.Worker.js"></script>
 	<link rel="stylesheet" href="css/styles.css" />
+	
+	<link rel="stylesheet" href="JS/external/prettify.css" />
+	<script type="text/javascript" src="JS/external/vkbeautify.js"></script>
+	<script type="text/javascript" src="JS/external/prettify.js"></script>
+	<script type="text/javascript" src="JS/external/lang-ml.js"></script>
 </head>
 <body>
 	<h1>Design Space Document</h1>
@@ -18,31 +23,22 @@
 
 		<div class="subhead">
 			<div class="h2">Instance</div>
+			<!--<div class="tools"><button class="add" id="instance.add" title="Add">+</button></div>-->
 		</div>
 
 		<ul id="instances" class="instances"></ul>
 
 		<div class="subhead compute">
-			<div class="h2">
-				<div class="output">
-					<code class="html">
-						The button next to this text will be used to generate the
-						<b>Design Space Docuemnt.</b>
-					</code>
-				</div>
-			</div>
-			<div class="tools"><button class="add" id="compute" title="Compute">&#9660;</button> </div>
+			<div class="h3">&nbsp;</div>
+			<div class="tools"><button class="add" id="btn.compute" title="Compute">&#9660;</button> </div>
 		</div>
-
 	</div>
 
 
 	<div class="spacer"><h2>Generated Design Space Document</h2></div>
 	<div class="output" id="output">
-		<pre>
-		<code class="html" id="code">
-					Generated XML documented will be made available for download or copy from this area.
-			</code>
+		<pre class="prettyprint lang-xml" id="code">
+			
 		</pre>
 	</div>
 
@@ -97,6 +93,12 @@
 
 	<script type="text/template" id="InstanceTemplate">
 		<div id="instance_{ID}" class="instance">
+			<!--
+			<span class="info">
+				<button class="remove" id="instance.remove_{ID}" title="Delete">X</button>
+			</span>
+			<span class="space3"></span>-->
+
 			<input type="text" id="instance.name_{ID}" class="text" value="Family" />
 
 			<span class="space2"></span>
@@ -162,7 +164,7 @@
 			<span class="space2"></span>
 
 			<span class="info">
-				<button class="remove" id="{prefix}{value}_{ID}" title="Delete">X</button>
+				<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
 			</span>
 
 		</div>
@@ -174,11 +176,10 @@
 			<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
 			<span class="space2"></span>
 			<span class="info">
-				<button class="remove" id="{prefix}{value}_{ID}" title="Delete">X</button>
+				<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
 			</span>
 		</div>
 	</script>
-
 
 	<script type="text/javascript" src="JS/DesignSpace.app.js"></script>
 </body>

@@ -1,53 +1,92 @@
+
+
 PageWorker = function () { }
 PageWorker.prototype = {
+
 	init: function () {
 		Worker.registerEvents();
 		Worker.pageInit();
 	}
 }
 
+
+
 Worker = function () { }
 Worker.pageInit = function () {
 	SourcesWorker.init();
 	InstancesWorker.init();
+	ComputeWorker.init();
 }
 Worker.registerEvents = function () {
 	SourcesWorker.registerEvents();
 	InstancesWorker.registerEvents();
+	ComputeWorker.registerEvents();
 }
+
+
+
+ComputeWorker = function () { }
+ComputeWorker.init = function () {
+	Util.registerClick('btn.compute', ComputeWorker._computeHandler);
+	ComputeWorker.compute();
+}
+ComputeWorker.registerEvents = function () {
+	ComputeWorker._computeHandler = function (e) {
+		ComputeWorker.compute();
+	};
+}
+ComputeWorker.compute = function () {
+	var sources = SourcesWorker.getSources();
+	var instances = InstancesWorker.getInstances();
+	var designSpace = new DesignerSpace.designspace();
+	designSpace.sources = sources;
+	designSpace.instances = instances;
+	designSpace.format = 3;
+	var xml = designSpace.toXml();
+	xml = vkbeautify.xml(xml);
+	xml = textToHtml(xml);
+	document.getElementById('code').innerHTML = xml;
+	prettyPrint();
+}
+
+
 
 InstancesWorker = function () { }
 InstancesWorker.init = function () {
+	Util.registerClick('instance.add', InstancesWorker.addHandler);
 	InstancesWorker.addInstance();
 }
-
-InstancesWorker._addNameHandler = null;
-InstancesWorker._removeNameHandler = null;
-InstancesWorker._addDimensionHandler = null;
-InstancesWorker._removeDimensionHandler = null;
-InstancesWorker._disposeHandler = null;
-
 InstancesWorker.registerEvents = function () {
-	InstancesWorker._addNameHandler = function (e) {
-		var rowId = InternalWorker.findRowId(e);
-		InternalWorker.addName(rowId, 'instance.selName_', 'isntance.name_', 'instance.removeName_', 'instance.names_', InstancesWorker._removeNameHandler);
+	InstancesWorker.addHandler = function (e) {
+		InstancesWorker.addInstance();
 	};
-	InstancesWorker._removeNameHandler = function (e) {
+	InstancesWorker.removeHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
-		InternalWorker.removeControl(rowId, 'instance.selName_', 'instance.removeName_', 'isntance.name_', InstancesWorker._removeNameHandler);
+		InstancesWorker.removeInstance(rowId);
 	};
-	InstancesWorker._addDimensionHandler = function (e) {
+	InstancesWorker.addNameHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
-		InternalWorker.addDimension(rowId, 'instance.selMetric_', 'instance.metric_', 'instance.removeMetric_', 'instance.metrics_', InstancesWorker._removeDimensionHandler);
+		InternalWorker.addName(rowId, 'instance.selName_', 'isntance.name_', 'instance.names.remove_', 'instance.names', InstancesWorker.removeNameHandler);
 	};
-	InstancesWorker._removeDimensionHandler = function (e) {
+	InstancesWorker.removeNameHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
-		InternalWorker.removeControl(rowId, 'instance.selMetric_', 'instance.removeMetric_', 'instance.metric_', InstancesWorker._removeDimensionHandler);
+		InternalWorker.removeControl(rowId, 'instance.selName_', 'instance.names.remove_', 'isntance.name_', InstancesWorker.removeNameHandler);
 	};
-	InstancesWorker._disposeHandler = function (e) {
-		InstancesWorker._addNameHandler = null;
-		InstancesWorker._addDimensionHandler = null;
-		InstancesWorker._removeDimensionHandler = null;
+	InstancesWorker.addDimensionHandler = function (e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.addDimension(rowId, 'instance.selMetric_', 'instance.metric_', 'instance.metrics.remove_', 'instance.metrics', InstancesWorker.removeDimensionHandler);
+	};
+	InstancesWorker.removeDimensionHandler = function (e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.removeControl(rowId, 'instance.selMetric_', 'instance.metrics.remove_', 'instance.metric_', InstancesWorker.removeDimensionHandler);
+	};
+	InstancesWorker.disposeHandler = function (e) {
+		InstancesWorker.addHandler = null;
+		InstancesWorker.removeHandler = null;
+		InstancesWorker.addNameHandler = null;
+		InstancesWorker.addDimensionHandler = null;
+		InstancesWorker.removeDimensionHandler = null;
+		InstancesWorker.disposeHandler = null;
 	};
 }
 InstancesWorker.addInstance = function () {
@@ -67,8 +106,9 @@ InstancesWorker.addInstance = function () {
 	instance.innerHTML = html;
 	Instances.appendChild(instance);
 	var srcElem = document.getElementById('instance_' + rowId);
-	Util.registerClick('instance.addName_' + rowId, InstancesWorker._addNameHandler);
-	Util.registerClick('instance.addMetric_' + rowId, InstancesWorker._addDimensionHandler);
+	Util.registerClick('instance.addName_' + rowId, InstancesWorker.addNameHandler);
+	Util.registerClick('instance.addMetric_' + rowId, InstancesWorker.addDimensionHandler);
+	Util.registerClick('instance.remove_' + rowId, InstancesWorker.removeHandler);
 }
 InstancesWorker.removeInstance = function (rowId) {
 	var Instances = document.getElementById('instances');
@@ -78,49 +118,40 @@ InstancesWorker.removeInstance = function (rowId) {
 		return;
 	}
 	var srcElem = document.getElementById('instance_' + rowId);
-	Util.deRegisterClick('instance.addName_' + rowId, InstancesWorker._addNameHandler);
-	Util.deRegisterClick('instance.addMetric_' + rowId, InstancesWorker._addDimensionHandler);
-	InternalWorker.removeControlSet(rowId, 'instance.removeMetric_', 'instance.metric_', InstancesWorker._removeDimensionHandler);
-	InternalWorker.removeControlSet(rowId, 'instance.removeName_', 'isntance.name_', InstancesWorker._removeNameHandler);
+	Util.deRegisterClick('instance.addName_' + rowId, InstancesWorker.addNameHandler);
+	Util.deRegisterClick('instance.addMetric_' + rowId, InstancesWorker.addDimensionHandler);
+	Util.deRegisterClick('instance.remove_' + rowId, InstancesWorker.removeHandler);
+	InternalWorker.removeControlSet(rowId, 'instance.metrics.remove_', 'instance.metric_', InstancesWorker.removeDimensionHandler);
+	InternalWorker.removeControlSet(rowId, 'instance.names.remove_', 'instance.metric_', InstancesWorker.removeNameHandler);
 	srcElem.parentNode.parentNode.removeChild(srcElem.parentNode);
 }
 InstancesWorker.resetInstance = function (rowId) { }
+InstancesWorker.getInstances = function () {
+	return null;
+}
 
 
 
 SourcesWorker = function () { }
 SourcesWorker.init = function () {
-	Util.registerClick('source.add', SourcesWorker._addHandler);
+	Util.registerClick('source.add', SourcesWorker.addHandler);
 	SourcesWorker.addSource();
 }
-
-SourcesWorker._removeHandler = null;
-SourcesWorker._addHandler = null;
-SourcesWorker._mouseEnterHandler = null;
-SourcesWorker._mouseLeaveHandler = null;
-SourcesWorker._muteInfoHandler = null;
-SourcesWorker._copyInfoHandler = null;
-SourcesWorker._copyGroupsHandler = null;
-SourcesWorker._copyLibHandler = null;
-SourcesWorker._addDimensionHandler = null;
-SourcesWorker._removeDimensionHandler = null;
-SourcesWorker._disposeHandler = null;
-
 SourcesWorker.registerEvents = function () {
-	SourcesWorker._addHandler = function (e) {
+	SourcesWorker.addHandler = function (e) {
 		SourcesWorker.addSource();
 	};
-	SourcesWorker._removeHandler = function (e) {
+	SourcesWorker.removeHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.removeSource(rowId);
 	};
-	SourcesWorker._mouseEnterHandler = function (e) {
+	SourcesWorker.mouseEnterHandler = function (e) {
 		SourcesWorker.hoverHandler(e, true);
 	};
-	SourcesWorker._mouseLeaveHandler = function (e) {
+	SourcesWorker.mouseLeaveHandler = function (e) {
 		SourcesWorker.hoverHandler(e, false);
 	};
-	SourcesWorker._muteInfoHandler = function (e) {
+	SourcesWorker.muteInfoHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		if (Util.isChecked('muteInfo_' + rowId)) {
 			Util.setDisabled('copyInfo_' + rowId);
@@ -130,38 +161,38 @@ SourcesWorker.registerEvents = function () {
 		}
 		Util.setUnChecked('copyInfo_' + rowId);
 	};
-	SourcesWorker._copyInfoHandler = function (e) {
+	SourcesWorker.copyInfoHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.handleCopyInfo(rowId);
 	};
-	SourcesWorker._copyGroupsHandler = function (e) {
+	SourcesWorker.copyGroupsHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.handleCopyGroups(rowId);
 	};
-	SourcesWorker._copyLibHandler = function (e) {
+	SourcesWorker.copyLibHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.handleCopyLib(rowId);
 	};
-	SourcesWorker._addDimensionHandler = function (e) {
+	SourcesWorker.addDimensionHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
-		InternalWorker.addDimension(rowId, 'source.selMetric_', 'source.metric_', 'source.removeMetric_', 'source.metrics_', SourcesWorker._removeDimensionHandler);
+		InternalWorker.addDimension(rowId, 'source.selMetric_', 'source.metric_', 'source.metrics.remove_', 'source.metrics', SourcesWorker.removeDimensionHandler);
 	};
-	SourcesWorker._removeDimensionHandler = function (e) {
+	SourcesWorker.removeDimensionHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
-		InternalWorker.removeControl(rowId, 'source.selMetric_', 'source.removeMetric_', 'source.metric_', SourcesWorker._removeDimensionHandler);
+		InternalWorker.removeControl(rowId, 'source.selMetric_', 'source.metrics.remove_', 'source.metric_', SourcesWorker.removeDimensionHandler);
 	};
-	SourcesWorker._disposeHandler = function (e) {
-		SourcesWorker._removeHandler = null;
-		SourcesWorker._addHandler = null;
-		SourcesWorker._mouseEnterHandler = null;
-		SourcesWorker._mouseLeaveHandler = null;
-		SourcesWorker._muteInfoHandler = null;
-		SourcesWorker._copyInfoHandler = null;
-		SourcesWorker._copyGroupsHandler = null;
-		SourcesWorker._copyLibHandler = null;
-		SourcesWorker._addDimensionHandler = null;
-		SourcesWorker._removeDimensionHandler = null;
-		SourcesWorker._disposeHandler = null;
+	SourcesWorker.disposeHandler = function (e) {
+		SourcesWorker.addHandler = null;
+		SourcesWorker.removeHandler = null;
+		SourcesWorker.mouseEnterHandler = null;
+		SourcesWorker.mouseLeaveHandler = null;
+		SourcesWorker.muteInfoHandler = null;
+		SourcesWorker.copyInfoHandler = null;
+		SourcesWorker.copyGroupsHandler = null;
+		SourcesWorker.copyLibHandler = null;
+		SourcesWorker.addDimensionHandler = null;
+		SourcesWorker.removeDimensionHandler = null;
+		SourcesWorker.disposeHandler = null;
 	};
 }
 SourcesWorker.addSource = function () {
@@ -180,12 +211,12 @@ SourcesWorker.addSource = function () {
 	var source = document.createElement('li');
 	source.innerHTML = html;
 	Sources.appendChild(source);
-	Util.registerClick('source.remove_' + rowId, SourcesWorker._removeHandler);
-	Util.registerClick('muteInfo_' + rowId, SourcesWorker._muteInfoHandler);
-	Util.registerClick('copyInfo_' + rowId, SourcesWorker._copyInfoHandler);
-	Util.registerClick('copyGroups_' + rowId, SourcesWorker._copyGroupsHandler);
-	Util.registerClick('copyLib_' + rowId, SourcesWorker._copyLibHandler);
-	Util.registerClick('source.addMetric_' + rowId, SourcesWorker._addDimensionHandler);
+	Util.registerClick('source.remove_' + rowId, SourcesWorker.removeHandler);
+	Util.registerClick('muteInfo_' + rowId, SourcesWorker.muteInfoHandler);
+	Util.registerClick('copyInfo_' + rowId, SourcesWorker.copyInfoHandler);
+	Util.registerClick('copyGroups_' + rowId, SourcesWorker.copyGroupsHandler);
+	Util.registerClick('copyLib_' + rowId, SourcesWorker.copyLibHandler);
+	Util.registerClick('source.addMetric_' + rowId, SourcesWorker.addDimensionHandler);
 	SourcesWorker.handleCopyInfo(null);
 	SourcesWorker.handleCopyGroups(null);
 	SourcesWorker.handleCopyLib(null);
@@ -199,16 +230,93 @@ SourcesWorker.removeSource = function (rowId) {
 		return;
 	}
 	var srcElem = document.getElementById('source_' + rowId);
-	Util.deRegisterClick('source.remove_' + rowId, SourcesWorker._removeHandler);
-	Util.deRegisterClick('muteInfo_' + rowId, SourcesWorker._muteInfoHandler);
-	Util.deRegisterClick('copyInfo_' + rowId, SourcesWorker._copyInfoHandler);
-	Util.deRegisterClick('copyGroups_' + rowId, SourcesWorker._copyGroupsHandler);
-	Util.deRegisterClick('copyLib_' + rowId, SourcesWorker._copyLibHandler);
-	Util.deRegisterClick('source.addMetric_' + rowId, SourcesWorker._addDimensionHandler);
-	InternalWorker.removeControlSet(rowId, 'source.removeMetric_', 'source.metric_', SourcesWorker._removeDimensionHandler);
+	Util.deRegisterClick('source.remove_' + rowId, SourcesWorker.removeHandler);
+	Util.deRegisterClick('muteInfo_' + rowId, SourcesWorker.muteInfoHandler);
+	Util.deRegisterClick('copyInfo_' + rowId, SourcesWorker.copyInfoHandler);
+	Util.deRegisterClick('copyGroups_' + rowId, SourcesWorker.copyGroupsHandler);
+	Util.deRegisterClick('copyLib_' + rowId, SourcesWorker.copyLibHandler);
+	Util.deRegisterClick('source.addMetric_' + rowId, SourcesWorker.addDimensionHandler);
+	InternalWorker.removeControlSet(rowId, 'source.metrics.remove_', 'source.metric_', SourcesWorker.removeDimensionHandler);
 	srcElem.parentNode.parentNode.removeChild(srcElem.parentNode);
 }
 SourcesWorker.resetSource = function (rowId) { }
+SourcesWorker.getSources = function () {
+	var Sources = document.getElementById('sources');
+	var n = Util.noOfChildElements(Sources, 'li');
+	var sources = new Array(n);
+	var running = 0;
+	for (var i = 0; i < Sources.children.length; i++) {
+		var li = Sources.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var source = SourcesWorker.getSource(li);
+			sources[running++] = source;
+		}
+	}
+	return sources;
+}
+SourcesWorker.getSource = function (li) {
+	var n = Util.noOfChildElements(li, 'div');
+	if (!n) {
+		return null;
+	}
+	var id = li.children[0].id;
+	var rowId = id.substr(id.indexOf('_') + 1);
+	var obj = new DesignerSpace.source();
+	obj.name = Util.getValue(SourcesWorker.txtSourceName + rowId);
+	obj.filename = Util.getValue(SourcesWorker.txtSourceName + rowId) + '.ufo';
+	obj.info = SourcesWorker.getInfo(rowId);
+	obj.lib = SourcesWorker.getLib(rowId);
+	obj.groups = SourcesWorker.getLib(rowId);
+	obj.kerning = SourcesWorker.getKerning(rowId);
+	obj.location = SourcesWorker.getLocation(rowId);
+	obj.glyphs = SourcesWorker.getGlyphs(rowId);
+	return obj;
+}
+SourcesWorker.getGlyphs = function (rowId) {
+	return null;
+}
+SourcesWorker.getLocation = function (rowId) {
+	var loc = new DesignerSpace.location();
+	loc.dimensions = SourcesWorker.getDimensions(rowId);
+	return loc;
+}
+SourcesWorker.getDimensions = function (rowId) {
+	var olMetric2 = document.getElementById('source.metrics' + '_' + rowId);
+	var n = Util.noOfChildElements(olMetric2, 'li');
+	var dimensions = new Array(n);
+	var running = 0;
+	for (var i = 0; i < olMetric2.children.length; i++) {
+		var li = olMetric2.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var dimension = SourcesWorker.getDimension(li, rowId);
+			dimensions[running++] = dimension;
+		}
+	}
+	return dimensions;
+}
+SourcesWorker.getDimension = function (li, rowId) {
+	var dimension = new DesignerSpace.dimension();
+	dimension.name = li.getAttribute('value');
+	dimension.xvalue = Util.getValue('source.metrics' + '.x_' + dimension.name + '_' + rowId);
+	dimension.yvalue = Util.getValue('source.metrics' + '.y_' + dimension.name + '_' + rowId);
+	return dimension;
+}
+SourcesWorker.getKerning = function (rowId) {
+	var kerning = new DesignerSpace.muteOnly();
+	kerning.mute = InternalWorker.isChecked('muteKerning_' + rowId);
+	return kerning;
+}
+SourcesWorker.getLib = function (rowId) {
+	var lib = new DesignerSpace.copyOnly();
+	lib.copy = InternalWorker.isChecked('copyLib_' + rowId);
+	return lib;
+}
+SourcesWorker.getInfo = function (rowId) {
+	var info = new DesignerSpace.copyAndMute();
+	info.copy = InternalWorker.isChecked('copyInfo_' + rowId);
+	info.mute = InternalWorker.isChecked('muteInfo_' + rowId);
+	return info;
+}
 SourcesWorker.handleCopyInfo = function (rowId) {
 	if (rowId == null) {
 		rowId = InternalWorker.findCheckedRowId('copyInfo_', 'sources');
@@ -250,7 +358,6 @@ SourcesWorker.hoverHandler = function (e, isEnter) {
 		Util.hide('source.remove_' + rowId);
 	}
 }
-
 
 
 
@@ -297,14 +404,14 @@ InternalWorker.addControl = function (templateName, rowId, select, liTarget, btn
 	Dict['ID'] = rowId;
 	Dict['value'] = val;
 	Dict['text'] = text;
-	Dict['prefix'] = btnRemove;
+	Dict['prefix'] = olTarget;
 	var html = Util.applyTemplate(templateName, Dict);
 	var li = document.createElement('li');
 	li.setAttribute('id', targetId);
 	li.setAttribute('text', text);
 	li.setAttribute('value', val);
 	li.innerHTML = html;
-	var ol = document.getElementById(olTarget + rowId);
+	var ol = document.getElementById(olTarget + '_' + rowId);
 	ol.appendChild(li);
 	InternalWorker.toggleHead(ol);
 	Util.setFocusOnEditableChildById(targetId);
@@ -376,3 +483,416 @@ InternalWorker.toggleHead = function (ol) {
 		h4.style.display = (n >= 1) ? 'block' : 'none';
 	}
 }
+InternalWorker.isChecked = function (id) {
+	if (Util.isDisabled(id)) {
+		return null;
+	}
+	else {
+		return ((Util.isChecked(id)) ? 1 : 0);
+	}
+}
+
+//START of DesignerSpace
+DesignerSpace = {};
+DesignerSpace.designspace = function () { }
+DesignerSpace.designspace.prototype = {
+	sources: null,
+	instances: null,
+	format: 0,
+
+	toXml: function () {
+		var sources = this.sourcesToXml(this.sources);
+		var instances = this.instancesToXml(this.instances);
+		var xml2 = '<?xml version="1.0" ?><designspace ';
+		xml2 = xml2 + XmlUtil.getAttrib2('format', this.format.toString());
+		xml2 = xml2.trim() + '>';
+		xml2 = xml2 + sources;
+		xml2 = xml2 + instances;
+		xml2 = xml2 + '</designspace>';
+		return xml2;
+	},
+
+	sourcesToXml: function (sources) {
+		var innerNodes = '';
+		if (sources != null) {
+			for (var i = 0; i < sources.length; i++) {
+				if (sources[i] != null) {
+					innerNodes = innerNodes + sources[i].toXml();
+				}
+			}
+		}
+		return '<sources>' + innerNodes + '</sources>';
+	},
+
+	instancesToXml: function (instances) {
+		var innerNodes = '';
+		if (instances != null) {
+			for (var i = 0; i < instances.length; i++) {
+				if (instances[i] != null) {
+					innerNodes = innerNodes + instances[i].toXml();
+				}
+			}
+		}
+		return '<instances>' + innerNodes + '</instances>';
+	}
+}
+
+
+
+DesignerSpace.location = function () { }
+DesignerSpace.location.prototype = {
+	dimensions: null,
+
+	toXml: function () {
+		if (this.dimensions == null) {
+			return '';
+		}
+		var s = '';
+		var innerNodes = this.dimensionsAsXml(this.dimensions);
+		if (!!innerNodes) {
+			s = '<location>' + innerNodes + '</location>';
+		}
+		return s;
+	},
+
+	dimensionsAsXml: function (dimensions) {
+		var innerNodes = '';
+		if (dimensions != null) {
+			for (var i = 0; i < dimensions.length; i++) {
+				if (dimensions[i] != null) {
+					innerNodes = innerNodes + dimensions[i].toXml();
+				}
+			}
+		}
+		return innerNodes;
+	}
+}
+
+
+
+DesignerSpace.source = function () { }
+DesignerSpace.source.prototype = {
+	lib: null,
+	groups: null,
+	info: null,
+	kerning: null,
+	glyphs: null,
+	filename: null,
+	name: null,
+	location: null,
+
+	toXml: function () {
+		var innerNodes = '';
+		if (this.location != null) {
+			innerNodes = innerNodes + this.location.toXml();
+		}
+		if (this.lib != null) {
+			innerNodes = innerNodes + this.lib.toXml('lib');
+		}
+		if (this.groups != null) {
+			innerNodes = innerNodes + this.groups.toXml('groups');
+		}
+		if (this.info != null) {
+			innerNodes = innerNodes + this.info.toXml('info');
+		}
+		if (this.kerning != null) {
+			innerNodes = innerNodes + this.kerning.toXml('kerning');
+		}
+		if (this.glyphs != null) {
+			innerNodes = innerNodes + this.muteGlyphsAsXml(this.glyphs);
+		}
+		var innerAttrib = '<source ';
+		innerAttrib = innerAttrib + XmlUtil.getAttrib2('filename', this.filename);
+		innerAttrib = innerAttrib + XmlUtil.getAttrib2('name', this.name);
+		innerAttrib = innerAttrib.trim() + '>';
+		var xml = innerAttrib + innerNodes + '</source>';
+		return xml;
+	},
+
+	muteGlyphsAsXml: function (muteGlyphs) {
+		if (muteGlyphs == null) {
+			return '';
+		}
+		var innerNodes = '';
+		for (var i = 0; i < muteGlyphs.length; i++) {
+			if (muteGlyphs[i] != null) {
+				innerNodes = innerNodes + muteGlyphs[i].toXml();
+			}
+		}
+		return innerNodes;
+	}
+}
+
+
+
+DesignerSpace.instance = function () { }
+DesignerSpace.instance.prototype = {
+	location: null,
+	info: null,
+	kerning: null,
+	glyphs: null,
+	filename: null,
+	familyname: null,
+	stylename: null,
+	postscriptfontname: null,
+	stylemapfamilyname: null,
+	stylemapstylename: null,
+
+	toXml: function () {
+		var innerNodes = '<instance ';
+		innerNodes = innerNodes + XmlUtil.getAttrib2('filename', this.filename);
+		innerNodes = innerNodes + XmlUtil.getAttrib2('familyname', this.familyname);
+		innerNodes = innerNodes + XmlUtil.getAttrib2('stylename', this.stylename);
+		innerNodes = innerNodes + XmlUtil.getAttrib2('postscriptfontname', this.postscriptfontname);
+		innerNodes = innerNodes + XmlUtil.getAttrib2('stylemapfamilyname', this.stylemapfamilyname);
+		innerNodes = innerNodes + XmlUtil.getAttrib2('stylemapstylename', this.stylemapstylename);
+		innerNodes = innerNodes.trim() + '>';
+		if (this.location != null) {
+			innerNodes = innerNodes + this.location.toXml();
+		}
+		if (this.info != null) {
+			innerNodes = innerNodes + this.info.toXml();
+		}
+		if (this.kerning != null) {
+			innerNodes = innerNodes + this.kerning.toXml();
+		}
+		if (this.glyphs != null) {
+			innerNodes = innerNodes + this.glyphsToXml(this.glyphs);
+		}
+		innerNodes = innerNodes + '</instance>';
+		return innerNodes;
+	},
+
+	glyphsToXml: function (glyphs) {
+		var innerNodes = '';
+		if (glyphs != null) {
+			for (var i = 0; i < glyphs.length; i++) {
+				if (glyphs[i] != null) {
+					innerNodes = innerNodes + glyphs[i];
+				}
+			}
+		}
+		return innerNodes;
+	}
+}
+
+
+
+DesignerSpace.dimension = function () { }
+DesignerSpace.dimension.prototype = {
+	name: null,
+	xvalue: null,
+	yvalue: null,
+
+	toXml: function () {
+		var innerAttrib = '';
+		innerAttrib = innerAttrib + XmlUtil.getAttrib2('name', this.name);
+		innerAttrib = innerAttrib + XmlUtil.getAttrib3('xvalue', this.xvalue);
+		innerAttrib = innerAttrib + XmlUtil.getAttrib3('yvalue', this.yvalue);
+		if (!!innerAttrib.trim()) {
+			return '<dimension ' + innerAttrib.trim() + ' />';
+		}
+		return innerAttrib;
+	}
+}
+
+
+
+DesignerSpace.master = function () { }
+DesignerSpace.master.prototype = {
+	location: null,
+	source: null,
+	glyphname: null,
+
+	toXml: function () {
+		var innerNodes = '<master ';
+		innerNodes = innerNodes + XmlUtil.getAttrib2('source', this.source);
+		innerNodes = innerNodes + XmlUtil.getAttrib2('glyphname', this.glyphname);
+		innerNodes = innerNodes.trim() + '>';
+		if (this.location != null) {
+			innerNodes = innerNodes + this.location.toXml();
+		}
+		innerNodes = innerNodes + '</master>';
+		return innerNodes;
+	}
+}
+
+
+
+DesignerSpace.glyph = function () { }
+DesignerSpace.glyph.prototype = {
+	location: null,
+	note: null,
+	masters: null,
+	name: null,
+	unicode: null,
+
+	toXml: function () {
+		var innerNodes = '<glyph ';
+		innerNodes = innerNodes + XmlUtil.getAttrib2('name', this.name);
+		innerNodes = innerNodes + XmlUtil.getAttrib2('unicode', this.unicode);
+		innerNodes = innerNodes.trim() + '>';
+		if (this.location != null) {
+			innerNodes = innerNodes + this.location.toXml();
+		}
+		if (this.note != null) {
+			innerNodes = innerNodes + XmlUtil.getNode('note', this.note);
+		}
+		if (this.masters != null) {
+			innerNodes = innerNodes + this.mastersAsXml(this.masters);
+		}
+		innerNodes = innerNodes + '</glyph>';
+		return innerNodes;
+	},
+
+	mastersAsXml: function (masters) {
+		var innerNodes = '';
+		if (masters != null) {
+			for (var i = 0; i < masters.length; i++) {
+				if (masters[i] != null) {
+					innerNodes = innerNodes + masters[i].toXml();
+				}
+			}
+		}
+		return '<masters>' + innerNodes + '</masters>';
+	}
+}
+
+
+
+DesignerSpace.kerning = function () { }
+DesignerSpace.kerning.prototype = {
+	location: null,
+
+	toXml: function () {
+		var innerNodes = '';
+		if (this.location != null) {
+			innerNodes = innerNodes + this.location.toXml();
+			if (!!innerNodes) {
+				return '<kerning>' + innerNodes + '</kerning>';
+			}
+		}
+		return innerNodes;
+	}
+}
+
+
+
+DesignerSpace.info = function () { }
+DesignerSpace.info.prototype = {
+	location: null,
+
+	toXml: function () {
+		var innerNodes = '';
+		if (this.location != null) {
+			innerNodes = innerNodes + this.location.toXml();
+			if (!!innerNodes) {
+				return '<info>' + innerNodes + '</info>';
+			}
+		}
+		return innerNodes;
+	}
+}
+
+
+
+DesignerSpace.muteGlyph = function () { }
+DesignerSpace.muteGlyph.prototype = {
+	name: null,
+	mute: 0,
+
+	toXml: function () {
+		var innerAttr = '';
+		innerAttr = innerAttr + XmlUtil.getAttrib2('name', this.name);
+		innerAttr = innerAttr + XmlUtil.getAttrib2('mute', this.mute.toString());
+		if (!!innerAttr) {
+			return '<glyph ' + innerAttr.trim() + ' />';
+		}
+		return '';
+	}
+}
+
+
+
+DesignerSpace.muteOnly = function () { }
+DesignerSpace.muteOnly.prototype = {
+	mute: null,
+
+	toXml: function (nodeName) {
+		var innerAttr = '';
+		innerAttr = innerAttr + XmlUtil.getAttrib('mute', this.mute);
+		if (!!innerAttr) {
+			return '<' + nodeName + ' ' + innerAttr.trim() + ' />';
+		}
+		return '';
+	}
+}
+
+
+
+DesignerSpace.copyAndMute = function () { }
+DesignerSpace.copyAndMute.prototype = {
+	copy: null,
+	mute: null,
+
+	toXml: function (nodeName) {
+		var innerAttr = '';
+		innerAttr = innerAttr + XmlUtil.getAttrib('copy', this.copy);
+		innerAttr = innerAttr + XmlUtil.getAttrib('mute', this.mute);
+		if (!!innerAttr) {
+			return '<' + nodeName + ' ' + innerAttr.trim() + ' />';
+		}
+		return '';
+	}
+}
+
+
+
+DesignerSpace.copyOnly = function () { }
+DesignerSpace.copyOnly.prototype = {
+	copy: null,
+
+	toXml: function (nodeName) {
+		var innerAttr = '';
+		innerAttr = innerAttr + XmlUtil.getAttrib('copy', this.copy);
+		if (!!innerAttr) {
+			return '<' + nodeName + ' ' + innerAttr.trim() + ' />';
+		}
+		return '';
+	}
+}
+//END of DesignerSpace
+InstancesWorker.addHandler = null;
+InstancesWorker.removeHandler = null;
+InstancesWorker.addNameHandler = null;
+InstancesWorker.removeNameHandler = null;
+InstancesWorker.addDimensionHandler = null;
+InstancesWorker.removeDimensionHandler = null;
+InstancesWorker.disposeHandler = null;
+SourcesWorker.sourceTemplate = 'SourceTemplate';
+SourcesWorker.olSources = 'sources';
+SourcesWorker.divSource = 'source_';
+SourcesWorker.btnAddSource = 'source.add';
+SourcesWorker.btnRemoveSource = 'source.remove_';
+SourcesWorker.txtSourceName = 'source.name_';
+SourcesWorker.btnAddMetric = 'source.addMetric_';
+SourcesWorker.selectMetric = 'source.selMetric_';
+SourcesWorker.liMetric = 'source.metric_';
+SourcesWorker.btnRemoveMetric = 'source.metrics.remove_';
+SourcesWorker.olMetric = 'source.metrics';
+SourcesWorker.chkMuteInfo = 'muteInfo_';
+SourcesWorker.chkCopyInfo = 'copyInfo_';
+SourcesWorker.chkCopyGroups = 'copyGroups_';
+SourcesWorker.chkCopyLib = 'copyLib_';
+SourcesWorker.chkMuteKerning = 'muteKerning_';
+SourcesWorker.removeHandler = null;
+SourcesWorker.addHandler = null;
+SourcesWorker.mouseEnterHandler = null;
+SourcesWorker.mouseLeaveHandler = null;
+SourcesWorker.muteInfoHandler = null;
+SourcesWorker.copyInfoHandler = null;
+SourcesWorker.copyGroupsHandler = null;
+SourcesWorker.copyLibHandler = null;
+SourcesWorker.addDimensionHandler = null;
+SourcesWorker.removeDimensionHandler = null;
+SourcesWorker.disposeHandler = null;

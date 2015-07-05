@@ -5,7 +5,6 @@ Events.change = 'change';
 
 Util = function () { }
 Util.isChecked = function (Id) {
-
 	if (document.getElementById(Id) == null) {
 		return false;
 	}
@@ -17,14 +16,12 @@ Util.getValue = function (Id) {
 	}
 	return document.getElementById(Id).value.toString();
 }
-
 Util.setChecked = function (Id) {
 	if (document.getElementById(Id) == null) {
 		return;
 	}
 	document.getElementById(Id).checked = true;
 }
-
 Util.setDisabled = function (Id) {
 	if (document.getElementById(Id) == null) {
 		return;
@@ -38,13 +35,11 @@ Util.setEnabled = function (Id) {
 	document.getElementById(Id).removeAttribute('disabled');
 }
 Util.setValue = function (Id, D) {
-
 	if (document.getElementById(Id) == null) {
 		return;
 	}
 	document.getElementById(Id).value = D;
 }
-
 Util.addOptionItem = function (Name, Value, isGroup) {
 	var O = window.document.createElement((isGroup) ? 'optgroup' : 'option');
 	if (!isGroup) {
@@ -53,7 +48,6 @@ Util.addOptionItem = function (Name, Value, isGroup) {
 	O.setAttribute((isGroup) ? 'label' : 'value', Value);
 	return O;
 }
-
 Util.setOption = function (id, value) {
 	var E = document.getElementById(id);
 	for (var i = 0; i < E.children.length; i++) {
@@ -83,20 +77,6 @@ Util.setOption = function (id, value) {
 		}
 	}
 }
-
-Util.removeOption = function (id, index) {
-	var E = window.document.getElementById(id);
-	E.remove(index);;
-}
-
-
-Util.selectedIndex = function (id) {
-	var E = window.document.getElementById(id);
-	var v = E.selectedIndex;
-	return v;
-}
-
-
 Util.selectedValue = function (id) {
 	var E = window.document.getElementById(id);
 	if (E.selectedIndex == -1) {
@@ -105,7 +85,15 @@ Util.selectedValue = function (id) {
 	var v = E.options[E.selectedIndex].value;
 	return v;
 }
-
+Util.removeOption = function (id, index) {
+	var E = window.document.getElementById(id);
+	E.remove(index);;
+}
+Util.selectedIndex = function (id) {
+	var E = window.document.getElementById(id);
+	var v = E.selectedIndex;
+	return v;
+}
 Util.selectedText = function (id) {
 	var E = window.document.getElementById(id);
 	if (E.selectedIndex == -1) {
@@ -135,7 +123,6 @@ Util.registerClick2 = function (Elemes, elementEventListener) {
 		Util.registerEvent2(document.getElementById(E), 'click', elementEventListener);
 	}
 }
-
 Util.deRegisterClick = function (id, elementEventListener) {
 	Util.deRegisterEvent2(document.getElementById(id), 'click', elementEventListener);
 }
@@ -153,7 +140,6 @@ Util.registerEvent2 = function (E, eventName, elementEventListener) {
 		E['on' + eventName] = elementEventListener;
 	}
 }
-
 Util.deRegisterEvent2 = function (E, eventName, elementEventListener) {
 	if (E == null) {
 		return;
@@ -182,22 +168,6 @@ Util.findByClass = function (elem, className) {
 	}
 	return null;
 }
-
-Util.findByTagName = function (elem, tagName) {
-	var coll = elem.children;
-	for (var i = 0; i < coll.length; i++) {
-		var e2 = coll[i];
-		if (e2.tagName.toLowerCase() === tagName.toLowerCase()) {
-			return e2;
-		}
-		var e3 = Util.findByClass(e2, tagName);
-		if (e3 != null) {
-			return e3;
-		}
-	}
-	return null;
-}
-
 Util.registerClick3 = function (Elem, elementEventListener) {
 	Util.registerEvent2(Elem, 'click', elementEventListener);
 }
@@ -205,13 +175,11 @@ Util.registerClick3 = function (Elem, elementEventListener) {
 Util.registerChange = function (E, elementEventListener) {
 	Util.registerEvent2(document.getElementById(E), 'change', elementEventListener);
 }
-
 Util.prevent = function (e) {
 	e.preventDefault();
 	e.stopPropagation();
 	e.stopImmediatePropagation();
 }
-
 Util.findQuery = function (key) {
 	try {
 		var Q = Util.buildQuery();
@@ -221,7 +189,6 @@ Util.findQuery = function (key) {
 		return '';
 	}
 }
-
 Util.buildQuery = function () {
 	var queryString = window.location.search;
 	queryString = queryString.substr(1);
@@ -237,8 +204,6 @@ Util.buildQuery = function () {
 	}
 	return Dict;
 }
-
-
 Util.setVisible = function (Id) {
 	var Elem = window.document.getElementById(Id);
 	if (Elem == null) {
@@ -246,15 +211,13 @@ Util.setVisible = function (Id) {
 	}
 	Elem.style.visibility = 'visible';
 }
-
-Util.setDisplay = function setDisplay(Id) {
+Util.setDisplay = function (Id) {
 	var Elem = window.document.getElementById(Id);
 	if (Elem == null) {
 		return;
 	}
 	Elem.style.display = 'block';
 }
-
 Util.noDisplay = function (Id) {
 	var Elem = window.document.getElementById(Id);
 	if (Elem == null) {
@@ -262,23 +225,19 @@ Util.noDisplay = function (Id) {
 	}
 	Elem.style.display = 'none';
 }
-
 Util.isAvailable = function (Id) {
 	return window.document.getElementById(Id) != null;
 }
-
 Util.setClass = function (Id, className) {
-	if (Util._isAvailable(Id)) {
+	if (Util.isAvailable(Id)) {
 		document.getElementById(Id).className = className;
 	}
 }
-
 Util.hide = function (Id) {
 	if (Util.isAvailable(Id)) {
 		window.document.getElementById(Id).style.visibility = 'hidden';
 	}
 }
-
 Util.scrollTo = function (Id) {
 	if (Util.isAvailable(Id)) {
 		try {
@@ -288,7 +247,6 @@ Util.scrollTo = function (Id) {
 		}
 	}
 }
-
 Util.setFocus = function (Id) {
 	if (document.getElementById(Id) == null) {
 		return;
@@ -297,7 +255,6 @@ Util.setFocus = function (Id) {
 		document.getElementById(Id).focus();
 	}
 }
-
 Util.setCheckedValue = function (Id, value) {
 	if (value) {
 		Util.setChecked(Id);
@@ -306,16 +263,15 @@ Util.setCheckedValue = function (Id, value) {
 		Util.setUnChecked(Id);
 	}
 }
-
-Util.noOfChildElements = function (Parent, id) {
+Util.noOfChildElements = function (Parent, tagName) {
 	var count = 0;
 	for (var i = 0; i < Parent.children.length; i++) {
 		var e = Parent.children[i];
-		if (String.isNullOrEmpty(id) || id === '*') {
+		if (String.isNullOrEmpty(tagName) || tagName === '*') {
 			count++;
 			continue;
 		}
-		if (id.toLowerCase() === e.tagName.toLowerCase()) {
+		if (tagName.toLowerCase() === e.tagName.toLowerCase()) {
 			count++;
 		}
 	}
@@ -343,9 +299,7 @@ Util.applyTemplate = function (templateId, Dict) {
 	}
 	return html;
 }
-
 Util.setFocusOnEditableChild = function (E) {
-
 	for (var i = 0; i < E.children.length; i++) {
 		var OG = E.children[i];
 		switch (OG.tagName.toLowerCase()) {
@@ -363,13 +317,80 @@ Util.setFocusOnEditableChild = function (E) {
 	}
 	return false;
 }
-
 Util.setFocusOnEditableChildById = function (targetId) {
 	if (Util.isAvailable(targetId)) {
 		Util.setFocusOnEditableChild(document.getElementById(targetId));
 	}
 }
+Util.findByTagName = function (elem, tagName) {
+	var coll = elem.children;
+	for (var i = 0; i < coll.length; i++) {
+		var e2 = coll[i];
+		if (e2.tagName.toLowerCase() === tagName.toLowerCase()) {
+			return e2;
+		}
+		var e3 = Util.findByClass(e2, tagName);
+		if (e3 != null) {
+			return e3;
+		}
+	}
+	return null;
+}
 
-//Taken from mscorlib.js Find an alternative.
+
+
+XmlUtil = function () { }
+XmlUtil.toXml = function (obj) {
+	var s = '';
+	for (var i = 0; i < Object.keys(obj).length; i++) {
+		var key = Object.keys(obj)[i];
+		var val = obj[key];
+		var type = typeof val;
+		switch (type) {
+			case 'object':
+				s = s + '<' + key + '>';
+				s = s + XmlUtil.toXml(val);
+				s = s + '</' + key + '>';
+				break;
+			default:
+				s = s + '<' + key + '>';
+				s = s + val;
+				s = s + '</' + key + '>';
+				break;
+		}
+	}
+	return s;
+}
+XmlUtil.getAttrib = function (name, nullable) {
+	if (nullable != null) {
+		return name + '="' + nullable + '" ';
+	}
+	return '';
+}
+XmlUtil.getAttrib3 = function (name, val) {
+	if (val != null && !!val.toString().trim()) {
+		return name + '="' + val + '" ';
+	}
+	return '';
+}
+XmlUtil.getAttrib2 = function (name, val) {
+	if (val != null && !!val) {
+		return name + '="' + val + '" ';
+	}
+	return '';
+}
+XmlUtil.getNode = function (name, val) {
+	if (val != null && !!val) {
+		return '<' + name + '>' + val + '</' + name + '>';
+	}
+	return '';
+}
+
+
+
+//Part of mscorlib.js Find an alternative.
+isNullOrUndefine = function (o) {
+	return (o === null) || (o === undefined);
+}
 String.isNullOrEmpty = function (a) { return !a || !a.length };
 
