@@ -29,18 +29,20 @@
 		<EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
 	</PropertyGroup>
 	<ItemGroup>
-		<Compile Include="PythonWeb\lib.py">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="PythonWeb\uploader.py">
-			<SubType>Code</SubType>
-		</Compile>
+		<Compile Include="PythonWeb\lib.py" />
+			
+		<Compile Include="PythonWeb\business.py" />
+		<Compile Include="PythonWeb\mmWrapper.py" />
+		<Compile Include="PythonWeb\uploader.py" />
+		<Compile Include="PythonWeb\zipHandler.py" />
+
 		<Compile Include="runserver.py" />
 		<Compile Include="PythonWeb\__init__.py" />
 		<Compile Include="PythonWeb\views.py" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="PythonWeb\" />
+		<Folder Include="PythonWeb\.openshift\" />
 		<Folder Include="PythonWeb\static\" />
 		<Folder Include="PythonWeb\static\content\" />
 		<Folder Include="PythonWeb\static\fonts\" />
@@ -49,19 +51,14 @@
 		<Folder Include="PythonWeb\templates\" />
 	</ItemGroup>
 	<ItemGroup>
-		
 		<Content Include="PythonWeb\static\content\styles.css" />
-		
 		<Content Include="PythonWeb\static\scripts\DesignSpace.app.js" />
 		<Content Include="PythonWeb\static\scripts\DesignSpace.Util.js" />
 		<Content Include="PythonWeb\static\scripts\DesignSpace.Worker.js" />
-		
-		
 		<Content Include="PythonWeb\static\scripts\external\prettify.css" />
 		<Content Include="PythonWeb\static\scripts\external\prettify.js" />
 		<Content Include="PythonWeb\static\scripts\external\lang-ml.js" />
 		<Content Include="PythonWeb\static\scripts\external\vkbeautify.js" />
-		
 		<Content Include="PythonWeb\templates\uploader.html" />
 		<Content Include="requirements.txt" />
 		<Content Include="PythonWeb\templates\index.html" />

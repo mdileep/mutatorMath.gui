@@ -49,8 +49,13 @@
 				<button class="remove" id="source.remove_{ID}" title="Delete">X</button>
 			</span>
 			<span class="space3"></span>
+			
+			<!--<iframe name="frame"></iframe>
+			<form action="/upload" method="post" enctype="multipart/form-data" target="frame">
+				<input type="file" name="file" />
+			</form>-->
 
-			<input type="text" id="source.name_{ID}" class="text" value="Master{ID}" />
+			<input type="text" id="source.name_{ID}" class="text" value="Master{ID}" style="display:none;" />
 
 			<span class="space3"></span>
 
@@ -183,5 +188,6 @@
 	</script>
 
 	<script type="text/javascript" src="/static/scripts/DesignSpace.app.js"></script>
+	<i>Served at {{ now }}</i>
 </body>
 </html>
