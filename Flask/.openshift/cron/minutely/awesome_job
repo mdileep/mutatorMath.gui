@@ -1,0 +1,2 @@
+#! /bin/bash
+date > $OPENSHIFT_DATA_DIR/last_date_cron_ran

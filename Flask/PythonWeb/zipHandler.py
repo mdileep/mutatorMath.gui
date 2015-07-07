@@ -7,8 +7,7 @@ from PythonWeb import lib
 import zipfile
 
 def extractZip(fileName,toDir):
-    baseName=os.path.basename(fileName)
-    baseName=os.path.splitext(baseName)[0]
+    baseName=lib.findFileName(fileName)
     baseName2=os.path.join(toDir,baseName)
     with zipfile.ZipFile(fileName, "r") as z:
         z.extractall(baseName2)

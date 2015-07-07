@@ -6,25 +6,28 @@ from PythonWeb import mmWrapper
 from PythonWeb import lib
 from PythonWeb import zipHandler
 
+
 def go():
     mmWrapper.go(2,True)
     return render_template('index.html')
 
-def upload():
+def upload(allowed):
     try:
         file = request.files['file']
         toFileName = file.filename
-        filePath = uploader.upload(file,toFileName)
+        filePath = uploader.upload(file,toFileName,allowed)
         toDir=app.config['UPLOAD_DIR']
         destPath=""
-        if filePath !="":
+        if filePath !="" and lib.findFileExt(filePath)=='.zip':
             destPath=zipHandler.extractZip(filePath,toDir)
-        return lib.showTextContext(destPath)
-    except Exception as inst:
-        return lib.showTextContext(inst)
+        else:
+            destPath= lib.findFileNameWithExt(filePath)
+        return lib.pushText(destPath)
+    except Exception as err:
+        return lib.pushText(err)
 
 def sendFile(filename):
-    return business.uploaded_file(filename)
+    return uploader.uploaded_file(filename)
 
 def initConfig():
     if  'OPENSHIFT_DATA_DIR' in os.environ:
@@ -34,6 +37,6 @@ def initConfig():
     if not os.path.exists(uploadDir):
         os.makedirs(uploadDir)
     app.config['UPLOAD_DIR'] = uploadDir
-    app.config['ALLOWED_EXTENSIONS'] = set(['zip'])
+    app.config['ALLOWED_EXTENSIONS'] = set(['zip','xml'])
 
 initConfig()

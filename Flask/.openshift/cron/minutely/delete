@@ -1,0 +1,5 @@
+#!/bin/bash
+echo 'Hello' >>$OPENSHIFT_DATA_DIR/cron.txt
+cd $OPENSHIFT_DATA_DIR
+ls >>$OPENSHIFT_DATA_DIR/cron.txt
+find  $OPENSHIFT_DATA_DIR -name '*.*' -type f -mmin +360 >>$OPENSHIFT_DATA_DIR/cron.txt

@@ -8,18 +8,27 @@ from datetime import datetime
 def appHomePage():
     return render_template('index.html', now=datetime.now())
 
+
 @app.route('/go')
 def appGo():
     return business.go()
+
 
 @app.route('/uploader')
 def appUploader():
     return  render_template('uploader.html')
 
-@app.route('/upload', methods=['POST'])
-def appUpload():
-    return business.upload()
+def appUploader():
+    return  render_template('uploader.html')
 
-@app.route('/uploads/<filename>')
+@app.route('/upload.xml', methods=['POST'])
+def appUploadXml():
+    return business.upload(['xml','designspace'])
+
+@app.route('/upload.zip', methods=['POST'])
+def appUploadZip():
+    return business.upload(['zip'])
+
+@app.route('/download/<filename>')
 def appGetFile(filename):
     return business.sendFile(filename)
