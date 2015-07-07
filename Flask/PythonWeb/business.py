@@ -6,7 +6,6 @@ from PythonWeb import mmWrapper
 from PythonWeb import lib
 from PythonWeb import zipHandler
 
-
 def go():
     mmWrapper.go(2,True)
     return render_template('index.html')
