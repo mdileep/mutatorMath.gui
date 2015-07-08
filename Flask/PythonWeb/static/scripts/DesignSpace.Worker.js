@@ -28,11 +28,15 @@ Worker.registerEvents = function () {
 ComputeWorker = function () { }
 ComputeWorker.init = function () {
 	Util.registerClick('btn.compute', ComputeWorker._computeHandler);
+	Util.registerClick('btn.run', ComputeWorker._runHandler);
 	ComputeWorker.compute();
 }
 ComputeWorker.registerEvents = function () {
 	ComputeWorker._computeHandler = function (e) {
 		ComputeWorker.compute();
+	};
+	ComputeWorker._runHandler = function (e) {
+		ComputeWorker.run();
 	};
 }
 ComputeWorker.compute = function () {
@@ -44,9 +48,15 @@ ComputeWorker.compute = function () {
 	designSpace.format = 3;
 	var xml = designSpace.toXml();
 	xml = vkbeautify.xml(xml);
-	xml = textToHtml(xml);
-	document.getElementById('code').innerHTML = xml;
+	Util.setValue('txt.xml', xml);
+	Util.setValue('instance', instances[0].filename);
+	document.getElementById('code').innerHTML = textToHtml(xml);
 	prettyPrint();
+}
+ComputeWorker.run = function () {
+	ComputeWorker.compute();
+	var frm = document.getElementById('frmRun');
+	frm.submit();
 }
 
 
@@ -112,11 +122,6 @@ InstancesWorker.addInstance = function () {
 }
 InstancesWorker.removeInstance = function (rowId) {
 	var Instances = document.getElementById('instances');
-	var n = Util.noOfChildElements(Instances, 'li');
-	if (n === 1) {
-		InstancesWorker.resetInstance(rowId);
-		return;
-	}
 	var srcElem = document.getElementById('instance_' + rowId);
 	Util.deRegisterClick('instance.addName_' + rowId, InstancesWorker.addNameHandler);
 	Util.deRegisterClick('instance.addMetric_' + rowId, InstancesWorker.addDimensionHandler);
@@ -124,16 +129,44 @@ InstancesWorker.removeInstance = function (rowId) {
 	InternalWorker.removeControlSet(rowId, 'instance.metrics.remove_', 'instance.metric_', InstancesWorker.removeDimensionHandler);
 	InternalWorker.removeControlSet(rowId, 'instance.names.remove_', 'instance.metric_', InstancesWorker.removeNameHandler);
 	srcElem.parentNode.parentNode.removeChild(srcElem.parentNode);
+	var n = Util.noOfChildElements(Instances, 'li');
+	if (!n) {
+		InstancesWorker.addInstance();
+	}
 }
 InstancesWorker.resetInstance = function (rowId) { }
 InstancesWorker.getInstances = function () {
-	return null;
+	var Instances = document.getElementById('instances');
+	var n = Util.noOfChildElements(Instances, 'li');
+	var instances = new Array(n);
+	var running = 0;
+	for (var i = 0; i < Instances.children.length; i++) {
+		var li = Instances.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var instance = InstancesWorker.getInstance(li);
+			instances[running++] = instance;
+		}
+	}
+	return instances;
+}
+InstancesWorker.getInstance = function (li) {
+	var n = Util.noOfChildElements(li, 'div');
+	if (!n) {
+		return null;
+	}
+	var id = li.children[0].id;
+	var rowId = id.substr(id.indexOf('_') + 1);
+	var obj = new DesignerSpace.instance();
+	obj.familyname = Util.getValue(InstancesWorker.txtInstanceName + rowId);
+	obj.filename = Util.getValue(InstancesWorker.txtInstanceName + rowId);
+	return obj;
 }
 
 
 
 SourcesWorker = function () { }
 SourcesWorker.init = function () {
+	SourcesWorker.uploadTracker = {};
 	Util.registerClick('source.add', SourcesWorker.addHandler);
 	SourcesWorker.addSource();
 }
@@ -144,6 +177,10 @@ SourcesWorker.registerEvents = function () {
 	SourcesWorker.removeHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.removeSource(rowId);
+	};
+	SourcesWorker.fileSelectedHandler = function (e) {
+		var rowId = InternalWorker.findRowId(e);
+		SourcesWorker._fileSelected(rowId);
 	};
 	SourcesWorker.mouseEnterHandler = function (e) {
 		SourcesWorker.hoverHandler(e, true);
@@ -192,6 +229,7 @@ SourcesWorker.registerEvents = function () {
 		SourcesWorker.copyLibHandler = null;
 		SourcesWorker.addDimensionHandler = null;
 		SourcesWorker.removeDimensionHandler = null;
+		SourcesWorker.fileSelectedHandler = null;
 		SourcesWorker.disposeHandler = null;
 	};
 }
@@ -217,18 +255,18 @@ SourcesWorker.addSource = function () {
 	Util.registerClick('copyGroups_' + rowId, SourcesWorker.copyGroupsHandler);
 	Util.registerClick('copyLib_' + rowId, SourcesWorker.copyLibHandler);
 	Util.registerClick('source.addMetric_' + rowId, SourcesWorker.addDimensionHandler);
+	Util.registerChange('file_' + rowId, SourcesWorker.fileSelectedHandler);
 	SourcesWorker.handleCopyInfo(null);
 	SourcesWorker.handleCopyGroups(null);
 	SourcesWorker.handleCopyLib(null);
 	Util.setFocus(SourcesWorker.txtSourceName + rowId);
 }
 SourcesWorker.removeSource = function (rowId) {
-	var Sources = document.getElementById('sources');
-	var n = Util.noOfChildElements(Sources, 'li');
-	if (n === 1) {
-		SourcesWorker.resetSource(rowId);
+	if (SourcesWorker.uploadTracker[rowId] === 1) {
+		alert('Upload file is in progress please wait.');
 		return;
 	}
+	var Sources = document.getElementById('sources');
 	var srcElem = document.getElementById('source_' + rowId);
 	Util.deRegisterClick('source.remove_' + rowId, SourcesWorker.removeHandler);
 	Util.deRegisterClick('muteInfo_' + rowId, SourcesWorker.muteInfoHandler);
@@ -236,8 +274,13 @@ SourcesWorker.removeSource = function (rowId) {
 	Util.deRegisterClick('copyGroups_' + rowId, SourcesWorker.copyGroupsHandler);
 	Util.deRegisterClick('copyLib_' + rowId, SourcesWorker.copyLibHandler);
 	Util.deRegisterClick('source.addMetric_' + rowId, SourcesWorker.addDimensionHandler);
+	Util.deRegisterChange('file_' + rowId, SourcesWorker.fileSelectedHandler);
 	InternalWorker.removeControlSet(rowId, 'source.metrics.remove_', 'source.metric_', SourcesWorker.removeDimensionHandler);
 	srcElem.parentNode.parentNode.removeChild(srcElem.parentNode);
+	var n = Util.noOfChildElements(Sources, 'li');
+	if (!n) {
+		SourcesWorker.addSource();
+	}
 }
 SourcesWorker.resetSource = function (rowId) { }
 SourcesWorker.getSources = function () {
@@ -263,7 +306,7 @@ SourcesWorker.getSource = function (li) {
 	var rowId = id.substr(id.indexOf('_') + 1);
 	var obj = new DesignerSpace.source();
 	obj.name = Util.getValue(SourcesWorker.txtSourceName + rowId);
-	obj.filename = Util.getValue(SourcesWorker.txtSourceName + rowId) + '.ufo';
+	obj.filename =  Util.getValue(SourcesWorker.txtSourceName + rowId);
 	obj.info = SourcesWorker.getInfo(rowId);
 	obj.lib = SourcesWorker.getLib(rowId);
 	obj.groups = SourcesWorker.getLib(rowId);
@@ -357,6 +400,29 @@ SourcesWorker.hoverHandler = function (e, isEnter) {
 	else {
 		Util.hide('source.remove_' + rowId);
 	}
+}
+SourcesWorker._fileSelected = function (rowId) {
+	Util.noDisplay('uploader_' + rowId);
+	Util.setDisplayInline('processing_' + rowId);
+	var formElem = document.getElementById('form_' + rowId);
+	formElem.submit();
+	SourcesWorker.uploadTracker[rowId] = 1;
+}
+SourcesWorker.successCallBack = function (rowId, destPath) {
+	window.setTimeout(function () {
+		SourcesWorker.uploadTracker[rowId] = 0;
+		Util.noDisplay('processing_' + rowId);
+		Util.setDisplayInline('source.ui_' + rowId);
+		Util.setValue(SourcesWorker.txtSourceName + rowId, destPath);
+	}, 400);
+}
+SourcesWorker.errorCallBack = function (rowId, error) {
+	window.setTimeout(function () {
+		SourcesWorker.uploadTracker[rowId] = 0;
+		Util.setDisplayInline('uploader_' + rowId);
+		Util.noDisplay('processing_' + rowId);
+	}, 400);
+	alert('Error was thrown by Server. Please try again.\n Details:' + error);
 }
 
 
@@ -862,6 +928,28 @@ DesignerSpace.copyOnly.prototype = {
 	}
 }
 //END of DesignerSpace
+ComputeWorker.btnCompute = 'btn.compute';
+ComputeWorker.btnRun = 'btn.run';
+ComputeWorker.txtXml = 'txt.xml';
+ComputeWorker.frmRun = 'frmRun';
+ComputeWorker._runHandler = null;
+ComputeWorker._computeHandler = null;
+InstancesWorker.instanceTemplate = 'InstanceTemplate';
+InstancesWorker.olInstances = 'instances';
+InstancesWorker.divInstance = 'instance_';
+InstancesWorker.txtInstanceName = 'instance.name_';
+InstancesWorker.btnAddName = 'instance.addName_';
+InstancesWorker.btnAddMetric = 'instance.addMetric_';
+InstancesWorker.btnAddInstance = 'instance.add';
+InstancesWorker.btnRemoveInstance = 'instance.remove_';
+InstancesWorker.selectName = 'instance.selName_';
+InstancesWorker.liName = 'isntance.name_';
+InstancesWorker.btnRemoveName = 'instance.names.remove_';
+InstancesWorker.olNames = 'instance.names';
+InstancesWorker.btnRemoveDimension = 'instance.metrics.remove_';
+InstancesWorker.liMetric = 'instance.metric_';
+InstancesWorker.selectMetric = 'instance.selMetric_';
+InstancesWorker.olMetrics = 'instance.metrics';
 InstancesWorker.addHandler = null;
 InstancesWorker.removeHandler = null;
 InstancesWorker.addNameHandler = null;
@@ -885,6 +973,12 @@ SourcesWorker.chkCopyInfo = 'copyInfo_';
 SourcesWorker.chkCopyGroups = 'copyGroups_';
 SourcesWorker.chkCopyLib = 'copyLib_';
 SourcesWorker.chkMuteKerning = 'muteKerning_';
+SourcesWorker.divSourceUI = 'source.ui_';
+SourcesWorker.divUpload = 'uploader_';
+SourcesWorker.divLoading = 'processing_';
+SourcesWorker.frame = 'frame_';
+SourcesWorker.form = 'form_';
+SourcesWorker.file = 'file_';
 SourcesWorker.removeHandler = null;
 SourcesWorker.addHandler = null;
 SourcesWorker.mouseEnterHandler = null;
@@ -895,4 +989,6 @@ SourcesWorker.copyGroupsHandler = null;
 SourcesWorker.copyLibHandler = null;
 SourcesWorker.addDimensionHandler = null;
 SourcesWorker.removeDimensionHandler = null;
+SourcesWorker.fileSelectedHandler = null;
 SourcesWorker.disposeHandler = null;
+SourcesWorker.uploadTracker = null;

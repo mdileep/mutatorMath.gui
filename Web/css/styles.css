@@ -56,12 +56,15 @@ label {
 	clear: both;
 }
 
-.tools {
+.tools,.tools2 {
 	float: left;
 	right: 5px;
-	width: 5%;
-	min-width: 30px;
+	width:5%;
+	min-width: 100px;
 	text-align: right;
+}
+.tools2 {
+	width:50%;
 }
 
 .compute {
@@ -201,6 +204,11 @@ label.space5 {
 		font-weight: bold;
 	}
 
+.add3 {
+	cursor: pointer;
+	color: green;
+	font-size: 12px;
+}
 
 
 .remove {
@@ -241,4 +249,28 @@ code {
 	clear: both;
 	width: 100%;
 	margin: 5px;
+}
+
+.uploader,.loading {
+	display:inline-block;
+	vertical-align:top;
+}
+
+.loading {
+	font-size:10px;
+	font-weight:bold;
+	color:red;
+}
+
+.info {
+	vertical-align:top;
+}
+.mainsource {
+	display: none;
+	vertical-align: top;
+	margin-left: 2px;
+}
+
+form {
+	display: inline-block;
 }

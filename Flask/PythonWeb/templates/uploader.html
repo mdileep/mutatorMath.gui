@@ -11,9 +11,11 @@
 		</div>
 		<hr />
 		<div>
-			<form action="/upload.zip" method="post" enctype="multipart/form-data">
-				<input type="file" name="file"><br /><br />
-				<input type="submit" value="Upload">
+			<iframe name="frame" ></iframe>
+			<form action="/upload.zip" method="post" enctype="multipart/form-data" target="frame">
+				<input type="text" name="callback" /><br />
+				<input type="file" name="file" /><br /><br />
+				<input type="submit" value="Upload" />
 			</form>
 		</div>
 	</div>
@@ -25,8 +27,9 @@
 		<hr />
 		<div>
 			<form action="/upload.xml" method="post" enctype="multipart/form-data">
-				<input type="file" name="file"><br /><br />
-				<input type="submit" value="Upload">
+				<input type="text" name="callback" /><br />
+				<input type="file" name="file" /><br /><br />
+				<input type="submit" value="Upload" />
 			</form>
 		</div>
 	</div>

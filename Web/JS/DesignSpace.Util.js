@@ -126,6 +126,9 @@ Util.registerClick2 = function (Elemes, elementEventListener) {
 Util.deRegisterClick = function (id, elementEventListener) {
 	Util.deRegisterEvent2(document.getElementById(id), 'click', elementEventListener);
 }
+Util.deRegisterChange = function (id, elementEventListener) {
+	Util.deRegisterEvent2(document.getElementById(id), 'change', elementEventListener);
+}
 Util.registerEvent2 = function (E, eventName, elementEventListener) {
 	if (E == null) {
 		return;
@@ -218,6 +221,13 @@ Util.setDisplay = function (Id) {
 	}
 	Elem.style.display = 'block';
 }
+Util.setDisplayInline = function (Id) {
+	var Elem = window.document.getElementById(Id);
+	if (Elem == null) {
+		return;
+	}
+	Elem.style.display = 'inline-block';
+}
 Util.noDisplay = function (Id) {
 	var Elem = window.document.getElementById(Id);
 	if (Elem == null) {
@@ -243,9 +253,11 @@ Util.scrollTo = function (Id) {
 		try {
 			window.document.getElementById(Id).scrollIntoView();
 		}
-		catch ($e1) {
-		}
+		catch ($e1) { }
 	}
+}
+Util.noTags = function (s) {
+	return s.toLowerCase().replaceAll('<u>', '').replaceAll('</u>', '').replaceAll('<b>', '').replaceAll('<i>', '').replaceAll('</b>', '').replaceAll('</i>', '');
 }
 Util.setFocus = function (Id) {
 	if (document.getElementById(Id) == null) {

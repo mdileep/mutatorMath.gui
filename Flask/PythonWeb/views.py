@@ -9,9 +9,10 @@ def appHomePage():
     return render_template('index.html', now=datetime.now())
 
 
-@app.route('/go')
+@app.route('/run', methods=['POST'])
 def appGo():
-    return business.go()
+    return business.run()
+
 
 
 @app.route('/uploader')
@@ -20,6 +21,7 @@ def appUploader():
 
 def appUploader():
     return  render_template('uploader.html')
+
 
 @app.route('/upload.xml', methods=['POST'])
 def appUploadXml():
