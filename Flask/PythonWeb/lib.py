@@ -1,5 +1,10 @@
 from flask import render_template, request, redirect, url_for, send_from_directory,Response
 import os
+import random,string
+import urllib
+
+def getNewSessionId():
+    return "".join( [random.choice(string.digits) for i in   xrange(10)])
 
 def saveToText(fileName,text):
     text_file = open(fileName, "w")
@@ -14,12 +19,12 @@ def pushLoadScript(callBackName,arr):
     
     response=callBackName+"("
     cnt=1
-    
+    #JS Encoding may be used not url
     for val in arr:
         if cnt!=len(arr):
-            response= response+"'"+val+"',"
+            response= response+"'"+urllib.quote(val)+"',"
         else:
-            response= response+"'"+val+"');"
+            response= response+"'"+urllib.quote(val)+"');"
         cnt=cnt+1
     
     # For some reason mimeType=text/javascript is not working -8 July

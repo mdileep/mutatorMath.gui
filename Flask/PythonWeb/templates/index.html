@@ -2,14 +2,13 @@
 <html>
 <head>
 	<title>Build Design Space Document for Mutator Math</title>
+	<link rel="stylesheet" type="text/css" href="/static/content/styles.css" />
+	<link rel="stylesheet" type="text/css" href="/static/scripts/external/prettify.css" />
+
+	<script type="text/javascript">var Config = {}; Config.SessionId = '{{sessionId}}';</script>
+	<script type="text/javascript" src="/static/scripts/External.js"></script>
 	<script type="text/javascript" src="/static/scripts/DesignSpace.Util.js"></script>
 	<script type="text/javascript" src="/static/scripts/DesignSpace.Worker.js"></script>
-	<link rel="stylesheet" type="text/css" href="/static/content/styles.css" />
-
-	<link rel="stylesheet" href="/static/scripts/external/prettify.css" />
-	<script type="text/javascript" src="/static/scripts/external/vkbeautify.js"></script>
-	<script type="text/javascript" src="/static/scripts/external/prettify.js"></script>
-	<script type="text/javascript" src="/static/scripts/external/lang-ml.js"></script>
 </head>
 <body>
 	<h1>Design Space Document</h1>
@@ -32,20 +31,17 @@
 		<div class="subhead compute">
 			<div class="h3">&nbsp;</div>
 			<div class="tools2">
-				<button class="add3" id="btn.compute" title="Compute">Design Space</button> 
+				<button style="display:none" class="add3" id="btn.compute" title="Compute">Design Space</button> 
 				<button class="add3" id="btn.run" title="Download Mutated Math Output">Run</button>
 			</div>
 		</div>
-
-		<iframe width="0" height="0" name="run"></iframe>
-		<form action="/run" method="post" id="frmRun" target="run">
-			<input type="hidden" name="txt.xml" id="txt.xml" />
-			<input type="hidden" name="instance" id="instance" />
-		</form>
 	</div>
+	<span class="running" style="display:none;" id="running">Please wait while processing the file.</span>
 
+	<label class="spacer" style="display:none;" id="lbl.downloadLinks"><h2>Downloads from Latest Run</h2></label>
+	<ol id="downloadLinks" class="sources"></ol>
 
-	<div class="spacer"><h2>Generated Design Space Document</h2></div>
+	<div class="spacer" ><h2>Design Space Document</h2></div>
 	<div class="output" id="output">
 		<pre class="prettyprint lang-xml" id="code">
 			
@@ -60,8 +56,8 @@
 			</span>
 
 			<div class="mainsource" id="source.ui_{ID}">
-				<input type="text" readonly="readonly" id="source.name_{ID}" class="text" value="Master{ID}" />
-
+				<input type="text"  id="source.name_{ID}" class="text" value="Master{ID}" />
+				<input type="hidden" id="source.filename_{ID}" class="text" value="Master{ID}" />
 				<span class="space3"></span>
 
 				<span class="info">
@@ -108,6 +104,7 @@
 				<form action="/upload.zip" method="post" enctype="multipart/form-data" id="form_{ID}" target="frame_{ID}">
 					<input type="file" name="file" id="file_{ID}" />
 					<input type="hidden" name="id" id="id_{ID}" value="{ID}" />
+					<input type="hidden" name="sessionId" id="sessionId_{ID}" value="{ID}" />
 				</form>
 			</div>
 
@@ -124,7 +121,7 @@
 			</span>
 			<span class="space3"></span>-->
 
-			<input type="text" readonly="readonly" id="instance.name_{ID}" class="text" value="Family" />
+			<input type="text" id="instance.name_{ID}" class="text" value="Family" />
 
 			<span class="space2"></span>
 			<span class="select">
@@ -206,10 +203,20 @@
 		</div>
 	</script>
 
+	<script type="text/template" id="DowloadTemplate">
+		{PreText} : <a target="_blank" href="{Link}">{Text}</a>
+	</script>
+
+
+	<iframe width="0" height="0" name="run"></iframe>
+	<form action="/run" method="post" id="frmRun" target="run">
+		<input type="hidden" name="txt.xml" id="txt.xml" />
+		<input type="hidden" name="instance" id="instance" />
+		<input type="hidden" name="sessionId" id="sessionId" />
+	</form>
 	<script type="text/javascript" src="/static/scripts/DesignSpace.app.js"></script>
-
-
 	<i>Served at {{ now }}</i>
 </body>
 </html>
+
 {% extends "layout.html" %}

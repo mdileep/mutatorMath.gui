@@ -131,16 +131,16 @@ label {
 .space {
 	margin-left: 5px;
 	margin-right: 5px;
-	border-left: 1px solid gray;
-	border-right: 1px solid gray;
+	/*border-left: 1px solid gray;
+	border-right: 1px solid gray;*/
 }
 
 .spacer {
 	width: 100%;
 	margin: 2px;
 	text-align: center;
-	border-top: 1px solid gray;
-	border-bottom: 1px solid gray;
+	/*border-top: 1px solid gray;
+	border-bottom: 1px solid gray;*/
 }
 
 .space2 {
@@ -256,7 +256,7 @@ code {
 	vertical-align:top;
 }
 
-.loading {
+.loading,.running {
 	font-size:10px;
 	font-weight:bold;
 	color:red;

@@ -21,7 +21,7 @@
 	</xs:complexType>
 	<xs:complexType name="source">
 		<xs:sequence>
-			<xs:element name="location" minOccurs="0"  maxOccurs="1" type="location" />
+			<xs:element name="location" minOccurs="1"  maxOccurs="1" type="location" />
 			<xs:element name="lib" minOccurs="0"  maxOccurs="1" type="copyOnly" />
 			<xs:element name="groups"  minOccurs="0"  maxOccurs="1" type="copyOnly"  />
 			<xs:element name="info" minOccurs="0"  maxOccurs="1" type="copyAndMute" />

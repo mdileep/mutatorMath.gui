@@ -13,7 +13,7 @@ public partial class Upload : System.Web.UI.Page
 		{
 			string id = Request.Form["id"];
 			Response.Clear();
-			Response.Write(String.Format(@"<script type='text/javascript'>window.top.DesignSpace.SourcesWorker.successCallBack('{0}','random.zip');</script>", id));
+			Response.Write(String.Format(@"<script type='text/javascript'>window.top.DesignSpace.SourcesWorker.successCallBack('{0}','source');</script>", id));
 			Response.End();
 
 		}

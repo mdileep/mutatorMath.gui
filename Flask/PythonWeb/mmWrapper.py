@@ -7,13 +7,11 @@ from mutatorMath.ufo.document import DesignSpaceDocumentWriter, DesignSpaceDocum
 from mutatorMath.objects.location import Location
 from PythonWeb import app
 
-def go(docName,ufoVersion=2,roundGeometry=True):
+def go(docName,logFile,ufoVersion=3,roundGeometry=True):
     testRoot = app.config['UPLOAD_DIR']
     documentPath = os.path.join(testRoot, docName)
-    #sourcePath = os.path.join(testRoot, 'sources')
-    #instancePath = os.path.join(testRoot, 'instances')
     sourcePath =testRoot
     instancePath = testRoot
-    logPath = os.path.join(testRoot, "tests.log")
+    logPath = os.path.join(testRoot, logFile)
     doc = DesignSpaceDocumentReader(documentPath, ufoVersion, roundGeometry=roundGeometry, verbose=True, logPath=logPath)
     doc.process(makeGlyphs=True, makeKerning=True, makeInfo=True)
