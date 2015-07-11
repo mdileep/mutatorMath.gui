@@ -4,14 +4,12 @@
 	<title>Build Design Space Document for Mutator Math</title>
 	<link rel="stylesheet" type="text/css" href="/static/content/styles.css" />
 	<link rel="stylesheet" type="text/css" href="/static/scripts/external/prettify.css" />
-
-	<script type="text/javascript">var Config = {}; Config.SessionId = '{{sessionId}}';</script>
+	<script type="text/javascript">var Config = {}; Config.SessionId = '{{sessionId}}'; Config.NoFileUpload = false;</script>
 	<script type="text/javascript" src="/static/scripts/External.js"></script>
 	<script type="text/javascript" src="/static/scripts/DesignSpace.Util.js"></script>
 	<script type="text/javascript" src="/static/scripts/DesignSpace.Worker.js"></script>
 </head>
 <body>
-	<h1>Design Space Document</h1>
 	<div class="spacer"><h2>Designer</h2></div>
 	<div id="designSpace" class="canvas">
 
@@ -22,15 +20,15 @@
 		<ol id="sources" class="sources"></ol>
 
 		<div class="subhead">
-			<div class="h2">Instance</div>
-			<!--<div class="tools"><button class="add" id="instance.add" title="Add">+</button></div>-->
+			<div class="h2">Instances</div>
+			<div class="tools"><button class="add" id="instance.add" title="Add">+</button></div>
 		</div>
 
-		<ul id="instances" class="instances"></ul>
+		<ol id="instances" class="sources"></ol>
 
 		<div class="subhead compute">
-			<div class="h3">&nbsp;</div>
-			<div class="tools2">
+			<div class="h2">&nbsp;</div>
+			<div class="tools">
 				<button style="display:none" class="add3" id="btn.compute" title="Compute">Design Space</button> 
 				<button class="add3" id="btn.run" title="Download Mutated Math Output">Run</button>
 			</div>
@@ -57,7 +55,7 @@
 
 			<div class="mainsource" id="source.ui_{ID}">
 				<input type="text"  id="source.name_{ID}" class="text" value="Master{ID}" />
-				<input type="hidden" id="source.filename_{ID}" class="text" value="Master{ID}" />
+				<input type="hidden" id="source.filename_{ID}" class="text" value="" />
 				<span class="space3"></span>
 
 				<span class="info">
@@ -100,12 +98,13 @@
 			<span class="space3"></span>
 
 			<div class="uploader" id="uploader_{ID}">
-				<iframe name="frame_{ID}" width="0" height="0"></iframe>
+				<label  class="blue" for="form_{ID}">Please choose a zipped file of your UFO.</label>
 				<form action="/upload.zip" method="post" enctype="multipart/form-data" id="form_{ID}" target="frame_{ID}">
 					<input type="file" name="file" id="file_{ID}" />
 					<input type="hidden" name="id" id="id_{ID}" value="{ID}" />
 					<input type="hidden" name="sessionId" id="sessionId_{ID}" value="{ID}" />
 				</form>
+				<iframe name="frame_{ID}" width="0" height="0" style="display:none;"></iframe>
 			</div>
 
 			<span class="loading" style="display:none;" id="processing_{ID}">Please wait while uploading the file.</span>
@@ -115,11 +114,11 @@
 
 	<script type="text/template" id="InstanceTemplate">
 		<div id="instance_{ID}" class="instance">
-			<!--
+			
 			<span class="info">
 				<button class="remove" id="instance.remove_{ID}" title="Delete">X</button>
 			</span>
-			<span class="space3"></span>-->
+			<span class="space3"></span>
 
 			<input type="text" id="instance.name_{ID}" class="text" value="Family" />
 
@@ -203,12 +202,23 @@
 		</div>
 	</script>
 
+	<script type="text/template" id="MuteGlyphTemplate">
+		<div id="name_{value}_{ID}">
+			<label class="space6">Glyph Name</label>
+			<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
+			<span class="space2"></span>
+			<span class="info">
+				<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
+			</span>
+		</div>
+	</script>
+
 	<script type="text/template" id="DowloadTemplate">
 		{PreText} : <a target="_blank" href="{Link}">{Text}</a>
 	</script>
 
 
-	<iframe width="0" height="0" name="run"></iframe>
+	<iframe width="0" height="0" name="run" style="display:none;"></iframe>
 	<form action="/run" method="post" id="frmRun" target="run">
 		<input type="hidden" name="txt.xml" id="txt.xml" />
 		<input type="hidden" name="instance" id="instance" />

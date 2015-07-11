@@ -67,14 +67,16 @@ ComputeWorker.run = function () {
 		alert('Another job is in already running. Please wait.');
 		return;
 	}
-	Util.setDisplayInline('running');
-	var Ol = document.getElementById('downloadLinks');
-	Ol.innerHTML = '';
-	Util.noDisplay('lbl.downloadLinks');
 	ComputeWorker.compute();
-	ComputeWorker._computeInProgress = true;
-	var frm = document.getElementById('frmRun');
-	frm.submit();
+	if (!Config.NoFileUpload) {
+		Util.setDisplayInline('running');
+		var Ol = document.getElementById('downloadLinks');
+		Ol.innerHTML = '';
+		Util.noDisplay('lbl.downloadLinks');
+		ComputeWorker._computeInProgress = true;
+		var frm = document.getElementById('frmRun');
+		frm.submit();
+	}
 }
 ComputeWorker.successCallBack = function (newSessionId) {
 	Util.noDisplay('running');
@@ -89,7 +91,11 @@ ComputeWorker.showDownloadLinks = function (showInstances) {
 	Ol.appendChild(li3);
 	if (showInstances) {
 		for (var i = 0; i < ComputeWorker._instancesList.length; i++) {
-			var li = ComputeWorker.getDowloadLink('Instance ' + (i + 1), '/download/' + ComputeWorker._instancesList[i] + '.zip', '[Download]');
+			var s = ComputeWorker._instancesList[i].value;
+			if (ComputeWorker._instancesList.length !== 1) {
+				s = s + (i + 1);
+			}
+			var li = ComputeWorker.getDowloadLink(s, '/download/' + ComputeWorker._instancesList[i] + '.zip', '[Download]');
 			Ol.appendChild(li);
 		}
 	}
@@ -113,12 +119,14 @@ ComputeWorker.errorCallBack = function (error) {
 	ComputeWorker._computeInProgress = false;
 	ComputeWorker.clear();
 	var err = decodeURIComponent(error);;
-	alert('Error was thrown by Server. Please try again.\n Details:\n' + err);
+	alert('Error occured while processing your request. Please try again.\n Details:\n' + err);
 }
 ComputeWorker.saveCopy = function (instances) {
 	ComputeWorker._instancesList = new Array(instances.length);
 	for (var i = 0; i < instances.length; i++) {
-		ComputeWorker._instancesList[i] = instances[i].filename;
+		ComputeWorker._instancesList[i] = new DesignerSpace.NameValuePair();
+		ComputeWorker._instancesList[i].key = instances[i].filename;
+		ComputeWorker._instancesList[i].value = instances[i].familyname;
 	}
 }
 ComputeWorker.clear = function () {
@@ -225,7 +233,19 @@ InstancesWorker.getInstance = function (li, running) {
 	var obj = new DesignerSpace.instance();
 	obj.familyname = Util.getValue(InstancesWorker.txtInstanceName + rowId);
 	obj.filename = 'instacne_' + (running + 1) + '_' + Config.SessionId;
+	obj.location = InternalWorker.getLocation('instance.metrics', rowId);
+	obj.postscriptfontname = InstancesWorker.getName('postscriptfontname', rowId);
+	obj.stylemapfamilyname = InstancesWorker.getName('stylemapfamilyname', rowId);
+	obj.stylemapstylename = InstancesWorker.getName('stylemapstylename', rowId);
+	obj.stylename = InstancesWorker.getName('stylename', rowId);
 	return obj;
+}
+InstancesWorker.getName = function (nm, rowId) {
+	var val = Util.getValue('instance.names' + '_' + nm + '_' + rowId);
+	if (!val) {
+		return null;
+	}
+	return val;
 }
 
 
@@ -326,6 +346,11 @@ SourcesWorker.addSource = function () {
 	SourcesWorker.handleCopyGroups(null);
 	SourcesWorker.handleCopyLib(null);
 	Util.setFocus(SourcesWorker.txtSourceName + rowId);
+	if (Config.NoFileUpload) {
+		Util.noDisplay('uploader_' + rowId);
+		Util.noDisplay('processing_' + rowId);
+		Util.setDisplayInline('source.ui_' + rowId);
+	}
 }
 SourcesWorker.removeSource = function (rowId) {
 	if (SourcesWorker.uploadTracker[rowId] === 1) {
@@ -377,38 +402,12 @@ SourcesWorker.getSource = function (li) {
 	obj.lib = SourcesWorker.getLib(rowId);
 	obj.groups = SourcesWorker.getLib(rowId);
 	obj.kerning = SourcesWorker.getKerning(rowId);
-	obj.location = SourcesWorker.getLocation(rowId);
+	obj.location = InternalWorker.getLocation('source.metrics', rowId);
 	obj.glyphs = SourcesWorker.getGlyphs(rowId);
 	return obj;
 }
 SourcesWorker.getGlyphs = function (rowId) {
 	return null;
-}
-SourcesWorker.getLocation = function (rowId) {
-	var loc = new DesignerSpace.location();
-	loc.dimensions = SourcesWorker.getDimensions(rowId);
-	return loc;
-}
-SourcesWorker.getDimensions = function (rowId) {
-	var olMetric2 = document.getElementById('source.metrics' + '_' + rowId);
-	var n = Util.noOfChildElements(olMetric2, 'li');
-	var dimensions = new Array(n);
-	var running = 0;
-	for (var i = 0; i < olMetric2.children.length; i++) {
-		var li = olMetric2.children[i];
-		if (li.tagName.toLowerCase() === 'li') {
-			var dimension = SourcesWorker.getDimension(li, rowId);
-			dimensions[running++] = dimension;
-		}
-	}
-	return dimensions;
-}
-SourcesWorker.getDimension = function (li, rowId) {
-	var dimension = new DesignerSpace.dimension();
-	dimension.name = li.getAttribute('value');
-	dimension.xvalue = Util.getValue('source.metrics' + '.x_' + dimension.name + '_' + rowId);
-	dimension.yvalue = Util.getValue('source.metrics' + '.y_' + dimension.name + '_' + rowId);
-	return dimension;
 }
 SourcesWorker.getKerning = function (rowId) {
 	var kerning = new DesignerSpace.muteOnly();
@@ -626,9 +625,44 @@ InternalWorker.isChecked = function (id) {
 		return ((Util.isChecked(id)) ? 1 : 0);
 	}
 }
+InternalWorker.getLocation = function (olMetrics, rowId) {
+	var loc = new DesignerSpace.location();
+	loc.dimensions = InternalWorker.getDimensions(olMetrics, rowId);
+	return loc;
+}
+InternalWorker.getDimensions = function (olMetrics, rowId) {
+	var olMetric2 = document.getElementById(olMetrics + '_' + rowId);
+	var n = Util.noOfChildElements(olMetric2, 'li');
+	var dimensions = new Array(n);
+	var running = 0;
+	for (var i = 0; i < olMetric2.children.length; i++) {
+		var li = olMetric2.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var dimension = InternalWorker.getDimension(li, olMetrics, rowId);
+			dimensions[running++] = dimension;
+		}
+	}
+	return dimensions;
+}
+InternalWorker.getDimension = function (li, olMetrics, rowId) {
+	var dimension = new DesignerSpace.dimension();
+	dimension.name = li.getAttribute('value');
+	dimension.xvalue = Util.getValue(olMetrics + '.x_' + dimension.name + '_' + rowId);
+	dimension.yvalue = Util.getValue(olMetrics + '.y_' + dimension.name + '_' + rowId);
+	return dimension;
+}
 
 //START of DesignerSpace
 DesignerSpace = {};
+DesignerSpace.NameValuePair = function () { }
+DesignerSpace.NameValuePair.prototype = {
+	key: null,
+	value: null,
+
+	toXml: function () {
+		return '';
+	}
+}
 DesignerSpace.designspace = function () { }
 DesignerSpace.designspace.prototype = {
 	sources: null,
@@ -1002,6 +1036,10 @@ ComputeWorker.btnCompute = 'btn.compute';
 ComputeWorker.btnRun = 'btn.run';
 ComputeWorker.txtXml = 'txt.xml';
 ComputeWorker.frmRun = 'frmRun';
+ComputeWorker.olDownloadLinks = 'downloadLinks';
+ComputeWorker.downloadTemplate = 'DowloadTemplate';
+ComputeWorker.divRunning = 'running';
+ComputeWorker.lblDownloadLinks = 'lbl.downloadLinks';
 ComputeWorker._runHandler = null;
 ComputeWorker._computeHandler = null;
 ComputeWorker._computeInProgress = false;
@@ -1040,7 +1078,7 @@ SourcesWorker.btnAddMetric = 'source.addMetric_';
 SourcesWorker.selectMetric = 'source.selMetric_';
 SourcesWorker.liMetric = 'source.metric_';
 SourcesWorker.btnRemoveMetric = 'source.metrics.remove_';
-SourcesWorker.olMetric = 'source.metrics';
+SourcesWorker.olMetrics = 'source.metrics';
 SourcesWorker.chkMuteInfo = 'muteInfo_';
 SourcesWorker.chkCopyInfo = 'copyInfo_';
 SourcesWorker.chkCopyGroups = 'copyGroups_';

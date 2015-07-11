@@ -13,7 +13,7 @@ Sources																	[Add Another Souce]
 		Mute Info			[Bool]							Yes-1
 		Mute Kerning			[Bool]						Yes-1
 		Dimensions			[Dimensions Control]			Yes-1	[Define Another Metric]
-		Mute Glyphs			[Mute Glyph Control]			Yes-1	[Mute another Glyph]
+		Mute Glyphs			[Mute Glyph Control]			Yes-1	[Mute another Glyph]	[Pending]
 
 Instances
 	Single Instance Support
@@ -23,11 +23,11 @@ Instances
 		Post Script Font Name	[Text Box Optional]
 		Stylemap Family Name	[Text Box Optional]
 		Stylemap Style Name		[Text Box Optional]
-	Define Dimensions			[Dimensions] 
-	Info						[Dimensions] 
-	Kerning						[Dimensions]
-	Glyphs						[Glyph Control]
-	Master Dimensions			[Master Control]
+	Define Dimensions			[Dimensions]		
+	Info						[Dimensions]		[Pending]
+	Kerning						[Dimensions]		[Pending]
+	Glyphs						[Glyph Control]		[Pending] 
+	Master Dimensions			[Master Control]	[Pending]
 
 Mute Glyph Control
 	Name
@@ -43,4 +43,4 @@ Glyph Control					[Add Another Glpyh]
 	Note
 	Masters			[Master Control]				[Add another Master]
 
-Last Reviewed: 06-Jul-2015
+Last Reviewed: 11-Jul-2015

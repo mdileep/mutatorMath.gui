@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, send_from_directo
 import os
 import random,string
 import urllib
+import json
 
 def getNewSessionId():
     return "".join( [random.choice(string.digits) for i in   xrange(10)])
@@ -22,9 +23,9 @@ def pushLoadScript(callBackName,arr):
     #JS Encoding may be used not url
     for val in arr:
         if cnt!=len(arr):
-            response= response+"'"+urllib.quote(val)+"',"
+            response= response+ json.dumps(val)+','
         else:
-            response= response+"'"+urllib.quote(val)+"');"
+            response= response+ json.dumps(val)+');'
         cnt=cnt+1
     
     # For some reason mimeType=text/javascript is not working -8 July

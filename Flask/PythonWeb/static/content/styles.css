@@ -160,7 +160,7 @@ label {
 	font-size: 12px;
 	font-weight: bold;
 	display: inline-block;
-	min-width: 40px;
+	min-width: 60px;
 }
 
 .space6 {
@@ -207,6 +207,13 @@ label.space5 {
 	.add2:hover {
 		font-weight: bold;
 	}
+
+.add4 {
+	cursor: pointer;
+	color: green;
+	font-size: 12px;
+	display:inline-block;
+}
 
 .add3 {
 	cursor: pointer;
@@ -278,4 +285,10 @@ code {
 
 form {
 	display: inline-block;
+}
+
+.blue {
+	color:blue;
+	font-size: 10px;
+	font-weight: bold;
 }
