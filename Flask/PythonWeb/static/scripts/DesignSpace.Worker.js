@@ -4,8 +4,11 @@ PageWorker = function () { }
 PageWorker.prototype = {
 
 	init: function () {
-		Worker.registerEvents();
 		Worker.pageInit();
+	},
+
+	dispose: function () {
+		Worker.dispose();
 	}
 }
 
@@ -17,27 +20,56 @@ Worker.pageInit = function () {
 	InstancesWorker.init();
 	ComputeWorker.init();
 }
-Worker.registerEvents = function () {
-	SourcesWorker.registerEvents();
-	InstancesWorker.registerEvents();
-	ComputeWorker.registerEvents();
+Worker.dispose = function () {
+	SourcesWorker.dispose();
+	InstancesWorker.dispose();
+	ComputeWorker.dispose();
 }
 
 
 
 ComputeWorker = function () { }
 ComputeWorker.init = function () {
-	Util.registerClick('btn.compute', ComputeWorker._computeHandler);
-	Util.registerClick('btn.run', ComputeWorker._runHandler);
+	ComputeWorker.registerHandlers();
+	ComputeWorker.registerEvents();
+	ComputeWorker.internalInit();
+}
+ComputeWorker.internalInit = function () {
+	if (Config.DesignerOnly) {
+		Util.setChecked('designOnly');
+	}
+	else {
+		Util.setUnChecked('designOnly');
+	}
 	ComputeWorker.compute();
 }
 ComputeWorker.registerEvents = function () {
-	ComputeWorker._computeHandler = function (e) {
+	Util.registerClick('btn.compute', ComputeWorker.computeHandler);
+	Util.registerClick('btn.run', ComputeWorker.runHandler);
+	Util.registerClick('multipleInstances', ComputeWorker.multipleInstancesHandler);
+	Util.registerClick('designOnly', ComputeWorker.designerOnlyHandler);
+}
+ComputeWorker.registerHandlers = function () {
+	ComputeWorker.computeHandler = function (e) {
 		ComputeWorker.compute();
 	};
-	ComputeWorker._runHandler = function (e) {
+	ComputeWorker.runHandler = function (e) {
 		ComputeWorker.run();
 	};
+	ComputeWorker.multipleInstancesHandler = function (e) {
+		ComputeWorker.handleMultInstances();
+	};
+	ComputeWorker.designerOnlyHandler = function (e) {
+		ComputeWorker.handleDesignerOnly();
+	};
+	ComputeWorker.disposeHandler = function (e) {
+		ComputeWorker.handleDispose();
+	};
+}
+ComputeWorker.handleDesignerOnly = function () {
+	SourcesWorker.handleDesignerOnly();
+	InstancesWorker.handleDesignerOnly();
+	Config.DesignerOnly = Util.isChecked('designOnly');
 }
 ComputeWorker.compute = function () {
 	var sources = SourcesWorker.getSources();
@@ -51,6 +83,7 @@ ComputeWorker.compute = function () {
 	Util.setValue('txt.xml', xml);
 	Util.setValue('instance', ComputeWorker.joinList(instances));
 	Util.setValue('sessionId', Config.SessionId);
+	Util.setValue('rg', (Util.isChecked('chkRoungGeo')) ? '1' : '0');
 	document.getElementById('code').innerHTML = textToHtml(xml);
 	prettyPrint();
 	ComputeWorker.saveCopy(instances);
@@ -63,39 +96,48 @@ ComputeWorker.joinList = function (instances) {
 	return s;
 }
 ComputeWorker.run = function () {
-	if (ComputeWorker._computeInProgress) {
+	if (ComputeWorker.computeInProgress) {
 		alert('Another job is in already running. Please wait.');
 		return;
 	}
+	var isValid = true;
+	if (!Config.DesignerOnly) {
+		isValid = ComputeWorker.validate();
+	}
 	ComputeWorker.compute();
-	if (!Config.NoFileUpload) {
+	if (isValid) {
 		Util.setDisplayInline('running');
-		var Ol = document.getElementById('downloadLinks');
-		Ol.innerHTML = '';
-		Util.noDisplay('lbl.downloadLinks');
-		ComputeWorker._computeInProgress = true;
+		if (!Util.isChecked('keepResults')) {
+			var Ol = document.getElementById('downloadLinks');
+			Ol.innerHTML = '';
+			Util.noDisplay('lbl.downloadLinks');
+		}
+		ComputeWorker.computeInProgress = true;
 		var frm = document.getElementById('frmRun');
 		frm.submit();
 	}
+}
+ComputeWorker.validate = function () {
+	return SourcesWorker.isValid() && InstancesWorker.isValid();
 }
 ComputeWorker.successCallBack = function (newSessionId) {
 	Util.noDisplay('running');
 	ComputeWorker.showDownloadLinks(true);
 	ComputeWorker.clear();
 	Config.SessionId = newSessionId;
-	ComputeWorker._computeInProgress = false;
+	ComputeWorker.computeInProgress = false;
 }
 ComputeWorker.showDownloadLinks = function (showInstances) {
 	var Ol = document.getElementById('downloadLinks');
 	var li3 = ComputeWorker.getDowloadLink('Design Space', '/download/' + Config.SessionId + '.design' + 'space', '[Download]');
 	Ol.appendChild(li3);
 	if (showInstances) {
-		for (var i = 0; i < ComputeWorker._instancesList.length; i++) {
-			var s = ComputeWorker._instancesList[i].value;
-			if (ComputeWorker._instancesList.length !== 1) {
-				s = s + (i + 1);
+		for (var i = 0; i < ComputeWorker.instancesList.length; i++) {
+			var s = ComputeWorker.instancesList[i].value;
+			if (ComputeWorker.instancesList.length !== 1) {
+				s = s + '( Instance-' + (i + 1) + ') ';
 			}
-			var li = ComputeWorker.getDowloadLink(s, '/download/' + ComputeWorker._instancesList[i] + '.zip', '[Download]');
+			var li = ComputeWorker.getDowloadLink(s, '/download/' + ComputeWorker.instancesList[i] + '.zip', '[Download]');
 			Ol.appendChild(li);
 		}
 	}
@@ -116,31 +158,62 @@ ComputeWorker.getDowloadLink = function (PreText, Link, Text) {
 ComputeWorker.errorCallBack = function (error) {
 	Util.noDisplay('running');
 	ComputeWorker.showDownloadLinks(false);
-	ComputeWorker._computeInProgress = false;
+	ComputeWorker.computeInProgress = false;
 	ComputeWorker.clear();
 	var err = decodeURIComponent(error);;
 	alert('Error occured while processing your request. Please try again.\n Details:\n' + err);
 }
 ComputeWorker.saveCopy = function (instances) {
-	ComputeWorker._instancesList = new Array(instances.length);
+	ComputeWorker.instancesList = new Array(instances.length);
 	for (var i = 0; i < instances.length; i++) {
-		ComputeWorker._instancesList[i] = new DesignerSpace.NameValuePair();
-		ComputeWorker._instancesList[i].key = instances[i].filename;
-		ComputeWorker._instancesList[i].value = instances[i].familyname;
+		ComputeWorker.instancesList[i] = new DesignerSpace.NameValuePair();
+		ComputeWorker.instancesList[i].key = instances[i].filename;
+		ComputeWorker.instancesList[i].value = instances[i].familyname;
 	}
 }
 ComputeWorker.clear = function () {
-	ComputeWorker._instancesList = [];
+	ComputeWorker.instancesList = [];
+}
+ComputeWorker.handleMultInstances = function () {
+	SourcesWorker.handleMultInstances();
+	InstancesWorker.handleMultInstances();
+}
+ComputeWorker.handleDispose = function () {
+	ComputeWorker.deRegisterEvents();
+	ComputeWorker.computeHandler = null;
+	ComputeWorker.runHandler = null;
+	ComputeWorker.multipleInstancesHandler = null;
+	ComputeWorker.designerOnlyHandler = null;
+	ComputeWorker.disposeHandler = null;
+}
+ComputeWorker.deRegisterEvents = function () {
+	Util.deRegisterClick('btn.compute', ComputeWorker.computeHandler);
+	Util.deRegisterClick('btn.run', ComputeWorker.runHandler);
+	Util.deRegisterClick('multipleInstances', ComputeWorker.multipleInstancesHandler);
+	Util.deRegisterClick('designOnly', ComputeWorker.designerOnlyHandler);
+}
+ComputeWorker.dispose = function () {
+	ComputeWorker.handleDispose();
 }
 
 
 
 InstancesWorker = function () { }
 InstancesWorker.init = function () {
-	Util.registerClick('instance.add', InstancesWorker.addHandler);
+	InstancesWorker.registerHandlers();
+	InstancesWorker.registerEvents();
+	InstancesWorker.internalInit();
+}
+InstancesWorker.internalInit = function () {
 	InstancesWorker.addInstance();
 }
 InstancesWorker.registerEvents = function () {
+	Util.registerClick('instance.add', InstancesWorker.addHandler);
+}
+InstancesWorker.deRegisterEvents = function () {
+	Util.deRegisterClick('instance.add', InstancesWorker.addHandler);
+}
+InstancesWorker.registerHandlers = function () {
 	InstancesWorker.addHandler = function (e) {
 		InstancesWorker.addInstance();
 	};
@@ -156,6 +229,22 @@ InstancesWorker.registerEvents = function () {
 		var rowId = InternalWorker.findRowId(e);
 		InternalWorker.removeControl(rowId, 'instance.selName_', 'instance.names.remove_', 'isntance.name_', InstancesWorker.removeNameHandler);
 	};
+	InstancesWorker.addInfoMetricHandler = function (e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.addDimension(rowId, 'instance.selInfoMetric_', 'instance.infoMetric_', 'instance.infoMetrics.remove_', 'instance.infoMetrics', InstancesWorker.removeInfoMetricHandler);
+	};
+	InstancesWorker.removeInfoMetricHandler = function (e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.removeControl(rowId, 'instance.selInfoMetric_', 'instance.infoMetrics.remove_', 'instance.infoMetric_', InstancesWorker.removeInfoMetricHandler);
+	};
+	InstancesWorker.addKernMetricHandler = function (e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.addDimension(rowId, 'instance.selKernMetric_', 'instance.kernMetric_', 'instance.kenMetrics.remove_', 'instance.kernMetrics', InstancesWorker.removeKernMetricHandler);
+	};
+	InstancesWorker.removeKernMetricHandler = function (e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.removeControl(rowId, 'instance.selKernMetric_', 'instance.kenMetrics.remove_', 'instance.kernMetric_', InstancesWorker.removeKernMetricHandler);
+	};
 	InstancesWorker.addDimensionHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		InternalWorker.addDimension(rowId, 'instance.selMetric_', 'instance.metric_', 'instance.metrics.remove_', 'instance.metrics', InstancesWorker.removeDimensionHandler);
@@ -165,12 +254,7 @@ InstancesWorker.registerEvents = function () {
 		InternalWorker.removeControl(rowId, 'instance.selMetric_', 'instance.metrics.remove_', 'instance.metric_', InstancesWorker.removeDimensionHandler);
 	};
 	InstancesWorker.disposeHandler = function (e) {
-		InstancesWorker.addHandler = null;
-		InstancesWorker.removeHandler = null;
-		InstancesWorker.addNameHandler = null;
-		InstancesWorker.addDimensionHandler = null;
-		InstancesWorker.removeDimensionHandler = null;
-		InstancesWorker.disposeHandler = null;
+		InstancesWorker.handleDispose();
 	};
 }
 InstancesWorker.addInstance = function () {
@@ -192,6 +276,9 @@ InstancesWorker.addInstance = function () {
 	var srcElem = document.getElementById('instance_' + rowId);
 	Util.registerClick('instance.addName_' + rowId, InstancesWorker.addNameHandler);
 	Util.registerClick('instance.addMetric_' + rowId, InstancesWorker.addDimensionHandler);
+	Util.registerClick('instance.addInfoMetric_' + rowId, InstancesWorker.addInfoMetricHandler);
+	Util.registerClick('instance.addKernMetric_' + rowId, InstancesWorker.addKernMetricHandler);
+	Util.registerClick('instance.addMetric_' + rowId, InstancesWorker.removeInfoMetricHandler);
 	Util.registerClick('instance.remove_' + rowId, InstancesWorker.removeHandler);
 }
 InstancesWorker.removeInstance = function (rowId) {
@@ -199,13 +286,36 @@ InstancesWorker.removeInstance = function (rowId) {
 	var srcElem = document.getElementById('instance_' + rowId);
 	Util.deRegisterClick('instance.addName_' + rowId, InstancesWorker.addNameHandler);
 	Util.deRegisterClick('instance.addMetric_' + rowId, InstancesWorker.addDimensionHandler);
+	Util.deRegisterClick('instance.addInfoMetric_' + rowId, InstancesWorker.addInfoMetricHandler);
+	Util.deRegisterClick('instance.addKernMetric_' + rowId, InstancesWorker.addKernMetricHandler);
 	Util.deRegisterClick('instance.remove_' + rowId, InstancesWorker.removeHandler);
 	InternalWorker.removeControlSet(rowId, 'instance.metrics.remove_', 'instance.metric_', InstancesWorker.removeDimensionHandler);
 	InternalWorker.removeControlSet(rowId, 'instance.names.remove_', 'instance.metric_', InstancesWorker.removeNameHandler);
+	InternalWorker.removeControlSet(rowId, 'instance.infoMetrics.remove_', 'instance.infoMetric_', InstancesWorker.removeInfoMetricHandler);
+	InternalWorker.removeControlSet(rowId, 'instance.kenMetrics.remove_', 'instance.kernMetric_', InstancesWorker.removeKernMetricHandler);
 	srcElem.parentNode.parentNode.removeChild(srcElem.parentNode);
 	var n = Util.noOfChildElements(Instances, 'li');
 	if (!n) {
 		InstancesWorker.addInstance();
+	}
+}
+InstancesWorker.handleMultInstances = function () {
+	var isChecked = Util.isChecked('multipleInstances');
+	if (!isChecked) {
+		Util.noDisplay('instance.add');
+		var Instances = document.getElementById('instances');
+		var n = Util.noOfChildElements(Instances, 'li');
+		while (Instances.children.length !== 1) {
+			var li = Instances.children[1];
+			if (li != null && li.tagName.toLowerCase() === 'li') {
+				var id = li.children[0].id;
+				var rowId = id.substr(id.indexOf('_') + 1);
+				InstancesWorker.removeInstance(rowId);
+			}
+		}
+	}
+	else {
+		Util.setDisplayInline('instance.add');
 	}
 }
 InstancesWorker.resetInstance = function (rowId) { }
@@ -238,8 +348,23 @@ InstancesWorker.getInstance = function (li, running) {
 	obj.stylemapfamilyname = InstancesWorker.getName('stylemapfamilyname', rowId);
 	obj.stylemapstylename = InstancesWorker.getName('stylemapstylename', rowId);
 	obj.stylename = InstancesWorker.getName('stylename', rowId);
+	obj.info = InstancesWorker.getInfo(rowId);
+	obj.kerning = InstancesWorker.getKerning(rowId);
 	return obj;
 }
+InstancesWorker.getKerning = function (rowId) {
+	var loc = InternalWorker.getLocation('instance.kernMetrics', rowId);
+	var kern = new DesignerSpace.kerning();
+	kern.location = loc;
+	return kern;
+}
+InstancesWorker.getInfo = function (rowId) {
+	var loc = InternalWorker.getLocation('instance.infoMetrics', rowId);
+	var info = new DesignerSpace.info();
+	info.location = loc;
+	return info;
+}
+InstancesWorker.handleDesignerOnly = function () { }
 InstancesWorker.getName = function (nm, rowId) {
 	var val = Util.getValue('instance.names' + '_' + nm + '_' + rowId);
 	if (!val) {
@@ -247,16 +372,46 @@ InstancesWorker.getName = function (nm, rowId) {
 	}
 	return val;
 }
+InstancesWorker.isValid = function () {
+	return true;
+}
+InstancesWorker.dispose = function () {
+	InstancesWorker.handleDispose();
+}
+InstancesWorker.handleDispose = function () {
+	InstancesWorker.deRegisterEvents();
+	InstancesWorker.addHandler = null;
+	InstancesWorker.removeHandler = null;
+	InstancesWorker.addNameHandler = null;
+	InstancesWorker.removeNameHandler = null;
+	InstancesWorker.addDimensionHandler = null;
+	InstancesWorker.removeDimensionHandler = null;
+	InstancesWorker.addInfoMetricHandler = null;
+	InstancesWorker.removeInfoMetricHandler = null;
+	InstancesWorker.addKernMetricHandler = null;
+	InstancesWorker.removeKernMetricHandler = null;
+	InstancesWorker.disposeHandler = null;
+}
 
 
 
 SourcesWorker = function () { }
 SourcesWorker.init = function () {
+	SourcesWorker.registerHandlers();
+	SourcesWorker.registerEvents();
+	SourcesWorker.internalInit();
+}
+SourcesWorker.internalInit = function () {
 	SourcesWorker.uploadTracker = {};
-	Util.registerClick('source.add', SourcesWorker.addHandler);
 	SourcesWorker.addSource();
 }
 SourcesWorker.registerEvents = function () {
+	Util.registerClick('source.add', SourcesWorker.addHandler);
+}
+SourcesWorker.deRegisterEvents = function () {
+	Util.deRegisterClick('source.add', SourcesWorker.addHandler);
+}
+SourcesWorker.registerHandlers = function () {
 	SourcesWorker.addHandler = function (e) {
 		SourcesWorker.addSource();
 	};
@@ -266,7 +421,7 @@ SourcesWorker.registerEvents = function () {
 	};
 	SourcesWorker.fileSelectedHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
-		SourcesWorker._fileSelected(rowId);
+		SourcesWorker.fileSelected(rowId);
 	};
 	SourcesWorker.mouseEnterHandler = function (e) {
 		SourcesWorker.hoverHandler(e, true);
@@ -305,18 +460,7 @@ SourcesWorker.registerEvents = function () {
 		InternalWorker.removeControl(rowId, 'source.selMetric_', 'source.metrics.remove_', 'source.metric_', SourcesWorker.removeDimensionHandler);
 	};
 	SourcesWorker.disposeHandler = function (e) {
-		SourcesWorker.addHandler = null;
-		SourcesWorker.removeHandler = null;
-		SourcesWorker.mouseEnterHandler = null;
-		SourcesWorker.mouseLeaveHandler = null;
-		SourcesWorker.muteInfoHandler = null;
-		SourcesWorker.copyInfoHandler = null;
-		SourcesWorker.copyGroupsHandler = null;
-		SourcesWorker.copyLibHandler = null;
-		SourcesWorker.addDimensionHandler = null;
-		SourcesWorker.removeDimensionHandler = null;
-		SourcesWorker.fileSelectedHandler = null;
-		SourcesWorker.disposeHandler = null;
+		SourcesWorker.handleDispose();
 	};
 }
 SourcesWorker.addSource = function () {
@@ -346,7 +490,7 @@ SourcesWorker.addSource = function () {
 	SourcesWorker.handleCopyGroups(null);
 	SourcesWorker.handleCopyLib(null);
 	Util.setFocus(SourcesWorker.txtSourceName + rowId);
-	if (Config.NoFileUpload) {
+	if (Config.DesignerOnly) {
 		Util.noDisplay('uploader_' + rowId);
 		Util.noDisplay('processing_' + rowId);
 		Util.setDisplayInline('source.ui_' + rowId);
@@ -374,6 +518,42 @@ SourcesWorker.removeSource = function (rowId) {
 	}
 }
 SourcesWorker.resetSource = function (rowId) { }
+SourcesWorker.isValid = function () {
+	var Sources = document.getElementById('sources');
+	var n = Util.noOfChildElements(Sources, 'li');
+	var sources = new Array(n);
+	for (var i = 0; i < Sources.children.length; i++) {
+		var li = Sources.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var valid = SourcesWorker.isValidSource(li);
+			if (!valid) {
+				return valid;
+			}
+		}
+	}
+	return true;
+}
+SourcesWorker.isValidSource = function (li) {
+	var n = Util.noOfChildElements(li, 'div');
+	if (!n) {
+		return true;
+	}
+	var id = li.children[0].id;
+	var rowId = id.substr(id.indexOf('_') + 1);
+	if (!Util.getValue(SourcesWorker.txtFileName + rowId)) {
+		alert('Please choose a zipped UFO file.');
+		Util.setFocus('file_' + rowId);
+		return false;
+	}
+	var srcName = Util.getValue(SourcesWorker.txtSourceName + rowId);
+	var loc = InternalWorker.getLocation('source.metrics', rowId);
+	if (loc == null || loc.dimensions == null || !loc.dimensions.length) {
+		alert('Define atleast one metric for the source: ' + srcName);
+		Util.setFocus('source.addMetric_' + rowId);
+		return false;
+	}
+	return true;
+}
 SourcesWorker.getSources = function () {
 	var Sources = document.getElementById('sources');
 	var n = Util.noOfChildElements(Sources, 'li');
@@ -425,21 +605,45 @@ SourcesWorker.getInfo = function (rowId) {
 	info.mute = InternalWorker.isChecked('muteInfo_' + rowId);
 	return info;
 }
+SourcesWorker.handleMultInstances = function () {
+	var Sources = document.getElementById('sources');
+	var n = Util.noOfChildElements(Sources, 'li');
+	var sources = new Array(n);
+	for (var i = 0; i < Sources.children.length; i++) {
+		var li = Sources.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var id = li.children[0].id;
+			var rowId = id.substr(id.indexOf('_') + 1);
+			Util.setEnabled('copyInfo_' + rowId);
+			Util.setUnChecked('copyInfo_' + rowId);
+			Util.setEnabled('muteInfo_' + rowId);
+			Util.setUnChecked('muteInfo_' + rowId);
+			Util.setEnabled('copyLib_' + rowId);
+			Util.setUnChecked('copyLib_' + rowId);
+			Util.setEnabled('copyGroups_' + rowId);
+			Util.setUnChecked('copyGroups_' + rowId);
+		}
+	}
+}
 SourcesWorker.handleCopyInfo = function (rowId) {
+	var isChecked = Util.isChecked('multipleInstances');
+	if (isChecked) {
+		return;
+	}
 	if (rowId == null) {
 		rowId = InternalWorker.findCheckedRowId('copyInfo_', 'sources');
 	}
 	if (rowId == null) {
 		return;
 	}
-	var isCheked = Util.isChecked('copyInfo_' + rowId);
+	isChecked = Util.isChecked('copyInfo_' + rowId);
 	var Sources = document.getElementById('sources');
 	var n = Util.noOfChildElements(Sources, 'li');
 	for (var i = 1; i <= n; i++) {
 		if (i.toString() === rowId) {
 			continue;
 		}
-		if (isCheked) {
+		if (isChecked) {
 			Util.setDisabled('copyInfo_' + i);
 			Util.setEnabled('muteInfo_' + i);
 			Util.setChecked('muteInfo_' + i);
@@ -452,9 +656,17 @@ SourcesWorker.handleCopyInfo = function (rowId) {
 	}
 }
 SourcesWorker.handleCopyLib = function (rowId) {
+	var isChecked = Util.isChecked('multipleInstances');
+	if (isChecked) {
+		return;
+	}
 	InternalWorker.checkBoxesAsRaidos('copyLib_', rowId, 'sources');
 }
 SourcesWorker.handleCopyGroups = function (rowId) {
+	var isChecked = Util.isChecked('multipleInstances');
+	if (isChecked) {
+		return;
+	}
 	InternalWorker.checkBoxesAsRaidos('copyGroups_', rowId, 'sources');
 }
 SourcesWorker.hoverHandler = function (e, isEnter) {
@@ -466,7 +678,7 @@ SourcesWorker.hoverHandler = function (e, isEnter) {
 		Util.hide('source.remove_' + rowId);
 	}
 }
-SourcesWorker._fileSelected = function (rowId) {
+SourcesWorker.fileSelected = function (rowId) {
 	Util.noDisplay('uploader_' + rowId);
 	Util.setDisplayInline('processing_' + rowId);
 	Util.setValue('sessionId_' + rowId, Config.SessionId);
@@ -491,6 +703,47 @@ SourcesWorker.errorCallBack = function (rowId, error) {
 	}, 400);
 	var err = decodeURIComponent(error);;
 	alert('Error was thrown by Server. Please try again.\n Details:\n' + err);
+}
+SourcesWorker.handleDesignerOnly = function () {
+	var isChecked = Util.isChecked('designOnly');
+	var Sources = document.getElementById('sources');
+	var n = Util.noOfChildElements(Sources, 'li');
+	var sources = new Array(n);
+	for (var i = 0; i < Sources.children.length; i++) {
+		var li = Sources.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var id = li.children[0].id;
+			var rowId = id.substr(id.indexOf('_') + 1);
+			if (isChecked) {
+				Util.noDisplay('uploader_' + rowId);
+				Util.setDisplayInline('source.ui_' + rowId);
+			}
+			else {
+				if (!Util.getValue(SourcesWorker.txtFileName + rowId)) {
+					Util.setDisplayInline('uploader_' + rowId);
+					Util.noDisplay('source.ui_' + rowId);
+				}
+			}
+		}
+	}
+}
+SourcesWorker.handleDispose = function () {
+	SourcesWorker.deRegisterEvents();
+	SourcesWorker.addHandler = null;
+	SourcesWorker.removeHandler = null;
+	SourcesWorker.mouseEnterHandler = null;
+	SourcesWorker.mouseLeaveHandler = null;
+	SourcesWorker.muteInfoHandler = null;
+	SourcesWorker.copyInfoHandler = null;
+	SourcesWorker.copyGroupsHandler = null;
+	SourcesWorker.copyLibHandler = null;
+	SourcesWorker.addDimensionHandler = null;
+	SourcesWorker.removeDimensionHandler = null;
+	SourcesWorker.fileSelectedHandler = null;
+	SourcesWorker.disposeHandler = null;
+}
+SourcesWorker.dispose = function () {
+	SourcesWorker.handleDispose();
 }
 
 
@@ -526,7 +779,7 @@ InternalWorker.addControl = function (templateName, rowId, select, liTarget, btn
 	var n = Util.noOfChildElements(document.getElementById(select + rowId), 'option');
 	if (!n) {
 		Util.noDisplay(select + rowId);
-		Util.setDisplay(select + rowId + '.lbl');
+		Util.setDisplayInline(select + rowId + '.lbl');
 	}
 	var postFix = val + '_' + rowId;
 	var targetId = liTarget + postFix;
@@ -563,7 +816,7 @@ InternalWorker.removeControl = function (rowId, select, btnRemove, parentPreFix,
 		var parentRowId = rowId.substr(rowId.indexOf('_') + 1);
 		var E = document.getElementById(select + parentRowId);
 		E.appendChild(Option);
-		Util.setDisplay(select + parentRowId);
+		Util.setDisplayInline(select + parentRowId);
 		Util.noDisplay(select + parentRowId + '.lbl');
 	}
 	var ol = li.parentNode;
@@ -647,13 +900,33 @@ InternalWorker.getDimensions = function (olMetrics, rowId) {
 InternalWorker.getDimension = function (li, olMetrics, rowId) {
 	var dimension = new DesignerSpace.dimension();
 	dimension.name = li.getAttribute('value');
-	dimension.xvalue = Util.getValue(olMetrics + '.x_' + dimension.name + '_' + rowId);
-	dimension.yvalue = Util.getValue(olMetrics + '.y_' + dimension.name + '_' + rowId);
+	dimension.xvalue = InternalWorker.getSetDecimal(olMetrics + '.x_' + dimension.name + '_' + rowId);
+	dimension.yvalue = InternalWorker.getSetDecimal(olMetrics + '.y_' + dimension.name + '_' + rowId);
+	if (dimension.xvalue == null && null === dimension.yvalue) {
+		dimension.xvalue = 0;
+		Util.setValue(olMetrics + '.x_' + dimension.name + '_' + rowId, '0');
+	}
 	return dimension;
+}
+InternalWorker.getSetDecimal = function (Id) {
+	var sVal = Util.getValue(Id);
+	if (!sVal.trim()) {
+		return null;
+	}
+	sVal = parseFloat(sVal.trim());
+	if (isNaN(sVal)) {
+		sVal = null;
+	}
+	Util.setValue(Id, sVal);
+	return sVal;
 }
 
 //START of DesignerSpace
 DesignerSpace = {};
+
+
+
+
 DesignerSpace.NameValuePair = function () { }
 DesignerSpace.NameValuePair.prototype = {
 	key: null,
@@ -663,6 +936,9 @@ DesignerSpace.NameValuePair.prototype = {
 		return '';
 	}
 }
+
+
+
 DesignerSpace.designspace = function () { }
 DesignerSpace.designspace.prototype = {
 	sources: null,
@@ -1040,32 +1316,54 @@ ComputeWorker.olDownloadLinks = 'downloadLinks';
 ComputeWorker.downloadTemplate = 'DowloadTemplate';
 ComputeWorker.divRunning = 'running';
 ComputeWorker.lblDownloadLinks = 'lbl.downloadLinks';
-ComputeWorker._runHandler = null;
-ComputeWorker._computeHandler = null;
-ComputeWorker._computeInProgress = false;
-ComputeWorker._instancesList = [];
+ComputeWorker.chkDesignOnly = 'designOnly';
+ComputeWorker.chkMultipleInstances = 'multipleInstances';
+ComputeWorker.chkKeepResults = 'keepResults';
+ComputeWorker.chkRoungGeo = 'chkRoungGeo';
+ComputeWorker.runHandler = null;
+ComputeWorker.computeHandler = null;
+ComputeWorker.multipleInstancesHandler = null;
+ComputeWorker.designerOnlyHandler = null;
+ComputeWorker.disposeHandler = null;
+ComputeWorker.computeInProgress = false;
+ComputeWorker.instancesList = [];
 InstancesWorker.instanceTemplate = 'InstanceTemplate';
 InstancesWorker.olInstances = 'instances';
 InstancesWorker.divInstance = 'instance_';
 InstancesWorker.txtInstanceName = 'instance.name_';
-InstancesWorker.btnAddName = 'instance.addName_';
-InstancesWorker.btnAddMetric = 'instance.addMetric_';
 InstancesWorker.btnAddInstance = 'instance.add';
 InstancesWorker.btnRemoveInstance = 'instance.remove_';
-InstancesWorker.selectName = 'instance.selName_';
-InstancesWorker.liName = 'isntance.name_';
+InstancesWorker.btnAddName = 'instance.addName_';
 InstancesWorker.btnRemoveName = 'instance.names.remove_';
+InstancesWorker.selectName = 'instance.selName_';
 InstancesWorker.olNames = 'instance.names';
+InstancesWorker.liName = 'isntance.name_';
+InstancesWorker.btnAddMetric = 'instance.addMetric_';
 InstancesWorker.btnRemoveDimension = 'instance.metrics.remove_';
-InstancesWorker.liMetric = 'instance.metric_';
 InstancesWorker.selectMetric = 'instance.selMetric_';
 InstancesWorker.olMetrics = 'instance.metrics';
+InstancesWorker.liMetric = 'instance.metric_';
+InstancesWorker.btnAddInfoMetric = 'instance.addInfoMetric_';
+InstancesWorker.btnRemoveInfoMetric = 'instance.infoMetrics.remove_';
+InstancesWorker.selectInfoMetric = 'instance.selInfoMetric_';
+InstancesWorker.olInfoMetrics = 'instance.infoMetrics';
+InstancesWorker.liInfoMetric = 'instance.infoMetric_';
+InstancesWorker.btnAddKernMetric = 'instance.addKernMetric_';
+InstancesWorker.btnRemoveKernMetric = 'instance.kenMetrics.remove_';
+InstancesWorker.selectKernMetric = 'instance.selKernMetric_';
+InstancesWorker.olKernMetrics = 'instance.kernMetrics';
+InstancesWorker.liKernMetric = 'instance.kernMetric_';
+InstancesWorker.chkMultipleInstances = 'multipleInstances';
 InstancesWorker.addHandler = null;
 InstancesWorker.removeHandler = null;
 InstancesWorker.addNameHandler = null;
 InstancesWorker.removeNameHandler = null;
 InstancesWorker.addDimensionHandler = null;
 InstancesWorker.removeDimensionHandler = null;
+InstancesWorker.addInfoMetricHandler = null;
+InstancesWorker.removeInfoMetricHandler = null;
+InstancesWorker.addKernMetricHandler = null;
+InstancesWorker.removeKernMetricHandler = null;
 InstancesWorker.disposeHandler = null;
 SourcesWorker.sourceTemplate = 'SourceTemplate';
 SourcesWorker.olSources = 'sources';
@@ -1084,6 +1382,8 @@ SourcesWorker.chkCopyInfo = 'copyInfo_';
 SourcesWorker.chkCopyGroups = 'copyGroups_';
 SourcesWorker.chkCopyLib = 'copyLib_';
 SourcesWorker.chkMuteKerning = 'muteKerning_';
+SourcesWorker.chkMultipleInstances = 'multipleInstances';
+SourcesWorker.chkDesignOnly = 'designOnly';
 SourcesWorker.divSourceUI = 'source.ui_';
 SourcesWorker.divUpload = 'uploader_';
 SourcesWorker.divLoading = 'processing_';

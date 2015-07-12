@@ -405,4 +405,7 @@ isNullOrUndefine = function (o) {
 	return (o === null) || (o === undefined);
 }
 String.isNullOrEmpty = function (a) { return !a || !a.length };
+String.isFloat=function(n) {
+	return n === Number(n) && n % 1 !== 0
+}
 

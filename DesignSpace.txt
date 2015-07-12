@@ -24,8 +24,8 @@ Instances
 		Stylemap Family Name	[Text Box Optional]
 		Stylemap Style Name		[Text Box Optional]
 	Define Dimensions			[Dimensions]		
-	Info						[Dimensions]		[Pending]
-	Kerning						[Dimensions]		[Pending]
+	Info						[Dimensions]		
+	Kerning						[Dimensions]		
 	Glyphs						[Glyph Control]		[Pending] 
 	Master Dimensions			[Master Control]	[Pending]
 

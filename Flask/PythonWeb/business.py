@@ -11,14 +11,20 @@ def run():
         text = request.form['txt.xml'] 
         toDir = app.config['UPLOAD_DIR']
         sessionId = request.form['sessionId'] 
+        rg = request.form['rg'] 
         instance = request.form['instance'] 
         toFile = sessionId + ".designspace"
         logFile = sessionId + ".log"
         toFile = os.path.join(toDir,toFile)
 
+        if rg == "1":
+            rg = True
+        else:
+            rg = False
+
         #TODO:Validate the xml text against xsd.
         lib.saveToText(toFile,text)
-        mmWrapper.go(toFile,logFile,2,True)
+        mmWrapper.go(toFile,logFile,3,rg)
         
         arr = instance.split(',')
         for instanceFile in arr:

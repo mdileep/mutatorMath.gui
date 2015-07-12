@@ -30,7 +30,7 @@ h1 {
 	text-align: center;
 	font-weight: bold;
 	float: left;
-	width: 60%;
+	width: 40%;
 	vertical-align: middle;
 }
 
@@ -55,12 +55,13 @@ label {
 .subhead {
 	margin-top: 10px;
 	clear: both;
+	min-height:36px;
 }
 
 .tools, .tools2 {
 	float: left;
 	right: 5px;
-	width: 5%;
+	width: 50%;
 	min-width: 100px;
 	text-align: right;
 }
@@ -176,15 +177,21 @@ label {
 	font-weight: bold;
 }
 
-label.space5 {
+label.space5, label.space7 {
 	font-size: 11px;
 	color: blue;
 	font-weight: bold;
 	font-style: italic;
 	text-align: center;
 	display: inline-block;
+	width:auto;
 }
-
+label.space7 {
+	font-size: 12px;
+	text-align: left;
+	font-style:normal;
+	color:black;
+}
 .select {
 	font-size: 12px;
 	display: inline-block;
@@ -237,6 +244,7 @@ label.space5 {
 	cursor: pointer;
 	color: green;
 	font-size: 24px;
+	min-height:36px;
 }
 
 	.add:hover {

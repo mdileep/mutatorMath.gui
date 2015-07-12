@@ -17,9 +17,12 @@ DesignSpace.Lib.debug.js
 DesignSpace.Lib.debug2.js
 mscorlib.js
 Web/test.htm
+Web/test.html
+Web/index.html
 ignore.txt
 web.debug.config
 *.zip
+*.exclude
 
 
 ## Ignore Visual Studio temporary files, build results, and
