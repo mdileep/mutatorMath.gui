@@ -137,7 +137,7 @@ ComputeWorker.showDownloadLinks = function (showInstances) {
 			if (ComputeWorker.instancesList.length !== 1) {
 				s = s + '( Instance-' + (i + 1) + ') ';
 			}
-			var li = ComputeWorker.getDowloadLink(s, '/download/' + ComputeWorker.instancesList[i] + '.zip', '[Download]');
+			var li = ComputeWorker.getDowloadLink(s, '/download/' + ComputeWorker.instancesList[i].key + '.zip', '[Download]');
 			Ol.appendChild(li);
 		}
 	}
