@@ -197,7 +197,9 @@ Util.buildQuery = function () {
 	queryString = queryString.substr(1);
 	var D = queryString.split('&');
 	var Dict = {};
-	for (d in Dict) {
+	var $enum1 = ss.IEnumerator.getEnumerator(D);
+	while ($enum1.moveNext()) {
+		var d = $enum1.current;
 		var lr = d.split('=');
 		if (!!lr[0]) {
 			Dict[lr[0]] = lr[1];
@@ -253,6 +255,9 @@ Util.scrollTo = function (Id) {
 		}
 		catch ($e1) { }
 	}
+}
+Util.noTags = function (s) {
+	return s.toLowerCase().replaceAll('<u>', '').replaceAll('</u>', '').replaceAll('<b>', '').replaceAll('<i>', '').replaceAll('</b>', '').replaceAll('</i>', '');
 }
 Util.setFocus = function (Id) {
 	if (document.getElementById(Id) == null) {
@@ -400,4 +405,7 @@ isNullOrUndefine = function (o) {
 	return (o === null) || (o === undefined);
 }
 String.isNullOrEmpty = function (a) { return !a || !a.length };
+String.isFloat=function(n) {
+	return n === Number(n) && n % 1 !== 0
+}
 

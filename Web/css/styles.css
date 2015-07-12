@@ -30,9 +30,10 @@ h1 {
 	text-align: center;
 	font-weight: bold;
 	float: left;
-	width: 60%;
+	width: 40%;
 	vertical-align: middle;
 }
+
 .h3 {
 	text-align: center;
 	font-weight: bold;
@@ -54,17 +55,19 @@ label {
 .subhead {
 	margin-top: 10px;
 	clear: both;
+	min-height:36px;
 }
 
-.tools,.tools2 {
+.tools, .tools2 {
 	float: left;
 	right: 5px;
-	width:5%;
+	width: 50%;
 	min-width: 100px;
 	text-align: right;
 }
+
 .tools2 {
-	width:50%;
+	width: 50%;
 }
 
 .compute {
@@ -158,7 +161,7 @@ label {
 	font-size: 12px;
 	font-weight: bold;
 	display: inline-block;
-	min-width: 40px;
+	min-width: 60px;
 }
 
 .space6 {
@@ -173,20 +176,28 @@ label {
 	color: blue;
 	font-weight: bold;
 }
-label.space5 {
+
+label.space5, label.space7 {
 	font-size: 11px;
 	color: blue;
 	font-weight: bold;
-	font-style:italic;
-	text-align:center;
-	display:inline-block;
+	font-style: italic;
+	text-align: center;
+	display: inline-block;
+	width:auto;
 }
-
+label.space7 {
+	font-size: 12px;
+	text-align: left;
+	font-style:normal;
+	color:black;
+}
 .select {
 	font-size: 12px;
 	display: inline-block;
 	min-width: 130px;
 }
+
 .select2 {
 	font-size: 12px;
 	display: inline-block;
@@ -203,6 +214,13 @@ label.space5 {
 	.add2:hover {
 		font-weight: bold;
 	}
+
+.add4 {
+	cursor: pointer;
+	color: green;
+	font-size: 12px;
+	display:inline-block;
+}
 
 .add3 {
 	cursor: pointer;
@@ -226,6 +244,7 @@ label.space5 {
 	cursor: pointer;
 	color: green;
 	font-size: 24px;
+	min-height:36px;
 }
 
 	.add:hover {
@@ -251,20 +270,21 @@ code {
 	margin: 5px;
 }
 
-.uploader,.loading {
-	display:inline-block;
-	vertical-align:top;
+.uploader, .loading {
+	display: inline-block;
+	vertical-align: top;
 }
 
 .loading,.running {
-	font-size:10px;
-	font-weight:bold;
-	color:red;
+	font-size: 10px;
+	font-weight: bold;
+	color: red;
 }
 
 .info {
-	vertical-align:top;
+	vertical-align: top;
 }
+
 .mainsource {
 	display: none;
 	vertical-align: top;
@@ -273,4 +293,10 @@ code {
 
 form {
 	display: inline-block;
+}
+
+.blue {
+	color:blue;
+	font-size: 10px;
+	font-weight: bold;
 }

@@ -8,7 +8,7 @@ An Attempt to create Web based GUI for Mutator math Project.
 
 ##In-Action
 * OpenShift http://gui-designspace.rhcloud.com/  [Flask]
-* AppHarbor http://designspace.apphb.com/ [HTML]- Discontinued from 11-Jul-15.
+* AppHarbor http://designspace.apphb.com/ [HTML] - UI for DesignSpace Document only 
 
 ## Roadmap
 * Refer DesignSpace.txt for Proposed UI 

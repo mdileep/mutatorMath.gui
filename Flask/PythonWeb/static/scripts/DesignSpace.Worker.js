@@ -105,7 +105,7 @@ ComputeWorker.run = function () {
 		isValid = ComputeWorker.validate();
 	}
 	ComputeWorker.compute();
-	if (isValid) {
+	if (isValid && !Config.DesignerOnly) {
 		Util.setDisplayInline('running');
 		if (!Util.isChecked('keepResults')) {
 			var Ol = document.getElementById('downloadLinks');

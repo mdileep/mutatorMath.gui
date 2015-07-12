@@ -2,12 +2,12 @@
 <html>
 <head>
 	<title>Build Design Space Document for Mutator Math</title>
-	<link rel="stylesheet" type="text/css" href="/static/content/styles.css" />
-	<link rel="stylesheet" type="text/css" href="/static/scripts/external/prettify.css" />
-	<script type="text/javascript">var Config = {}; Config.SessionId = '{{sessionId}}'; Config.DesignerOnly = false;</script>
-	<script type="text/javascript" src="/static/scripts/External.js"></script>
-	<script type="text/javascript" src="/static/scripts/DesignSpace.Util.js"></script>
-	<script type="text/javascript" src="/static/scripts/DesignSpace.Worker.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css" />
+	<link rel="stylesheet" type="text/css" href="/css/external/prettify.css" />
+	<script type="text/javascript">var Config = {}; Config.SessionId = '{{sessionId}}'; Config.DesignerOnly = true;</script>
+	<script type="text/javascript" src="/JS/External.js"></script>
+	<script type="text/javascript" src="/JS/DesignSpace.Util.js"></script>
+	<script type="text/javascript" src="/JS/DesignSpace.Worker.js"></script>
 </head>
 <body>
 	<div class="spacer"><h2>Designer</h2></div>
@@ -283,9 +283,8 @@
 		<input type="hidden" name="rg" id="rg" />
 		<input type="hidden" name="sessionId" id="sessionId" />
 	</form>
-	<script type="text/javascript" src="/static/scripts/DesignSpace.app.js"></script>
-	<i>Served at {{ now }}</i>
+
+
+	<script type="text/javascript" src="/JS/DesignSpace.app.js"></script>
 </body>
 </html>
-
-{% extends "layout.html" %}
