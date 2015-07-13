@@ -26,6 +26,6 @@ def uploaded_file(filename):
         if os.path.isfile(os.path.join(dirPath,filename)):
             return send_from_directory(dirPath,filename,as_attachment=True)
         else:
-            return lib.pushText("Sorry the requested file [" + filename + "] doesn't exist.")
+            return lib.pushText("Sorry the requested file [" + filename + "] doesn't exist.Please note that log files and output files on this server available only for 1 hour.")
     except Exception as err:
         return lib.pushText('Following error occured while processing retrieving the file ['+filename+']\n'+str(err))

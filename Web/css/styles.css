@@ -46,6 +46,13 @@ label {
 	font-size: 11px;
 }
 
+sup {
+	font-size: 16px !important;
+	font-weight: bold;
+	color: blue;
+	cursor:help;
+}
+
 .canvas {
 	color: black;
 	font-weight: 100;
@@ -55,7 +62,7 @@ label {
 .subhead {
 	margin-top: 10px;
 	clear: both;
-	min-height:36px;
+	min-height: 36px;
 }
 
 .tools, .tools2 {
@@ -184,14 +191,16 @@ label.space5, label.space7 {
 	font-style: italic;
 	text-align: center;
 	display: inline-block;
-	width:auto;
+	width: auto;
 }
+
 label.space7 {
 	font-size: 12px;
 	text-align: left;
-	font-style:normal;
-	color:black;
+	font-style: normal;
+	color: black;
 }
+
 .select {
 	font-size: 12px;
 	display: inline-block;
@@ -219,7 +228,7 @@ label.space7 {
 	cursor: pointer;
 	color: green;
 	font-size: 12px;
-	display:inline-block;
+	display: inline-block;
 }
 
 .add3 {
@@ -244,7 +253,7 @@ label.space7 {
 	cursor: pointer;
 	color: green;
 	font-size: 24px;
-	min-height:36px;
+	min-height: 36px;
 }
 
 	.add:hover {
@@ -275,7 +284,7 @@ code {
 	vertical-align: top;
 }
 
-.loading,.running {
+.loading, .running {
 	font-size: 10px;
 	font-weight: bold;
 	color: red;
@@ -296,7 +305,7 @@ form {
 }
 
 .blue {
-	color:blue;
+	color: blue;
 	font-size: 10px;
 	font-weight: bold;
 }

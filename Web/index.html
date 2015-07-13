@@ -4,7 +4,7 @@
 	<title>Build Design Space Document for Mutator Math</title>
 	<link rel="stylesheet" type="text/css" href="/css/styles.css" />
 	<link rel="stylesheet" type="text/css" href="/JS/external/prettify.css" />
-	<script type="text/javascript">var Config = {}; Config.SessionId = '{{sessionId}}'; Config.DesignerOnly = true;</script>
+	<script type="text/javascript">var Config = {}; Config.SessionId = '0011221100'; Config.DesignerOnly = true;</script>
 	<script type="text/javascript" src="/JS/External.js"></script>
 	<script type="text/javascript" src="/JS/DesignSpace.Util.js"></script>
 	<script type="text/javascript" src="/JS/DesignSpace.Worker.js"></script>
@@ -17,9 +17,9 @@
 			<div class="h2">&nbsp;</div>
 			<div class="tools">
 				<span class="info">
-					<input type="checkbox" id="multipleInstances" checked="checked" name="multipleInstances" /> <label for="multipleInstances">Multiple Instances</label>
+					<input type="checkbox" id="multipleInstances" checked="checked" name="multipleInstances" /> <label for="multipleInstances">Multiple Instances</label><sup title="Some of the controls will get reset.">+</sup>
 					<span class="space"></span>
-					<input type="checkbox" id="designOnly" name="designOnly" /> <label for="designOnly">Design only</label>
+					<input type="checkbox" id="designOnly" name="designOnly" checked="checked" /> <label for="designOnly">Design only</label><sup title="On Selecting Design only requests won't be submitted to Server">+</sup>
 				</span>
 			</div>
 		</div>
@@ -40,11 +40,11 @@
 		<div class="subhead">
 			<div class="h2">&nbsp;</div>
 			<div class="tools">
-				<input type="checkbox" id="keepResults" name="keepResults" /> <label for="keepResults">Preserve Results</label>
+				<input type="checkbox" id="keepResults" name="keepResults" /> <label for="keepResults">Preserve Results</label><sup title="Links to the results of the lastest run will be preseved during the run.">+</sup>
 				<span class="space"></span>
 				<input type="checkbox" id="ufoVer" checked="checked" disabled="disabled" name="ufoVer" /> <label for="ufoVer">UFO  Version: 3</label>
 				<span class="space"></span>
-				<input type="checkbox" id="roundGeo" checked="checked" name="roundGeo" /> <label for="roundGeo">Round Geometry</label>
+				<input type="checkbox" id="roundGeo" checked="checked" name="roundGeo" /> <label for="roundGeo">Round Geometry</label><sup title="The result UFO glyph points will be rounded off to nearest integer">+</sup>
 				<span class="space"></span>
 				<button style="display:none" class="add3" id="btn.compute" title="Compute">Design Space</button>
 				<button class="add3" id="btn.run" title="Download Mutated Math Output">Run</button>
@@ -52,17 +52,17 @@
 		</div>
 	</div>
 	<span class="running" style="display:none;" id="running">Please wait while processing the request.</span>
-
 	<label class="spacer" style="display:none;" id="lbl.downloadLinks"><h2>Downloads from Latest Run</h2></label>
 	<ol id="downloadLinks" class="sources"></ol>
-
 	<div class="spacer"><h2>Design Space Document</h2></div>
+	
 	<div class="output" id="output">
 		<pre class="prettyprint lang-xml" id="code">
 			
 		</pre>
 	</div>
 
+	<div style="display:none"  id="Tempates">
 	<script type="text/template" id="SourceTemplate">
 		<div id="source_{ID}" class="source">
 
@@ -91,6 +91,7 @@
 				<span class="space2"></span>
 
 				<span class="select2">
+					<label class="space7">Location</label>
 					<label for="source.selMetric_{ID}" class="space5" id="source.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
 					<select id="source.selMetric_{ID}">
 						<option value="width">Width</option>
@@ -99,10 +100,19 @@
 				</span>
 
 				<span class="space"></span>
-
 				<span class="info">
 					<button class="add2" id="source.addMetric_{ID}" title="Add">+</button>
 				</span>
+
+				<span class="space2"></span>
+				<span class="select2">
+					<label class="space7">Mute a Glyph</label>
+					<span class="space"></span>
+					<span class="info">
+						<button class="add2" id="source.addMuteGlyph_{ID}" title="Add">+</button>
+					</span>
+				</span>
+
 
 				<div class="dimensions">
 					<h4 style="display:none;">Dimensions</h4>
@@ -125,6 +135,13 @@
 			</div>
 
 			<span class="loading" style="display:none;" id="processing_{ID}">Please wait while uploading the file.</span>
+
+
+			<div class="dimensions">
+				<h4 style="display:none;">Glyphs to be muted </h4>
+				<ol id="source.muteGlyphs_{ID}" class="metrics"></ol>
+			</div>
+
 		</div>
 	</script>
 
@@ -158,6 +175,7 @@
 			<span class="space2"></span>
 
 			<span class="select2">
+				<label class="space7">Location</label>
 				<label for="instance.selMetric_{ID}" class="space5" id="instance.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
 				<select id="instance.selMetric_{ID}">
 					<option value="width">Width</option>
@@ -260,7 +278,7 @@
 	</script>
 
 	<script type="text/template" id="MuteGlyphTemplate">
-		<div id="name_{value}_{ID}">
+		<div id="muteGlyph_{value}_{ID}">
 			<label class="space6">Glyph Name</label>
 			<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
 			<span class="space2"></span>
@@ -275,7 +293,6 @@
 		<a target="_blank" href="{Link}">{Text}</a>
 	</script>
 
-
 	<iframe width="0" height="0" name="run" style="display:none;"></iframe>
 	<form action="/run" method="post" id="frmRun" target="run">
 		<input type="hidden" name="txt.xml" id="txt.xml" />
@@ -283,7 +300,9 @@
 		<input type="hidden" name="rg" id="rg" />
 		<input type="hidden" name="sessionId" id="sessionId" />
 	</form>
+	</div>
 
+	<div id="Build"></div>
 
 	<script type="text/javascript" src="/JS/DesignSpace.app.js"></script>
 </body>

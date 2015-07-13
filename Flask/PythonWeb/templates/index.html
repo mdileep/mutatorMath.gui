@@ -17,9 +17,9 @@
 			<div class="h2">&nbsp;</div>
 			<div class="tools">
 				<span class="info">
-					<input type="checkbox" id="multipleInstances" checked="checked" name="multipleInstances" /> <label for="multipleInstances">Multiple Instances</label>
+					<input type="checkbox" id="multipleInstances" checked="checked" name="multipleInstances" /> <label for="multipleInstances">Multiple Instances</label><sup title="Some of the controls will get reset.">+</sup>
 					<span class="space"></span>
-					<input type="checkbox" id="designOnly" name="designOnly" /> <label for="designOnly">Design only</label>
+					<input type="checkbox" id="designOnly" name="designOnly" checked="checked" /> <label for="designOnly">Design only</label><sup title="On Selecting Design only requests won't be submitted to Server">+</sup>
 				</span>
 			</div>
 		</div>
@@ -40,11 +40,11 @@
 		<div class="subhead">
 			<div class="h2">&nbsp;</div>
 			<div class="tools">
-				<input type="checkbox" id="keepResults" name="keepResults" /> <label for="keepResults">Preserve Results</label>
+				<input type="checkbox" id="keepResults" name="keepResults" /> <label for="keepResults">Preserve Results</label><sup title="Links to the results of the lastest run will be preseved during the run.">+</sup>
 				<span class="space"></span>
 				<input type="checkbox" id="ufoVer" checked="checked" disabled="disabled" name="ufoVer" /> <label for="ufoVer">UFO  Version: 3</label>
 				<span class="space"></span>
-				<input type="checkbox" id="roundGeo" checked="checked" name="roundGeo" /> <label for="roundGeo">Round Geometry</label>
+				<input type="checkbox" id="roundGeo" checked="checked" name="roundGeo" /> <label for="roundGeo">Round Geometry</label><sup title="The result UFO glyph points will be rounded off to nearest integer">+</sup>
 				<span class="space"></span>
 				<button style="display:none" class="add3" id="btn.compute" title="Compute">Design Space</button>
 				<button class="add3" id="btn.run" title="Download Mutated Math Output">Run</button>
@@ -63,229 +63,245 @@
 		</pre>
 	</div>
 
-	<script type="text/template" id="SourceTemplate">
-		<div id="source_{ID}" class="source">
+	<div style="display:none" id="Tempates">
+		<script type="text/template" id="SourceTemplate">
+			<div id="source_{ID}" class="source">
 
-			<span class="info" style="vertical-align:top;">
-				<button class="remove" id="source.remove_{ID}" title="Delete">X</button>
-			</span>
+				<span class="info" style="vertical-align:top;">
+					<button class="remove" id="source.remove_{ID}" title="Delete">X</button>
+				</span>
 
-			<div class="mainsource" id="source.ui_{ID}">
-				<input type="text" id="source.name_{ID}" class="text" value="Master{ID}" />
-				<input type="hidden" id="source.filename_{ID}" class="text" value="" />
+				<div class="mainsource" id="source.ui_{ID}">
+					<input type="text" id="source.name_{ID}" class="text" value="Master{ID}" />
+					<input type="hidden" id="source.filename_{ID}" class="text" value="" />
+					<span class="space3"></span>
+
+					<span class="info">
+						<input type="checkbox" id="copyInfo_{ID}" checked="checked" name="copyInfo_{ID}" /> <label for="copyInfo_{ID}">Copy Info</label>
+						<span class="space3"></span>
+						<input type="checkbox" id="muteInfo_{ID}" name="muteInfo_{ID}" /> <label for="muteInfo_{ID}">Mute Info</label>
+					</span>
+
+					<span class="space2"></span>
+
+					<input type="checkbox" id="copyLib_{ID}" name="copyLib_{ID}" /> <label for="copyLib_{ID}">Copy Lib</label>
+					<span class="space"></span>
+					<input type="checkbox" id="copyGroups_{ID}" name="copyGroups_{ID}" /> <label for="copyGroups_{ID}">Copy Groups</label>
+					<span class="space"></span>
+					<input type="checkbox" id="muteKerning_{ID}" name="muteKerning_{ID}" /> <label for="muteKerning_{ID}">Mute Kerning</label>
+					<span class="space2"></span>
+
+					<span class="select2">
+						<label class="space7">Location</label>
+						<label for="source.selMetric_{ID}" class="space5" id="source.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
+						<select id="source.selMetric_{ID}">
+							<option value="width">Width</option>
+							<option value="weight">Weight</option>
+						</select>
+					</span>
+
+					<span class="space"></span>
+
+					<span class="info">
+						<button class="add2" id="source.addMetric_{ID}" title="Add">+</button>
+					</span>
+					<span class="space2"></span>
+					<span class="select2">
+						<label class="space7">Mute a Glyph</label>
+						<span class="space"></span>
+						<span class="info">
+							<button class="add2" id="source.addMuteGlyph_{ID}" title="Add">+</button>
+						</span>
+					</span>
+
+					<div class="dimensions">
+						<h4 style="display:none;">Dimensions</h4>
+						<ol id="source.metrics_{ID}" class="metrics"></ol>
+					</div>
+
+				</div>
+
+
 				<span class="space3"></span>
 
+				<div class="uploader" id="uploader_{ID}">
+					<label class="blue" for="form_{ID}">Please choose a zipped UFO file.</label>
+					<form action="/upload.zip" method="post" enctype="multipart/form-data" id="form_{ID}" target="frame_{ID}">
+						<input type="file" name="file" id="file_{ID}" />
+						<input type="hidden" name="id" id="id_{ID}" value="{ID}" />
+						<input type="hidden" name="sessionId" id="sessionId_{ID}" value="{ID}" />
+					</form>
+					<iframe name="frame_{ID}" width="0" height="0" style="display:none;"></iframe>
+				</div>
+
+				<span class="loading" style="display:none;" id="processing_{ID}">Please wait while uploading the file.</span>
+				<div class="dimensions">
+					<h4 style="display:none;">Glyphs to be muted </h4>
+					<ol id="source.muteGlyphs_{ID}" class="metrics"></ol>
+				</div>
+			</div>
+		</script>
+
+
+		<script type="text/template" id="InstanceTemplate">
+			<div id="instance_{ID}" class="instance">
+
 				<span class="info">
-					<input type="checkbox" id="copyInfo_{ID}" checked="checked" name="copyInfo_{ID}" /> <label for="copyInfo_{ID}">Copy Info</label>
-					<span class="space3"></span>
-					<input type="checkbox" id="muteInfo_{ID}" name="muteInfo_{ID}" /> <label for="muteInfo_{ID}">Mute Info</label>
+					<button class="remove" id="instance.remove_{ID}" title="Delete">X</button>
+				</span>
+				<span class="space3"></span>
+
+				<input type="text" id="instance.name_{ID}" class="text" value="Family" />
+
+				<span class="space2"></span>
+				<span class="select">
+					<label for="instance.selMetric_{ID}" class="space5" id="instance.selName_{ID}.lbl" style="display:none;">No more Names</label>
+					<select id="instance.selName_{ID}">
+						<option value="stylename">Style</option>
+						<option value="postscriptfontname">Post Script Font</option>
+						<option value="stylemapfamilyname">Stylemap Family</option>
+						<option value="stylemapstylename">Stylemap Style</option>
+					</select>
+				</span>
+				<span class="space"></span>
+
+				<span class="info">
+					<button class="add2" id="instance.addName_{ID}" title="Add">+</button>
 				</span>
 
 				<span class="space2"></span>
 
-				<input type="checkbox" id="copyLib_{ID}" name="copyLib_{ID}" /> <label for="copyLib_{ID}">Copy Lib</label>
-				<span class="space"></span>
-				<input type="checkbox" id="copyGroups_{ID}" name="copyGroups_{ID}" /> <label for="copyGroups_{ID}">Copy Groups</label>
-				<span class="space"></span>
-				<input type="checkbox" id="muteKerning_{ID}" name="muteKerning_{ID}" /> <label for="muteKerning_{ID}">Mute Kerning</label>
-				<span class="space2"></span>
-
 				<span class="select2">
-					<label for="source.selMetric_{ID}" class="space5" id="source.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
-					<select id="source.selMetric_{ID}">
+					<label class="space7">Location</label>
+					<label for="instance.selMetric_{ID}" class="space5" id="instance.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
+					<select id="instance.selMetric_{ID}">
 						<option value="width">Width</option>
 						<option value="weight">Weight</option>
 					</select>
 				</span>
 
 				<span class="space"></span>
-
 				<span class="info">
-					<button class="add2" id="source.addMetric_{ID}" title="Add">+</button>
+					<button class="add2" id="instance.addMetric_{ID}" title="Add">+</button>
 				</span>
+
+				<span class="space2"></span>
+
+				<span class="select2">
+					<label class="space7">Info</label>
+					<label for="instance.selInfoMetric_{ID}" class="space5" id="instance.selInfoMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
+					<select id="instance.selInfoMetric_{ID}">
+						<option value="width">Width</option>
+						<option value="weight">Weight</option>
+					</select>
+					<span class="space"></span>
+					<span class="info">
+						<button class="add2" id="instance.addInfoMetric_{ID}" title="Add">+</button>
+					</span>
+				</span>
+
+				<span class="space2"></span>
+
+				<span class="select2">
+					<label class="space7">Kerning</label>
+					<label for="instance.selKernMetric_{ID}" class="space5" id="instance.selKernMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
+					<select id="instance.selKernMetric_{ID}">
+						<option value="width">Width</option>
+						<option value="weight">Weight</option>
+					</select>
+					<span class="space"></span>
+					<span class="info">
+						<button class="add2" id="instance.addKernMetric_{ID}" title="Add">+</button>
+					</span>
+				</span>
+
+
+				<div class="dimensions">
+					<h4 style="display:none;">Names</h4>
+					<ol id="instance.names_{ID}" class="metrics"></ol>
+				</div>
 
 				<div class="dimensions">
 					<h4 style="display:none;">Dimensions</h4>
-					<ol id="source.metrics_{ID}" class="metrics"></ol>
+					<ol id="instance.metrics_{ID}" class="metrics"></ol>
+				</div>
+
+				<div class="dimensions">
+					<h4 style="display:none;">Info Dimensions</h4>
+					<ol id="instance.infoMetrics_{ID}" class="metrics"></ol>
+				</div>
+				<div class="dimensions">
+					<h4 style="display:none;">Kerning Dimensions</h4>
+					<ol id="instance.kernMetrics_{ID}" class="metrics"></ol>
 				</div>
 
 			</div>
+		</script>
 
+		<script type="text/template" id="DimensionTemplate">
+			<div id="metric_{value}_{ID}">
 
-			<span class="space3"></span>
+				<label class="space4">{text}</label>
 
-			<div class="uploader" id="uploader_{ID}">
-				<label class="blue" for="form_{ID}">Please choose a zipped UFO file.</label>
-				<form action="/upload.zip" method="post" enctype="multipart/form-data" id="form_{ID}" target="frame_{ID}">
-					<input type="file" name="file" id="file_{ID}" />
-					<input type="hidden" name="id" id="id_{ID}" value="{ID}" />
-					<input type="hidden" name="sessionId" id="sessionId_{ID}" value="{ID}" />
-				</form>
-				<iframe name="frame_{ID}" width="0" height="0" style="display:none;"></iframe>
-			</div>
+				<span class="space3"></span>
 
-			<span class="loading" style="display:none;" id="processing_{ID}">Please wait while uploading the file.</span>
-		</div>
-	</script>
+				<span class="space5">X-Val:</span>
 
+				<input type="text" id="{prefix}.x_{value}_{ID}" class="text2" value="" />
 
-	<script type="text/template" id="InstanceTemplate">
-		<div id="instance_{ID}" class="instance">
+				<span class="space3"></span>
 
-			<span class="info">
-				<button class="remove" id="instance.remove_{ID}" title="Delete">X</button>
-			</span>
-			<span class="space3"></span>
+				<span class="space5">Y-Val:</span>
+				<input type="text" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
 
-			<input type="text" id="instance.name_{ID}" class="text" value="Family" />
+				<span class="space2"></span>
 
-			<span class="space2"></span>
-			<span class="select">
-				<label for="instance.selMetric_{ID}" class="space5" id="instance.selName_{ID}.lbl" style="display:none;">No more Names</label>
-				<select id="instance.selName_{ID}">
-					<option value="stylename">Style</option>
-					<option value="postscriptfontname">Post Script Font</option>
-					<option value="stylemapfamilyname">Stylemap Family</option>
-					<option value="stylemapstylename">Stylemap Style</option>
-				</select>
-			</span>
-			<span class="space"></span>
-
-			<span class="info">
-				<button class="add2" id="instance.addName_{ID}" title="Add">+</button>
-			</span>
-
-			<span class="space2"></span>
-
-			<span class="select2">
-				<label for="instance.selMetric_{ID}" class="space5" id="instance.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
-				<select id="instance.selMetric_{ID}">
-					<option value="width">Width</option>
-					<option value="weight">Weight</option>
-				</select>
-			</span>
-
-			<span class="space"></span>
-			<span class="info">
-				<button class="add2" id="instance.addMetric_{ID}" title="Add">+</button>
-			</span>
-
-			<span class="space2"></span>
-
-			<span class="select2">
-				<label class="space7">Info</label>
-				<label for="instance.selInfoMetric_{ID}" class="space5" id="instance.selInfoMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
-				<select id="instance.selInfoMetric_{ID}">
-					<option value="width">Width</option>
-					<option value="weight">Weight</option>
-				</select>
-				<span class="space"></span>
 				<span class="info">
-					<button class="add2" id="instance.addInfoMetric_{ID}" title="Add">+</button>
+					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
 				</span>
-			</span>
 
-			<span class="space2"></span>
+			</div>
+		</script>
 
-			<span class="select2">
-				<label class="space7">Kerning</label>
-				<label for="instance.selKernMetric_{ID}" class="space5" id="instance.selKernMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
-				<select id="instance.selKernMetric_{ID}">
-					<option value="width">Width</option>
-					<option value="weight">Weight</option>
-				</select>
-				<span class="space"></span>
+		<script type="text/template" id="NameTemplate">
+			<div id="name_{value}_{ID}">
+				<label class="space6">{text}</label>
+				<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
+				<span class="space2"></span>
 				<span class="info">
-					<button class="add2" id="instance.addKernMetric_{ID}" title="Add">+</button>
+					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
 				</span>
-			</span>
-
-
-			<div class="dimensions">
-				<h4 style="display:none;">Names</h4>
-				<ol id="instance.names_{ID}" class="metrics"></ol>
 			</div>
+		</script>
 
-			<div class="dimensions">
-				<h4 style="display:none;">Dimensions</h4>
-				<ol id="instance.metrics_{ID}" class="metrics"></ol>
+		<script type="text/template" id="MuteGlyphTemplate">
+			<div id="muteGlyph_{value}_{ID}">
+				<label class="space6">Glyph Name</label>
+				<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
+				<span class="space2"></span>
+				<span class="info">
+					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
+				</span>
 			</div>
+		</script>
 
-			<div class="dimensions">
-				<h4 style="display:none;">Info Dimensions</h4>
-				<ol id="instance.infoMetrics_{ID}" class="metrics"></ol>
-			</div>
-			<div class="dimensions">
-				<h4 style="display:none;">Kerning Dimensions</h4>
-				<ol id="instance.kernMetrics_{ID}" class="metrics"></ol>
-			</div>
-
-		</div>
-	</script>
-
-	<script type="text/template" id="DimensionTemplate">
-		<div id="metric_{value}_{ID}">
-
-			<label class="space4">{text}</label>
-
-			<span class="space3"></span>
-
-			<span class="space5">X-Val:</span>
-
-			<input type="text" id="{prefix}.x_{value}_{ID}" class="text2" value="" />
-
-			<span class="space3"></span>
-
-			<span class="space5">Y-Val:</span>
-			<input type="text" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
-
-			<span class="space2"></span>
-
-			<span class="info">
-				<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-			</span>
-
-		</div>
-	</script>
-
-	<script type="text/template" id="NameTemplate">
-		<div id="name_{value}_{ID}">
-			<label class="space6">{text}</label>
-			<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
-			<span class="space2"></span>
-			<span class="info">
-				<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-			</span>
-		</div>
-	</script>
-
-	<script type="text/template" id="MuteGlyphTemplate">
-		<div id="name_{value}_{ID}">
-			<label class="space6">Glyph Name</label>
-			<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
-			<span class="space2"></span>
-			<span class="info">
-				<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-			</span>
-		</div>
-	</script>
-
-	<script type="text/template" id="DowloadTemplate">
-		{PreText} :
-		<a target="_blank" href="{Link}">{Text}</a>
-	</script>
+		<script type="text/template" id="DowloadTemplate">
+			{PreText} :
+			<a target="_blank" href="{Link}">{Text}</a>
+		</script>
 
 
-	<iframe width="0" height="0" name="run" style="display:none;"></iframe>
-	<form action="/run" method="post" id="frmRun" target="run">
-		<input type="hidden" name="txt.xml" id="txt.xml" />
-		<input type="hidden" name="instance" id="instance" />
-		<input type="hidden" name="rg" id="rg" />
-		<input type="hidden" name="sessionId" id="sessionId" />
-	</form>
+		<iframe width="0" height="0" name="run" style="display:none;"></iframe>
+		<form action="/run" method="post" id="frmRun" target="run">
+			<input type="hidden" name="txt.xml" id="txt.xml" />
+			<input type="hidden" name="instance" id="instance" />
+			<input type="hidden" name="rg" id="rg" />
+			<input type="hidden" name="sessionId" id="sessionId" />
+		</form>
+	</div>
+
+	<div><span id="Build"></span> Served at <b> {{ now }}</b></div>
 	<script type="text/javascript" src="/static/scripts/DesignSpace.app.js"></script>
-	<i>Served at {{ now }}</i>
+	{% extends "layout.html" %}
 </body>
 </html>
-
-{% extends "layout.html" %}

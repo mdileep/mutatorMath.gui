@@ -1,9 +1,9 @@
 #!/bin/bash
-date > $OPENSHIFT_DATA_DIR/last_minutely_cron_ran
+date > $OPENSHIFT_DATA_DIR/last_hourly_cron_ran
 cd $OPENSHIFT_DATA_DIR/uploads
-CRON_LOG_FILE=$OPENSHIFT_DATA_DIR/cron_minute.txt
+CRON_LOG_FILE=$OPENSHIFT_DATA_DIR/cron_hour.txt
 OPENSHIFT_UPLOAD_DIR=$OPENSHIFT_DATA_DIR/uploads
-echo "Running Minutely Cron job Last update on 13Jul15 11:53 IST" >$CRON_LOG_FILE
+echo "Running Minutely Cron job Last update on 14-Jul-15 00:11 IST" >$CRON_LOG_FILE
 date >>$CRON_LOG_FILE
 echo "Job Started ">>$CRON_LOG_FILE
 echo $OPENSHIFT_UPLOAD_DIR >>$CRON_LOG_FILE

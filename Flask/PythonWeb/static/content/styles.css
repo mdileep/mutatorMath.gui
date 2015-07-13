@@ -46,6 +46,13 @@ label {
 	font-size: 11px;
 }
 
+sup {
+	font-size: 16px !important;
+	font-weight: bold;
+	color: blue;
+	cursor:help;
+}
+
 .canvas {
 	color: black;
 	font-weight: 100;
