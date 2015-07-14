@@ -22,7 +22,6 @@ ignore.txt
 web.debug.config
 *.zip
 *.exclude
-Version.txt
 
 
 ## Ignore Visual Studio temporary files, build results, and

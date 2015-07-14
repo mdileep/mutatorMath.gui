@@ -20,6 +20,16 @@ def upload(file,toFileName,allowed):
     else:
         return ""
 
+def showFile(filename,ext):
+    try:
+        dirPath = os.path.abspath(app.config['UPLOAD_DIR'])
+        if os.path.isfile(os.path.join(dirPath,filename+ext)):
+            return send_from_directory(dirPath,filename+ext,as_attachment=False,mimetype='text/plain')
+        else:
+            return lib.pushText("Sorry the requested file [" + filename+ext + "] doesn't exist.Please note that log files and output files on this server available only for 1 hour.")
+    except Exception as err:
+        return lib.pushText('Following error occured while processing retrieving the file ['+filename+']\n'+str(err))
+
 def uploaded_file(filename):
     try:
         dirPath = os.path.abspath(app.config['UPLOAD_DIR'])

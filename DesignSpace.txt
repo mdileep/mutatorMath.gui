@@ -16,8 +16,7 @@ Sources																	[Add Another Souce]
 		Dimensions			[Dimensions Control]			Yes-1	[Define Another Metric]
 		Mute Glyphs			[Mute Glyph Control]			Yes-1	[Mute another Glyph]
 
-Instances
-	Single Instance Support
+Instances																[Add Another Instance]
 		File Name				[Calculated]
 		Family Name				[Text Box]
 		Style Name				[Text Box]
@@ -44,4 +43,4 @@ Glyph Control					[Add Another Glpyh]
 	Note
 	Masters			[Master Control]				[Add another Master]
 
-Last Reviewed: 11-Jul-2015
+Last Reviewed: 14-Jul-2015

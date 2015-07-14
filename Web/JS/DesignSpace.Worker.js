@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 14 01 50 07 IST
+Last Updated on  2015 Jul 15 02 13 16 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-14 01:50:07 HRS IST';Env.Version='0.7.18.0';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-15 02:13:16 HRS IST';Env.Version='0.7.31.0';
 
 
 PageWorker = function () { }
@@ -48,12 +48,12 @@ ComputeWorker.internalInit = function () {
 	else {
 		Util.setUnChecked('designOnly');
 	}
-	ComputeWorker._setBuildDetails();
+	ComputeWorker.setBuildDetails();
 	ComputeWorker.compute();
 }
-ComputeWorker._setBuildDetails = function () {
+ComputeWorker.setBuildDetails = function () {
 	if (Util.isAvailable('Build')) {
-		document.getElementById('Build').innerHTML = '<b>' + Env.Product + '</b> Version : <b>' + Env.Version + '</b> ; Current Build was generated at <b>' + Env.LastUpdated + '</b>';
+		document.getElementById('Build').innerHTML = '<b>' + Env.Product + '</b> Version : <b>' + Env.Version + '</b>  Current Build was generated at <b>' + Env.LastUpdated + '</b>';
 	}
 }
 ComputeWorker.registerEvents = function () {
@@ -142,7 +142,7 @@ ComputeWorker.successCallBack = function (newSessionId) {
 }
 ComputeWorker.showDownloadLinks = function (showInstances) {
 	var Ol = document.getElementById('downloadLinks');
-	var li3 = ComputeWorker.getDowloadLink('Design Space', '/download/' + Config.SessionId + '.design' + 'space', '[Download]');
+	var li3 = ComputeWorker.getDowloadLink2('Design Space Document', '/view/' + Config.SessionId + '.design' + 'space', '[View]', '/download/' + Config.SessionId + '.design' + 'space', '[Download]');
 	Ol.appendChild(li3);
 	if (showInstances) {
 		for (var i = 0; i < ComputeWorker.instancesList.length; i++) {
@@ -154,9 +154,21 @@ ComputeWorker.showDownloadLinks = function (showInstances) {
 			Ol.appendChild(li);
 		}
 	}
-	var li2 = ComputeWorker.getDowloadLink('Log File', '/download/' + Config.SessionId + '.log', '[Download]');
+	var li2 = ComputeWorker.getDowloadLink2('Log File', '/view/' + Config.SessionId + '.log', '[View]', '/download/' + Config.SessionId + '.log', '[Download]');
 	Ol.appendChild(li2);
 	Util.setDisplayInline('lbl.downloadLinks');
+}
+ComputeWorker.getDowloadLink2 = function(PreText, VLink, Text, DLink, Download) {
+												var Dic = { };
+	Dic['PreText'] = PreText;
+	Dic['VLink'] = VLink;
+	Dic['View'] = Text;
+	Dic['DLink'] = DLink;
+	Dic['Download'] = Download;
+	var link = Util.applyTemplate('DowloadTemplate2', Dic);
+	var li = document.createElement('li');
+	li.innerHTML = link;
+	return li;
 }
 ComputeWorker.getDowloadLink = function (PreText, Link, Text) {
 	var Dic = {};
@@ -569,13 +581,6 @@ SourcesWorker.isValidSource = function (li) {
 		Util.setFocus('file_' + rowId);
 		return false;
 	}
-	var srcName = Util.getValue(SourcesWorker.txtSourceName + rowId);
-	var loc = InternalWorker.getLocation('source.metrics', rowId);
-	if (loc == null || loc.dimensions == null || !loc.dimensions.length) {
-		alert('Define atleast one metric for the source: ' + srcName);
-		Util.setFocus('source.addMetric_' + rowId);
-		return false;
-	}
 	return true;
 }
 SourcesWorker.getSources = function () {
@@ -606,9 +611,20 @@ SourcesWorker.getSource = function (li) {
 	obj.lib = SourcesWorker.getLib(rowId);
 	obj.groups = SourcesWorker.getLib(rowId);
 	obj.kerning = SourcesWorker.getKerning(rowId);
-	obj.location = InternalWorker.getLocation('source.metrics', rowId);
+	obj.location = SourcesWorker.getLocation(rowId);
 	obj.glyphs = InternalWorker.getMuteGlyphs('source.muteGlyphs', rowId);
 	return obj;
+}
+SourcesWorker.getLocation = function(rowId) {
+				var loc = InternalWorker.getLocation('source.metrics', rowId);
+	if (loc == null || loc.dimensions == null || !loc.dimensions.length) {
+		var width = new DesignerSpace.dimension();
+		width.xvalue = 0;
+		width.name = 'width';
+		loc = new DesignerSpace.location();
+		loc.dimensions = [ width ];
+	}
+	return loc;
 }
 SourcesWorker.getKerning = function (rowId) {
 	var kerning = new DesignerSpace.muteOnly();
@@ -941,7 +957,7 @@ InternalWorker.getDimension = function (li, olMetrics, rowId) {
 	dimension.name = li.getAttribute('value');
 	dimension.xvalue = InternalWorker.getSetDecimal(olMetrics + '.x_' + dimension.name + '_' + rowId);
 	dimension.yvalue = InternalWorker.getSetDecimal(olMetrics + '.y_' + dimension.name + '_' + rowId);
-	if (dimension.xvalue == null && null === dimension.yvalue) {
+	if (dimension.xvalue == null && null === dimension.yvalue || (dimension.yvalue != null && dimension.xvalue == null)) {
 		dimension.xvalue = 0;
 		Util.setValue(olMetrics + '.x_' + dimension.name + '_' + rowId, '0');
 	}
@@ -1378,6 +1394,7 @@ ComputeWorker.txtXml = 'txt.xml';
 ComputeWorker.frmRun = 'frmRun';
 ComputeWorker.olDownloadLinks = 'downloadLinks';
 ComputeWorker.downloadTemplate = 'DowloadTemplate';
+ComputeWorker.downloadTemplate2 = 'DowloadTemplate2';
 ComputeWorker.divRunning = 'running';
 ComputeWorker.lblDownloadLinks = 'lbl.downloadLinks';
 ComputeWorker.chkDesignOnly = 'designOnly';

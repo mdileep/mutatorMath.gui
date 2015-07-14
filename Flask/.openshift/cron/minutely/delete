@@ -1,16 +1,17 @@
 #!/bin/bash
-date > $OPENSHIFT_DATA_DIR/last_minutely_cron_ran
-cd $OPENSHIFT_DATA_DIR/uploads
-CRON_LOG_FILE=$OPENSHIFT_DATA_DIR/cron_minute.txt
-OPENSHIFT_UPLOAD_DIR=$OPENSHIFT_DATA_DIR/uploads
-echo "Running Minutely Cron job Last update on 13Jul15 11:53 IST" >$CRON_LOG_FILE
-date >>$CRON_LOG_FILE
-echo "Job Started ">>$CRON_LOG_FILE
-echo $OPENSHIFT_UPLOAD_DIR >>$CRON_LOG_FILE
-echo "List of Files being deleted">>$CRON_LOG_FILE
-find $OPENSHIFT_UPLOAD_DIR -name '*.*' -type f -mmin +360 >>$CRON_LOG_FILE
-find $OPENSHIFT_UPLOAD_DIR -name '*.*' -type f -mmin +360 -delete
-echo "List of Empty Directories being deleted">>$CRON_LOG_FILE
-find $OPENSHIFT_UPLOAD_DIR -empty -type d >>$CRON_LOG_FILE
-find $OPENSHIFT_UPLOAD_DIR -empty -type d -delete
-echo "Job finished" >>$CRON_LOG_FILE
+#Suspending Minuetly Jobs Since Hourly jobs are running as expected  now.
+#date > $OPENSHIFT_DATA_DIR/last_minutely_cron_ran
+#cd $OPENSHIFT_DATA_DIR/uploads
+#CRON_LOG_FILE=$OPENSHIFT_DATA_DIR/cron_minute.txt
+#OPENSHIFT_UPLOAD_DIR=$OPENSHIFT_DATA_DIR/uploads
+#echo "Running Minutely Cron job Last update on 13Jul15 11:53 IST" >$CRON_LOG_FILE
+#date >>$CRON_LOG_FILE
+#echo "Job Started ">>$CRON_LOG_FILE
+#echo $OPENSHIFT_UPLOAD_DIR >>$CRON_LOG_FILE
+#echo "List of Files being deleted">>$CRON_LOG_FILE
+#find $OPENSHIFT_UPLOAD_DIR -name '*.*' -type f -mmin +360 >>$CRON_LOG_FILE
+#find $OPENSHIFT_UPLOAD_DIR -name '*.*' -type f -mmin +360 -delete
+#echo "List of Empty Directories being deleted">>$CRON_LOG_FILE
+#find $OPENSHIFT_UPLOAD_DIR -empty -type d >>$CRON_LOG_FILE
+#find $OPENSHIFT_UPLOAD_DIR -empty -type d -delete
+#echo "Job finished" >>$CRON_LOG_FILE

@@ -23,6 +23,19 @@ def appUploadZip():
 def appGetFile(filename):
     return business.sendFile(filename)
 
+
+@app.route('/View/<filename>.designspace')
+@app.route('/view/<filename>.designspace')
+def appShowXmlFile(filename):
+    return business.showXmlFile(filename)
+
+
+@app.route('/View/<filename>.log')
+@app.route('/view/<filename>.log')
+def appShowFile(filename):
+    return business.showLogFile(filename)
+
+
 @app.route('/Run', methods=['POST'])
 @app.route('/run', methods=['POST'])
 def appGo():

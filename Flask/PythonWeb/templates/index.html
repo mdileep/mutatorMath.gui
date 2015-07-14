@@ -72,7 +72,7 @@
 				</span>
 
 				<div class="mainsource" id="source.ui_{ID}">
-					<input type="text" id="source.name_{ID}" class="text" value="Master{ID}" />
+					<input type="text" id="source.name_{ID}" class="text" value="Master{ID}"  />
 					<input type="hidden" id="source.filename_{ID}" class="text" value="" />
 					<span class="space3"></span>
 
@@ -247,12 +247,12 @@
 
 				<span class="space5">X-Val:</span>
 
-				<input type="text" id="{prefix}.x_{value}_{ID}" class="text2" value="" />
+				<input type="number" min="0" max="50" step="0.1"  id="{prefix}.x_{value}_{ID}" class="text2" value="" />
 
 				<span class="space3"></span>
 
 				<span class="space5">Y-Val:</span>
-				<input type="text" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
+				<input type="number" min="0" max="20"  step="0.1" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
 
 				<span class="space2"></span>
 
@@ -288,6 +288,12 @@
 		<script type="text/template" id="DowloadTemplate">
 			{PreText} :
 			<a target="_blank" href="{Link}">{Text}</a>
+		</script>
+		<script type="text/template" id="DowloadTemplate2">
+			{PreText} :
+			<a target="_blank" href="{VLink}">{View}</a>
+			<span class="space2"></span>
+			<a target="_blank" href="{DLink}">{Download}</a>
 		</script>
 
 

@@ -57,10 +57,15 @@ def upload(allowed):
 def sendFile(filename):
     return uploader.uploaded_file(filename)
 
+def showLogFile(filename):
+    return uploader.showFile(filename,'.log')
+
+def showXmlFile(filename):
+    return uploader.showFile(filename,'.designspace')
+
+
 def save(allowed,toFileName):
     file = request.files['file']
-
-    
 
     filePath = uploader.upload(file,toFileName,allowed)
     toDir = app.config['UPLOAD_DIR']
