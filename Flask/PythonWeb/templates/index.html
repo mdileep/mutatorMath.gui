@@ -118,6 +118,10 @@
 						<h4 style="display:none;">Dimensions</h4>
 						<ol id="source.metrics_{ID}" class="metrics"></ol>
 					</div>
+					<div class="dimensions">
+						<h4 style="display:none;">Glyphs to be muted </h4>
+						<ol id="source.muteGlyphs_{ID}" class="metrics"></ol>
+					</div>
 
 				</div>
 
@@ -135,10 +139,7 @@
 				</div>
 
 				<span class="loading" style="display:none;" id="processing_{ID}">Please wait while uploading the file.</span>
-				<div class="dimensions">
-					<h4 style="display:none;">Glyphs to be muted </h4>
-					<ol id="source.muteGlyphs_{ID}" class="metrics"></ol>
-				</div>
+
 			</div>
 		</script>
 
@@ -215,6 +216,14 @@
 					</span>
 				</span>
 
+				<span class="space2"></span>
+				<span class="select2">
+					<label class="space7">Glyph</label>
+					<span class="space"></span>
+					<span class="info">
+						<button class="add2" id="instance.addGlyph_{ID}" title="Add">+</button>
+					</span>
+				</span>
 
 				<div class="dimensions">
 					<h4 style="display:none;">Names</h4>
@@ -235,6 +244,10 @@
 					<ol id="instance.kernMetrics_{ID}" class="metrics"></ol>
 				</div>
 
+				<div class="dimensions">
+					<h4 style="display:none;">Glyphs</h4>
+					<ol id="instance.glyphs_{ID}" class="metrics"></ol>
+				</div>
 			</div>
 		</script>
 
@@ -296,6 +309,48 @@
 			<a target="_blank" href="{DLink}">{Download}</a>
 		</script>
 
+		<script type="text/template" id="GlyphTemplate">
+			<div id="glyph_{value}_{ID}">
+				<span class="info">
+					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
+				</span>
+				<span class="space"></span>
+				<label class="space6">Glyph Name</label>
+				<input type="text" id="{prefix}.name_{value}_{ID}" class="text" value="" />
+				<span class="space2"></span>
+				<span class="select2">
+					<label class="space7" for="{prefix}.note_{value}_{ID}">Note</label>
+					<input type="text" id="{prefix}.note_{value}_{ID}" class="text" value="" />
+				</span>
+				<span class="space2"></span>
+				<span class="select2">
+					<label class="space7">Location</label>
+					<label for="{prefix}.selMetric_{value}_{ID}" class="space5" id="{prefix}.selMetric_{value}_{ID}.lbl" style="display:none;">No more Metrics</label>
+					<select id="{prefix}.selMetric_{value}_{ID}">
+						<option value="width">Width</option>
+						<option value="weight">Weight</option>
+					</select>
+				</span>
+				<span class="space"></span>
+				<span class="info">
+					<button class="add2" id="{prefix}.addMetric_{value}_{ID}" title="Add">+</button>
+				</span>
+				<span class="space2"></span>
+				<span class="info">
+					<label class="space7">Masters</label>
+					<span class="space"></span>
+					<button class="add2" id="{prefix}.addMaster_{value}_{ID}" title="Add">+</button>
+				</span>
+				<div class="dimensions">
+					<h4 style="display:none;">Dimensions</h4>
+					<ol id="{prefix}.metrics_{value}_{ID}" class="metrics"></ol>
+				</div>
+				<div class="dimensions">
+					<h4 style="display:none;">Masters</h4>
+					<ol id="{prefix}.masters_{value}_{ID}" class="metrics"></ol>
+				</div>
+			</div>
+		</script>
 
 		<iframe width="0" height="0" name="run" style="display:none;"></iframe>
 		<form action="/run" method="post" id="frmRun" target="run">
