@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 16 02 54 23 IST
+Last Updated on  2015 Jul 16 23 07 17 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-16 02:54:23 HRS IST';Env.Version='0.7.49.0';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-16 23:07:17 HRS IST';Env.Version='0.7.50.0';
 
 
 PageWorker = function () { }

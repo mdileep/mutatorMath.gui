@@ -65,13 +65,16 @@ def showXmlFile(filename):
 
 
 def save(allowed,toFileName):
-    file = request.files['file']
 
-    filePath = uploader.upload(file,toFileName,allowed)
     toDir = app.config['UPLOAD_DIR']
-
     if not os.path.exists(toDir):
         os.makedirs(toDir)
+    
+    file = request.files['file']
+    filePath = uploader.upload(file,toFileName,allowed)
+    
+
+    
 
     destPath = ""
     if filePath != "" and lib.findFileExt(filePath) == '.zip':

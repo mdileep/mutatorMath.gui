@@ -8,6 +8,13 @@ from datetime import datetime
 def appHomePage():
     return render_template('index.html', now=datetime.now(),sessionId=lib.getNewSessionId())
 
+@app.route('/env')
+def appEnv():
+    toDir = app.config['UPLOAD_DIR']
+    return lib.pushText(toDir+"  :"+os.path.exists(toDir))
+
+
+
 @app.route('/Uploader')
 @app.route('/uploader')
 def appUploader():
