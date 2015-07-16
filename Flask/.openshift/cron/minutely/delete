@@ -1,11 +1,18 @@
 #!/bin/bash
 #Suspending Minuetly Jobs Since Hourly jobs are running as expected  now.
-#date > $OPENSHIFT_DATA_DIR/last_minutely_cron_ran
-#cd $OPENSHIFT_DATA_DIR/uploads
-#CRON_LOG_FILE=$OPENSHIFT_DATA_DIR/cron_minute.txt
-#OPENSHIFT_UPLOAD_DIR=$OPENSHIFT_DATA_DIR/uploads
-#echo "Running Minutely Cron job Last update on 13Jul15 11:53 IST" >$CRON_LOG_FILE
-#date >>$CRON_LOG_FILE
+
+LAST_RUN=last_minutely_cron_ran
+
+CRON_MIN=cron_minute.txt
+UPLOAD=uploads
+OPENSHIFT_UPLOAD_DIR=$OPENSHIFT_DATA_DIR$UPLOAD
+CRON_LOG_FILE=$OPENSHIFT_DATA_DIR$CRON_MIN
+
+date > $OPENSHIFT_DATA_DIR$LAST_RUN
+
+cd $OPENSHIFT_DATA_DIR$UPLOAD
+echo "Running Minutely Cron job Last update on 16-Jul-15 23:29 HRS IST" >$CRON_LOG_FILE
+date >>$CRON_LOG_FILE
 #echo "Job Started ">>$CRON_LOG_FILE
 #echo $OPENSHIFT_UPLOAD_DIR >>$CRON_LOG_FILE
 #echo "List of Files being deleted">>$CRON_LOG_FILE

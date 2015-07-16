@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 16 02 54 23 IST
+Last Updated on  2015 Jul 17 03 53 02 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-16 02:54:23 HRS IST';Env.Version='0.7.49.0';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-17 03:53:02 HRS IST';Env.Version='0.7.75.0';
 
 
 PageWorker = function () { }
@@ -400,11 +400,8 @@ InstancesWorker.getInstance = function(li, running) {
 	obj.stylename = InstancesWorker.getName('stylename', rowId);
 	obj.info = InstancesWorker.getInfo(rowId);
 	obj.kerning = InstancesWorker.getKerning(rowId);
-	obj.glyphs = InstancesWorker.getGlphs();
+	obj.glyphs = InternalWorker.getGlphs('instance.glyphs', rowId);
 	return obj;
-}
-InstancesWorker.getGlphs = function () {
-		return null;
 }
 InstancesWorker.getKerning = function(rowId) {
 				var loc = InternalWorker.getLocation('instance.kernMetrics', rowId);
@@ -533,10 +530,11 @@ SourcesWorker.registerHandlers = function () {
 SourcesWorker.addSource = function () {
 	var Sources = document.getElementById('sources');
 	var n = Util.noOfChildElements(Sources, 'li');
-	if (!n) {
-		n = 1;
-	}
-	while (document.getElementById('source_' + n) != null) {
+		n = n + 1;
+	while (true) {
+		if (document.getElementById('source_' + n) == null) {
+			break;
+		}
 		n = n + 1;
 	}
 	var rowId = n.toString();
@@ -896,7 +894,14 @@ InternalWorker.addControl = function (templateName, rowId, select, liTarget, btn
 	}
 	else {
 		var n = Util.noOfChildElements(ol, 'li');
-		val = (n + 1).toString();
+		n = n + 1;
+		while (true) {
+			if (document.getElementById(liTarget + n + '_' + rowId) == null) {
+				break;
+			}
+			n = n + 1;
+		}
+		val = n.toString();
 		text = val;
 	}
 	postFix = val + '_' + rowId;
@@ -1061,6 +1066,39 @@ InternalWorker.getSetDecimal = function (Id) {
 	}
 	Util.setValue(Id, sVal);
 	return sVal;
+}
+InternalWorker.getGlphs = function(olGlyphs, rowId) {
+						var olGlyphs2 = document.getElementById(olGlyphs + '_' + rowId);
+	var n = Util.noOfChildElements(olGlyphs2, 'li');
+	var glyphs = new Array(n);
+	var running = 0;
+	for (var i = 0; i < olGlyphs2.children.length; i++) {
+		var li = olGlyphs2.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var glyph = InternalWorker.getGlyph(li, olGlyphs, rowId);
+			glyphs[running++] = glyph;
+		}
+	}
+	return glyphs;
+}
+InternalWorker.getGlyph = function(li, olGlyphs, rowId) {
+								var val = li.getAttribute('data-value');
+	var nm = Util.getValue(olGlyphs + '.name' + '_' + val + '_' + rowId);
+	if (!nm.trim()) {
+		return null;
+	}
+	var note = Util.getValue(olGlyphs + '.note' + '_' + val + '_' + rowId);
+	var olGlyphMetrics = olGlyphs + '.metrics';
+	var olGlyphMasters = olGlyphs + '.masters' + '_' + val;
+	var g = new DesignerSpace.glyph();
+	g.name = nm;
+	g.note = note;
+	g.location = InternalWorker.getLocation(olGlyphMetrics, val + '_' + rowId);
+	g.masters = InternalWorker.getMasters(olGlyphMasters, val + '_' + rowId);
+	return g;
+}
+InternalWorker.getMasters = function(olGlyphMasters, rowId) {
+						return null;
 }
 
 //START of DesignerSpace
@@ -1255,7 +1293,7 @@ DesignerSpace.instance.prototype = {
 		if (glyphs != null) {
 			for (var i = 0; i < glyphs.length; i++) {
 				if (glyphs[i] != null) {
-					innerNodes = innerNodes + glyphs[i];
+					innerNodes = innerNodes + glyphs[i].toXml();
 				}
 			}
 		}

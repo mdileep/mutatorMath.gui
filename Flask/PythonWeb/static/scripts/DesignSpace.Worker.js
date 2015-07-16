@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 16 23 07 17 IST
+Last Updated on  2015 Jul 17 03 53 02 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-16 23:07:17 HRS IST';Env.Version='0.7.50.0';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-17 03:53:02 HRS IST';Env.Version='0.7.75.0';
 
 
 PageWorker = function () { }
@@ -170,8 +170,8 @@ ComputeWorker.getDowloadLink2 = function(PreText, VLink, Text, DLink, Download) 
 	li.innerHTML = link;
 	return li;
 }
-ComputeWorker.getDowloadLink = function(PreText, Link, Text) {
-								var Dic = { };
+ComputeWorker.getDowloadLink = function (PreText, Link, Text) {
+	var Dic = {};
 	Dic['PreText'] = PreText;
 	Dic['Link'] = Link;
 	Dic['Text'] = Text;
@@ -180,16 +180,16 @@ ComputeWorker.getDowloadLink = function(PreText, Link, Text) {
 	li.innerHTML = link;
 	return li;
 }
-ComputeWorker.errorCallBack = function(error) {
-			Util.noDisplay('running');
+ComputeWorker.errorCallBack = function (error) {
+	Util.noDisplay('running');
 	ComputeWorker.showDownloadLinks(false);
 	ComputeWorker.computeInProgress = false;
 	ComputeWorker.clear();
 	var err = decodeURIComponent(error);;
 	alert('Error occured while processing your request. Please try again.\n Details:\n' + err);
 }
-ComputeWorker.saveCopy = function(instances) {
-			ComputeWorker.instancesList = new Array(instances.length);
+ComputeWorker.saveCopy = function (instances) {
+	ComputeWorker.instancesList = new Array(instances.length);
 	for (var i = 0; i < instances.length; i++) {
 		ComputeWorker.instancesList[i] = new DesignerSpace.NameValuePair();
 		ComputeWorker.instancesList[i].key = instances[i].filename;
@@ -239,14 +239,14 @@ InstancesWorker.deRegisterEvents = function () {
 	Util.deRegisterClick('instance.add', InstancesWorker.addHandler);
 }
 InstancesWorker.registerHandlers = function () {
-	InstancesWorker.addHandler = function(e) {
+	InstancesWorker.addHandler = function (e) {
 		InstancesWorker.addInstance();
 	};
-	InstancesWorker.removeHandler = function(e) {
+	InstancesWorker.removeHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		InstancesWorker.removeInstance(rowId);
 	};
-	InstancesWorker.addNameHandler = function(e) {
+	InstancesWorker.addNameHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		InternalWorker.addName(rowId, 'instance.selName_', 'isntance.name_', 'instance.names.remove_', 'instance.names', InstancesWorker.removeNameHandler);
 	};
@@ -400,11 +400,8 @@ InstancesWorker.getInstance = function(li, running) {
 	obj.stylename = InstancesWorker.getName('stylename', rowId);
 	obj.info = InstancesWorker.getInfo(rowId);
 	obj.kerning = InstancesWorker.getKerning(rowId);
-	obj.glyphs = InstancesWorker.getGlphs();
+	obj.glyphs = InternalWorker.getGlphs('instance.glyphs', rowId);
 	return obj;
-}
-InstancesWorker.getGlphs = function () {
-		return null;
 }
 InstancesWorker.getKerning = function(rowId) {
 				var loc = InternalWorker.getLocation('instance.kernMetrics', rowId);
@@ -451,6 +448,9 @@ InstancesWorker.handleDispose = function () {
 
 
 
+
+
+
 SourcesWorker = function () { }
 SourcesWorker.init = function () {
 	SourcesWorker.registerHandlers();
@@ -458,7 +458,7 @@ SourcesWorker.init = function () {
 	SourcesWorker.internalInit();
 }
 SourcesWorker.internalInit = function () {
-	SourcesWorker.uploadTracker = { };
+	SourcesWorker.uploadTracker = {};
 	SourcesWorker.addSource();
 }
 SourcesWorker.registerEvents = function () {
@@ -468,24 +468,24 @@ SourcesWorker.deRegisterEvents = function () {
 	Util.deRegisterClick('source.add', SourcesWorker.addHandler);
 }
 SourcesWorker.registerHandlers = function () {
-	SourcesWorker.addHandler = function(e) {
+	SourcesWorker.addHandler = function (e) {
 		SourcesWorker.addSource();
 	};
-	SourcesWorker.removeHandler = function(e) {
+	SourcesWorker.removeHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.removeSource(rowId);
 	};
-	SourcesWorker.fileSelectedHandler = function(e) {
+	SourcesWorker.fileSelectedHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.fileSelected(rowId);
 	};
-	SourcesWorker.mouseEnterHandler = function(e) {
+	SourcesWorker.mouseEnterHandler = function (e) {
 		SourcesWorker.hoverHandler(e, true);
 	};
-	SourcesWorker.mouseLeaveHandler = function(e) {
+	SourcesWorker.mouseLeaveHandler = function (e) {
 		SourcesWorker.hoverHandler(e, false);
 	};
-	SourcesWorker.muteInfoHandler = function(e) {
+	SourcesWorker.muteInfoHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		if (Util.isChecked('muteInfo_' + rowId)) {
 			Util.setDisabled('copyInfo_' + rowId);
@@ -495,23 +495,23 @@ SourcesWorker.registerHandlers = function () {
 		}
 		Util.setUnChecked('copyInfo_' + rowId);
 	};
-	SourcesWorker.copyInfoHandler = function(e) {
+	SourcesWorker.copyInfoHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.handleCopyInfo(rowId);
 	};
-	SourcesWorker.copyGroupsHandler = function(e) {
+	SourcesWorker.copyGroupsHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.handleCopyGroups(rowId);
 	};
-	SourcesWorker.copyLibHandler = function(e) {
+	SourcesWorker.copyLibHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		SourcesWorker.handleCopyLib(rowId);
 	};
-	SourcesWorker.addDimensionHandler = function(e) {
+	SourcesWorker.addDimensionHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		InternalWorker.addDimension(rowId, 'source.selMetric_', 'source.metric_', 'source.metrics.remove_', 'source.metrics', SourcesWorker.removeDimensionHandler);
 	};
-	SourcesWorker.removeDimensionHandler = function(e) {
+	SourcesWorker.removeDimensionHandler = function (e) {
 		var rowId = InternalWorker.findRowId(e);
 		InternalWorker.removeControl(rowId, 'source.selMetric_', 'source.metrics.remove_', 'source.metric_', SourcesWorker.removeDimensionHandler);
 	};
@@ -523,21 +523,22 @@ SourcesWorker.registerHandlers = function () {
 		var rowId = InternalWorker.findRowId(e);
 		InternalWorker.removeMuteGlyph(rowId, 'source.muteGlyphs.remove_', 'source.muteGlyph_', SourcesWorker.removeMuteGlyphHandler);
 	};
-	SourcesWorker.disposeHandler = function(e) {
+	SourcesWorker.disposeHandler = function (e) {
 		SourcesWorker.handleDispose();
 	};
 }
 SourcesWorker.addSource = function () {
 	var Sources = document.getElementById('sources');
 	var n = Util.noOfChildElements(Sources, 'li');
-	if (!n) {
-		n = 1;
-	}
-	while (document.getElementById('source_' + n) != null) {
+		n = n + 1;
+	while (true) {
+		if (document.getElementById('source_' + n) == null) {
+			break;
+		}
 		n = n + 1;
 	}
 	var rowId = n.toString();
-	var dic = { };
+	var dic = {};
 	dic['ID'] = rowId;
 	var html = Util.applyTemplate('SourceTemplate', dic);
 	var source = document.createElement('li');
@@ -561,8 +562,8 @@ SourcesWorker.addSource = function () {
 		Util.setDisplayInline('source.ui_' + rowId);
 	}
 }
-SourcesWorker.removeSource = function(rowId) {
-			if (SourcesWorker.uploadTracker[rowId] === 1) {
+SourcesWorker.removeSource = function (rowId) {
+	if (SourcesWorker.uploadTracker[rowId] === 1) {
 		alert('Upload file is in progress please wait.');
 		return;
 	}
@@ -872,28 +873,35 @@ InternalWorker.removeControlSet = function(rowId, removePreFix, parentPreFix, re
 		}
 	}
 }
-InternalWorker.addControl = function(templateName, rowId, select, liTarget, btnRemove, olTarget, removeHandler) {
+InternalWorker.addControl = function (templateName, rowId, select, liTarget, btnRemove, olTarget, removeHandler) {
 															var postFix = '';
 	var val = '';
 	var text = '';
 	var ol = document.getElementById(olTarget + '_' + rowId);
 	if (select != null) {
-		var index = Util.selectedIndex(select + rowId);
-		if (index === -1) {
-			return;
-		}
+	var index = Util.selectedIndex(select + rowId);
+	if (index === -1) {
+		return;
+	}
 		val = Util.selectedValue(select + rowId);
 		text = Util.selectedText(select + rowId);
-		Util.removeOption(select + rowId, index);
-		var n = Util.noOfChildElements(document.getElementById(select + rowId), 'option');
-		if (!n) {
-			Util.noDisplay(select + rowId);
-			Util.setDisplayInline(select + rowId + '.lbl');
+	Util.removeOption(select + rowId, index);
+	var n = Util.noOfChildElements(document.getElementById(select + rowId), 'option');
+	if (!n) {
+		Util.noDisplay(select + rowId);
+		Util.setDisplayInline(select + rowId + '.lbl');
 		}
 	}
 	else {
 		var n = Util.noOfChildElements(ol, 'li');
-		val = (n + 1).toString();
+		n = n + 1;
+		while (true) {
+			if (document.getElementById(liTarget + n + '_' + rowId) == null) {
+				break;
+			}
+			n = n + 1;
+		}
+		val = n.toString();
 		text = val;
 	}
 	postFix = val + '_' + rowId;
@@ -918,8 +926,8 @@ InternalWorker.addControl = function(templateName, rowId, select, liTarget, btnR
 	Util.setFocusOnEditableChildById(targetId);
 	Util.registerClick(btnRemove + val + '_' + rowId, removeHandler);
 }
-InternalWorker.removeControl = function(rowId, select, btnRemove, parentPreFix, removeDimensionHanlder) {
-											Util.deRegisterClick(btnRemove + rowId, removeDimensionHanlder);
+InternalWorker.removeControl = function (rowId, select, btnRemove, parentPreFix, removeDimensionHanlder) {
+	Util.deRegisterClick(btnRemove + rowId, removeDimensionHanlder);
 	var li = document.getElementById(parentPreFix + rowId);
 	if (select != null) {
 		var text = li.getAttribute('data-text');
@@ -937,8 +945,8 @@ InternalWorker.removeControl = function(rowId, select, btnRemove, parentPreFix, 
 	ol.removeChild(li);
 	InternalWorker.toggleHead(ol);
 }
-InternalWorker.checkBoxesAsRaidos = function(prefix, rowId, parent) {
-							if (rowId == null) {
+InternalWorker.checkBoxesAsRaidos = function (prefix, rowId, parent) {
+	if (rowId == null) {
 		rowId = InternalWorker.findCheckedRowId(prefix, parent);
 	}
 	if (rowId == null) {
@@ -960,8 +968,8 @@ InternalWorker.checkBoxesAsRaidos = function(prefix, rowId, parent) {
 		Util.setUnChecked(prefix + i);
 	}
 }
-InternalWorker.findCheckedRowId = function(preFix, parent) {
-						var Sources = document.getElementById(parent);
+InternalWorker.findCheckedRowId = function (preFix, parent) {
+	var Sources = document.getElementById(parent);
 	var n = Util.noOfChildElements(Sources, 'li');
 	for (var i = 1; i <= n; i++) {
 		var isCheked = Util.isChecked(preFix + i) && Util.isEnalbed(preFix + i);
@@ -971,34 +979,34 @@ InternalWorker.findCheckedRowId = function(preFix, parent) {
 	}
 	return null;
 }
-InternalWorker.findRowId = function(e) {
-				var elem = (e.srcElement != null) ? e.srcElement : e.target;
+InternalWorker.findRowId = function (e) {
+	var elem = (e.srcElement != null) ? e.srcElement : e.target;
 	var elemId = elem.id;
 	var rowId = elemId.substr(elemId.indexOf('_') + 1);
 	return rowId;
 }
-InternalWorker.toggleHead = function(ol) {
-			var n = Util.noOfChildElements(ol, 'li');
+InternalWorker.toggleHead = function (ol) {
+	var n = Util.noOfChildElements(ol, 'li');
 	var h4 = Util.findByTagName(ol.parentNode, 'h4');
 	if (h4 != null) {
 		h4.style.display = (n >= 1) ? 'block' : 'none';
 	}
 }
-InternalWorker.isChecked = function(id) {
-				if (Util.isDisabled(id)) {
+InternalWorker.isChecked = function (id) {
+	if (Util.isDisabled(id)) {
 		return null;
 	}
 	else {
 		return ((Util.isChecked(id)) ? 1 : 0);
 	}
 }
-InternalWorker.getLocation = function(olMetrics, rowId) {
-						var loc = new DesignerSpace.location();
+InternalWorker.getLocation = function (olMetrics, rowId) {
+	var loc = new DesignerSpace.location();
 	loc.dimensions = InternalWorker.getDimensions(olMetrics, rowId);
 	return loc;
 }
-InternalWorker.getDimensions = function(olMetrics, rowId) {
-						var olMetric2 = document.getElementById(olMetrics + '_' + rowId);
+InternalWorker.getDimensions = function (olMetrics, rowId) {
+	var olMetric2 = document.getElementById(olMetrics + '_' + rowId);
 	var n = Util.noOfChildElements(olMetric2, 'li');
 	var dimensions = new Array(n);
 	var running = 0;
@@ -1011,8 +1019,8 @@ InternalWorker.getDimensions = function(olMetrics, rowId) {
 	}
 	return dimensions;
 }
-InternalWorker.getDimension = function(li, olMetrics, rowId) {
-								var dimension = new DesignerSpace.dimension();
+InternalWorker.getDimension = function (li, olMetrics, rowId) {
+	var dimension = new DesignerSpace.dimension();
 	dimension.name = li.getAttribute('data-value');
 	dimension.xvalue = InternalWorker.getSetDecimal(olMetrics + '.x_' + dimension.name + '_' + rowId);
 	dimension.yvalue = InternalWorker.getSetDecimal(olMetrics + '.y_' + dimension.name + '_' + rowId);
@@ -1047,7 +1055,7 @@ InternalWorker.getMuteGlyph = function(li, olMuteGlyphs, rowId) {
 	muteGlyph.mute = 1;
 	return muteGlyph;
 }
-InternalWorker.getSetDecimal = function(Id) {
+InternalWorker.getSetDecimal = function (Id) {
 	var sVal = Util.getValue(Id);
 	if (!sVal.trim()) {
 		return null;
@@ -1058,6 +1066,39 @@ InternalWorker.getSetDecimal = function(Id) {
 	}
 	Util.setValue(Id, sVal);
 	return sVal;
+}
+InternalWorker.getGlphs = function(olGlyphs, rowId) {
+						var olGlyphs2 = document.getElementById(olGlyphs + '_' + rowId);
+	var n = Util.noOfChildElements(olGlyphs2, 'li');
+	var glyphs = new Array(n);
+	var running = 0;
+	for (var i = 0; i < olGlyphs2.children.length; i++) {
+		var li = olGlyphs2.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var glyph = InternalWorker.getGlyph(li, olGlyphs, rowId);
+			glyphs[running++] = glyph;
+		}
+	}
+	return glyphs;
+}
+InternalWorker.getGlyph = function(li, olGlyphs, rowId) {
+								var val = li.getAttribute('data-value');
+	var nm = Util.getValue(olGlyphs + '.name' + '_' + val + '_' + rowId);
+	if (!nm.trim()) {
+		return null;
+	}
+	var note = Util.getValue(olGlyphs + '.note' + '_' + val + '_' + rowId);
+	var olGlyphMetrics = olGlyphs + '.metrics';
+	var olGlyphMasters = olGlyphs + '.masters' + '_' + val;
+	var g = new DesignerSpace.glyph();
+	g.name = nm;
+	g.note = note;
+	g.location = InternalWorker.getLocation(olGlyphMetrics, val + '_' + rowId);
+	g.masters = InternalWorker.getMasters(olGlyphMasters, val + '_' + rowId);
+	return g;
+}
+InternalWorker.getMasters = function(olGlyphMasters, rowId) {
+						return null;
 }
 
 //START of DesignerSpace
@@ -1252,7 +1293,7 @@ DesignerSpace.instance.prototype = {
 		if (glyphs != null) {
 			for (var i = 0; i < glyphs.length; i++) {
 				if (glyphs[i] != null) {
-					innerNodes = innerNodes + glyphs[i];
+					innerNodes = innerNodes + glyphs[i].toXml();
 				}
 			}
 		}

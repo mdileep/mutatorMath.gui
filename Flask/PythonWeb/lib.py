@@ -1,11 +1,12 @@
 from flask import render_template, request, redirect, url_for, send_from_directory,Response
 import os
-import random,string
+import random
+import string
 import urllib
 import json
 
 def getNewSessionId():
-    return "".join( [random.choice(string.digits) for i in   xrange(10)])
+    return "".join([random.choice(string.digits) for i in   xrange(12)])
 
 def saveToText(fileName,text):
     text_file = open(fileName, "w")
@@ -18,21 +19,22 @@ def pushText(inst):
 
 def pushLoadScript(callBackName,arr):
     
-    response=callBackName+"("
-    cnt=1
+    response = callBackName + "("
+    cnt = 1
     #JS Encoding may be used not url
     for val in arr:
-        if cnt!=len(arr):
-            response= response+ json.dumps(val)+','
+        if cnt != len(arr):
+            response = response + json.dumps(val) + ','
         else:
-            response= response+ json.dumps(val)+');'
-        cnt=cnt+1
+            response = response + json.dumps(val) + ');'
+        cnt = cnt + 1
     
-    # For some reason mimeType=text/javascript is not working -8 July
-    # Update: It works fine with GET method but not with POST. Seems it's a expected behaviour.- 9 July
+    # For some reason mimeType=text/javascript is not working -8 July 2015
+    # Update: It works fine with GET method but not with POST.  Seems it's a
+    # expected behaviour.- 9 July 2015
     #resp = Response(response=response,status=200,"text/javascript")
 
-    response='<script type="text/javascript">'+response+'</script>' 
+    response = '<script type="text/javascript">' + response + '</script>' 
     resp = Response(response=response,status=200)
 
     return resp
@@ -52,4 +54,3 @@ def findFileExt(fileName):
 
 def findFileNameWithExt(filePath):
     return os.path.basename(filePath)
-    

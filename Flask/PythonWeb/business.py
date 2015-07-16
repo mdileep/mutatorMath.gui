@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for, send_from_directory,Response
 import os
+import glob
 from PythonWeb import app
 from PythonWeb import uploader
 from PythonWeb import mmWrapper
@@ -74,8 +75,6 @@ def save(allowed,toFileName):
     filePath = uploader.upload(file,toFileName,allowed)
     
 
-    
-
     destPath = ""
     if filePath != "" and lib.findFileExt(filePath) == '.zip':
         destPath = zipHandler.extractZip(filePath,toDir)
@@ -83,12 +82,34 @@ def save(allowed,toFileName):
         destPath = lib.findFileNameWithExt(filePath)
     return destPath
 
+def showEnvDetails():
+
+    toDir = app.config['UPLOAD_DIR']
+    s= "Upload Directory: "+toDir
+    s= s+"\n Is Exists: " +str(os.path.exists(toDir))
+    if os.path.exists(toDir):
+        s= s+"\n No. of zip Files(Load): "+str(len(glob.glob1(toDir,"*.zip")))
+        s= s+"\n No. of Log Files(Sessions): "+str(len(glob.glob1(toDir,"*.log")))
+    
+    quota=os.path.join(app.config['DATA_DIR'],"quota.txt")
+    if os.path.exists(quota):
+        with open(quota, 'r') as content_file:
+            content = content_file.read()
+            s=s+"\n Quota Details:"
+            s=s+"\n "+content
+
+    return lib.pushText(s)
+
+
 
 def initConfig():
     if  'OPENSHIFT_DATA_DIR' in os.environ:
-        uploadDir = os.environ['OPENSHIFT_DATA_DIR'] + '/uploads/'
+        app.config['DATA_DIR']=os.environ['OPENSHIFT_DATA_DIR']
+        uploadDir =  os.environ['OPENSHIFT_DATA_DIR']+ 'uploads/'
     else:
         uploadDir = '/uploads/'
+        app.config['DATA_DIR']='/uploads/'
+
     if not os.path.exists(uploadDir):
         os.makedirs(uploadDir)
     app.config['UPLOAD_DIR'] = uploadDir

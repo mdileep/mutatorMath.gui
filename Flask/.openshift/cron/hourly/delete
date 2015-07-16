@@ -1,9 +1,15 @@
 #!/bin/bash
-date > $OPENSHIFT_DATA_DIR/last_hourly_cron_ran
-cd $OPENSHIFT_DATA_DIR/uploads
-CRON_LOG_FILE=$OPENSHIFT_DATA_DIR/cron_hour.txt
-OPENSHIFT_UPLOAD_DIR=$OPENSHIFT_DATA_DIR/uploads
-echo "Running Minutely Cron job Last update on 14-Jul-15 00:11 IST" >$CRON_LOG_FILE
+LAST_RUN=last_hourly_cron_ran
+date > $OPENSHIFT_DATA_DIR$LAST_RUN
+
+CRON_HOUR=cron_hour.txt
+UPLOAD=uploads
+OPENSHIFT_UPLOAD_DIR=$OPENSHIFT_DATA_DIR$UPLOAD
+CRON_LOG_FILE=$OPENSHIFT_DATA_DIR$CRON_HOUR
+
+
+cd $OPENSHIFT_DATA_DIR$UPLOAD
+echo "Running Minutely Cron job Last update on 16-Jul-15 23:29 HRS IST" >$CRON_LOG_FILE
 date >>$CRON_LOG_FILE
 echo "Job Started ">>$CRON_LOG_FILE
 echo $OPENSHIFT_UPLOAD_DIR >>$CRON_LOG_FILE
@@ -14,3 +20,26 @@ echo "List of Empty Directories being deleted">>$CRON_LOG_FILE
 find $OPENSHIFT_UPLOAD_DIR -empty -type d >>$CRON_LOG_FILE
 find $OPENSHIFT_UPLOAD_DIR -empty -type d -delete
 echo "Job finished" >>$CRON_LOG_FILE
+
+
+QUOTA=quota.txt
+QUOTA_LOG_FILE=$OPENSHIFT_DATA_DIR$QUOTA
+
+# This code was originally created by Marek Mahut <mmahut@redhat.com>
+# https://github.com/mmahut/openshift-quota-monitor-cartridge/blob/master/lib/functions
+function get_used_space() {
+  echo $(quota -w|egrep -v '(quotas|Filesystem)'|awk -F ' ' '{ print $2}')
+}
+
+# returns the total quota for your gear
+function get_quota() {
+  echo $(quota -w|egrep -v '(quotas|Filesystem)'|awk -F ' ' '{ print $4}')
+}
+
+used_space=$(get_used_space)
+quota=$(get_quota)
+percentage=$(echo "(${used_space}/${quota})*100" |bc -l|sed 's/^\./0./')
+current_usage=${percentage/\.*}
+echo "Current gear storage usage is ${current_usage}%">$QUOTA_LOG_FILE
+echo $current_usage >>$QUOTA_LOG_FILE
+date >>QUOTA_LOG_FILE
