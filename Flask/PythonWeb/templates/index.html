@@ -72,8 +72,9 @@
 				</span>
 
 				<div class="mainsource" id="source.ui_{ID}">
-					<input type="text" id="source.name_{ID}" class="text" value="Master{ID}"  />
-					<input type="hidden" id="source.filename_{ID}" class="text" value="" />
+					<input type="text" id="source.name_{ID}" class="text" value="Master{ID}"  readonly="readonly" />
+					<input type="hidden" id="source.filename_{ID}" class="text" value="source_{ID}_{SID}" />
+					<input type="hidden" id="source.uploaded_{ID}" class="text" value="0" />
 					<span class="space3"></span>
 
 					<span class="info">
@@ -348,6 +349,40 @@
 				<div class="dimensions">
 					<h4 style="display:none;">Masters</h4>
 					<ol id="{prefix}.masters_{value}_{ID}" class="metrics"></ol>
+				</div>
+			</div>
+		</script>
+		<script type="text/template" id="MasterTemplate">
+			<div id="master_{value}_{ID}">
+				<span class="info">
+					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
+				</span>
+				<span class="space"></span>
+				<label class="space6">Glyph Name</label>
+				<input type="text" id="{prefix}.name_{value}_{ID}" class="text" value="Glyph{value}" />
+				<span class="space2"></span>
+				<span class="select2">
+					<label class="space7">Source</label>
+					<label for="{prefix}.selSource_{value}_{ID}" class="space5" id="{prefix}.selSource_{value}_{ID}.lbl" style="display:none;">No more Sources</label>
+					<select id="{prefix}.selSource_{value}_{ID}"></select>
+				</span>
+				<span class="space2"></span>
+				<span class="select2">
+					<label class="space7">Location</label>
+					<label for="{prefix}.selMetric_{value}_{ID}" class="space5" id="{prefix}.selMetric_{value}_{ID}.lbl" style="display:none;">No more Metrics</label>
+					<select id="{prefix}.selMetric_{value}_{ID}">
+						<option value="width">Width</option>
+						<option value="weight">Weight</option>
+					</select>
+				</span>
+				<span class="space"></span>
+				<span class="info">
+					<button class="add2" id="{prefix}.addMetric_{value}_{ID}" title="Add">+</button>
+				</span>
+				<span class="space"></span>
+				<div class="dimensions">
+					<h4 style="display:none;">Dimensions</h4>
+					<ol id="{prefix}.metrics_{value}_{ID}" class="metrics"></ol>
 				</div>
 			</div>
 		</script>

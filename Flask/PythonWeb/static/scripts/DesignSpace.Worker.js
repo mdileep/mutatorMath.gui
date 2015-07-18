@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 17 03 53 02 IST
+Last Updated on  2015 Jul 19 00 43 53 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-17 03:53:02 HRS IST';Env.Version='0.7.75.0';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-19 00:43:53 HRS IST';Env.Version='0.7.118.0';
 
 
 PageWorker = function () { }
@@ -102,7 +102,7 @@ ComputeWorker.compute = function () {
 	ComputeWorker.saveCopy(instances);
 }
 ComputeWorker.joinList = function(instances) {
-				var s = '';
+	var s = '';
 	for (var i = 0; i < instances.length; i++) {
 		s = s + instances[i].filename + ((i !== instances.length - 1) ? ',' : '');
 	}
@@ -131,17 +131,17 @@ ComputeWorker.run = function () {
 	}
 }
 ComputeWorker.validate = function () {
-		return SourcesWorker.isValid() && InstancesWorker.isValid();
+	return SourcesWorker.isValid() && InstancesWorker.isValid();
 }
 ComputeWorker.successCallBack = function(newSessionId) {
-			Util.noDisplay('running');
+	Util.noDisplay('running');
 	ComputeWorker.showDownloadLinks(true);
 	ComputeWorker.clear();
 	Config.SessionId = newSessionId;
 	ComputeWorker.computeInProgress = false;
 }
 ComputeWorker.showDownloadLinks = function(showInstances) {
-			var Ol = document.getElementById('downloadLinks');
+	var Ol = document.getElementById('downloadLinks');
 	var li3 = ComputeWorker.getDowloadLink2('Design Space Document', '/view/' + Config.SessionId + '.design' + 'space', '[View]', '/download/' + Config.SessionId + '.design' + 'space', '[Download]');
 	Ol.appendChild(li3);
 	if (showInstances) {
@@ -159,7 +159,7 @@ ComputeWorker.showDownloadLinks = function(showInstances) {
 	Util.setDisplayInline('lbl.downloadLinks');
 }
 ComputeWorker.getDowloadLink2 = function(PreText, VLink, Text, DLink, Download) {
-												var Dic = { };
+	var Dic = { };
 	Dic['PreText'] = PreText;
 	Dic['VLink'] = VLink;
 	Dic['View'] = Text;
@@ -280,11 +280,36 @@ InstancesWorker.registerHandlers = function () {
 	};
 	InstancesWorker.addGlyphDimensionHandler = function(e) {
 		var rowId = InternalWorker.findRowId(e);
-		InternalWorker.addGlyphDimenstion(rowId, 'instance.glyphs', InstancesWorker.removeGlyphDimensionHandler);
+		InternalWorker.addGlyphDimension(rowId, 'instance.glyphs', InstancesWorker.removeGlyphDimensionHandler);
 	};
 	InstancesWorker.removeGlyphDimensionHandler = function(e) {
 		var rowId = InternalWorker.findRowId(e);
-		InternalWorker.removeGlyphDimenstion(rowId, 'instance.glyphs', InstancesWorker.removeGlyphDimensionHandler);
+		InternalWorker.removeGlyphDimension(rowId, 'instance.glyphs', InstancesWorker.removeGlyphDimensionHandler);
+	};
+	InstancesWorker.addMasterDimesnionHandler = function(e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.addMasterDimension(rowId, 'instance.glyphs.masters', InstancesWorker.removeMasterDimesnionHandler);
+	};
+	InstancesWorker.removeMasterDimesnionHandler = function(e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.removeMasterDimension(rowId, 'instance.glyphs.masters', InstancesWorker.removeMasterDimesnionHandler);
+	};
+	InstancesWorker.addGlyphMasterHandler = function(e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.addGlyphMaster(rowId, 'instance.glyphs', InstancesWorker.removeGlyphMasterHandler);
+		var preFix = 'instance.glyphs.masters';
+		var ol = document.getElementById(preFix + '_' + rowId);
+		var n = Util.noOfChildElements(ol, 'li');
+		var val = n.toString();
+		var id = rowId;
+		var btnAddMasterDimension = preFix + '.addMetric_' + val + '_' + id;
+		Util.registerClick(btnAddMasterDimension, InstancesWorker.addMasterDimesnionHandler);
+		var selSource = preFix + '.selSource_' + val + '_' + id;
+		SourcesWorker.loadSources(selSource);
+	};
+	InstancesWorker.removeGlyphMasterHandler = function(e) {
+		var rowId = InternalWorker.findRowId(e);
+		InternalWorker.removeGlypMaster(rowId, 'instance.glyphs', InstancesWorker.removeGlyphMasterHandler);
 	};
 	InstancesWorker.addGlyphHandler = function(e) {
 		var rowId = InternalWorker.findRowId(e);
@@ -295,7 +320,9 @@ InstancesWorker.registerHandlers = function () {
 		var id = rowId;
 		var preFix = 'instance.glyphs';
 		var btnAddGlyphDimension = preFix + '.addMetric_' + val + '_' + id;
+		var btnAddMasterDimension = preFix + '.addMaster_' + val + '_' + id;
 		Util.registerClick(btnAddGlyphDimension, InstancesWorker.addGlyphDimensionHandler);
+		Util.registerClick(btnAddMasterDimension, InstancesWorker.addGlyphMasterHandler);
 	};
 	InstancesWorker.removeGlyphHandler = function(e) {
 		var rowId = InternalWorker.findRowId(e);
@@ -330,7 +357,7 @@ InstancesWorker.addInstance = function () {
 	Util.registerClick('instance.remove_' + rowId, InstancesWorker.removeHandler);
 }
 InstancesWorker.removeInstance = function(rowId) {
-			var Instances = document.getElementById('instances');
+	var Instances = document.getElementById('instances');
 	var srcElem = document.getElementById('instance_' + rowId);
 	Util.deRegisterClick('instance.addName_' + rowId, InstancesWorker.addNameHandler);
 	Util.deRegisterClick('instance.addMetric_' + rowId, InstancesWorker.addDimensionHandler);
@@ -369,8 +396,41 @@ InstancesWorker.handleMultInstances = function () {
 	}
 }
 InstancesWorker.resetInstance = function(rowId) { }
+InstancesWorker.refreshSources = function () {
+	var Instances = document.getElementById('instances');
+	for (var i = 0; i < Instances.children.length; i++) {
+		var li = Instances.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var id = li.children[0].id;
+			var rowId = id.substr(id.indexOf('_') + 1);
+			InstancesWorker.refreshGlyphs(rowId);
+		}
+	}
+}
+InstancesWorker.refreshGlyphs = function(rowId) {
+			var olGlyphs2 = document.getElementById('instance.glyphs' + '_' + rowId);
+	for (var i = 0; i < olGlyphs2.children.length; i++) {
+		var li = olGlyphs2.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var val = li.getAttribute('data-value');
+			InstancesWorker.refreshMasters(val, rowId);
+		}
+	}
+}
+InstancesWorker.refreshMasters = function(val, rowId) {
+					var olGlyphMasters = 'instance.glyphs' + '.masters';
+	var olGlyphsMasters2 = document.getElementById(olGlyphMasters + '_' + val + '_' + rowId);
+	for (var i = 0; i < olGlyphsMasters2.children.length; i++) {
+		var li = olGlyphsMasters2.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var val2 = li.getAttribute('data-value');
+			var selSource = olGlyphMasters + '.selSource_' + val2 + '_' + val + '_' + rowId;
+			SourcesWorker.loadSources(selSource);
+		}
+	}
+}
 InstancesWorker.getInstances = function () {
-		var Instances = document.getElementById('instances');
+	var Instances = document.getElementById('instances');
 	var n = Util.noOfChildElements(Instances, 'li');
 	var instances = new Array(n);
 	var running = 0;
@@ -384,7 +444,7 @@ InstancesWorker.getInstances = function () {
 	return instances;
 }
 InstancesWorker.getInstance = function(li, running) {
-						var n = Util.noOfChildElements(li, 'div');
+	var n = Util.noOfChildElements(li, 'div');
 	if (!n) {
 		return null;
 	}
@@ -400,31 +460,31 @@ InstancesWorker.getInstance = function(li, running) {
 	obj.stylename = InstancesWorker.getName('stylename', rowId);
 	obj.info = InstancesWorker.getInfo(rowId);
 	obj.kerning = InstancesWorker.getKerning(rowId);
-	obj.glyphs = InternalWorker.getGlphs('instance.glyphs', rowId);
+	obj.glyphs = InternalWorker.getGlyphs('instance.glyphs', rowId);
 	return obj;
 }
 InstancesWorker.getKerning = function(rowId) {
-				var loc = InternalWorker.getLocation('instance.kernMetrics', rowId);
+	var loc = InternalWorker.getLocation('instance.kernMetrics', rowId);
 	var kern = new DesignerSpace.kerning();
 	kern.location = loc;
 	return kern;
 }
 InstancesWorker.getInfo = function(rowId) {
-				var loc = InternalWorker.getLocation('instance.infoMetrics', rowId);
+	var loc = InternalWorker.getLocation('instance.infoMetrics', rowId);
 	var info = new DesignerSpace.info();
 	info.location = loc;
 	return info;
 }
 InstancesWorker.handleDesignerOnly = function () { }
 InstancesWorker.getName = function(nm, rowId) {
-						var val = Util.getValue('instance.names' + '_' + nm + '_' + rowId);
+	var val = Util.getValue('instance.names' + '_' + nm + '_' + rowId);
 	if (!val) {
 		return null;
 	}
 	return val;
 }
 InstancesWorker.isValid = function () {
-		return true;
+	return true;
 }
 InstancesWorker.dispose = function () {
 	InstancesWorker.handleDispose();
@@ -443,6 +503,10 @@ InstancesWorker.handleDispose = function () {
 	InstancesWorker.removeKernMetricHandler = null;
 	InstancesWorker.addGlyphDimensionHandler = null;
 	InstancesWorker.removeGlyphDimensionHandler = null;
+	InstancesWorker.addGlyphMasterHandler = null;
+	InstancesWorker.removeGlyphMasterHandler = null;
+	InstancesWorker.addMasterDimesnionHandler = null;
+	InstancesWorker.removeGlyphMasterHandler = null;
 	InstancesWorker.disposeHandler = null;
 }
 
@@ -527,10 +591,31 @@ SourcesWorker.registerHandlers = function () {
 		SourcesWorker.handleDispose();
 	};
 }
+SourcesWorker.loadSources = function(selSource) {
+			var select = document.getElementById(selSource);
+	var curr = Util.selectedIndex(selSource);
+	select.innerHTML = '';
+	var Sources = document.getElementById('sources');
+	for (var i = 0; i < Sources.children.length; i++) {
+		var li = Sources.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var id = li.children[0].id;
+			var rowId = id.substr(id.indexOf('_') + 1);
+			var text = Util.getValue(SourcesWorker.txtSourceName + rowId);
+			var val = Util.getValue(SourcesWorker.txtFileName + rowId);
+			var Option = Util.addOptionItem(text, val, false);
+			select.appendChild(Option);
+		}
+	}
+	try {
+		select.selectedIndex=curr;
+	}
+	catch ($e1) { }
+}
 SourcesWorker.addSource = function () {
 	var Sources = document.getElementById('sources');
 	var n = Util.noOfChildElements(Sources, 'li');
-		n = n + 1;
+	n = n + 1;
 	while (true) {
 		if (document.getElementById('source_' + n) == null) {
 			break;
@@ -540,6 +625,7 @@ SourcesWorker.addSource = function () {
 	var rowId = n.toString();
 	var dic = {};
 	dic['ID'] = rowId;
+	dic['SID'] = Config.SessionId;
 	var html = Util.applyTemplate('SourceTemplate', dic);
 	var source = document.createElement('li');
 	source.innerHTML = html;
@@ -561,6 +647,7 @@ SourcesWorker.addSource = function () {
 		Util.noDisplay('processing_' + rowId);
 		Util.setDisplayInline('source.ui_' + rowId);
 	}
+	InstancesWorker.refreshSources();
 }
 SourcesWorker.removeSource = function (rowId) {
 	if (SourcesWorker.uploadTracker[rowId] === 1) {
@@ -580,6 +667,7 @@ SourcesWorker.removeSource = function (rowId) {
 	InternalWorker.removeControlSet(rowId, 'source.metrics.remove_', 'source.metric_', SourcesWorker.removeDimensionHandler);
 	InternalWorker.removeControlSet(rowId, 'source.muteGlyphs.remove_', 'source.muteGlyph_', SourcesWorker.removeMuteGlyphHandler);
 	srcElem.parentNode.parentNode.removeChild(srcElem.parentNode);
+	InstancesWorker.refreshSources();
 	var n = Util.noOfChildElements(Sources, 'li');
 	if (!n) {
 		SourcesWorker.addSource();
@@ -608,7 +696,7 @@ SourcesWorker.isValidSource = function (li) {
 	}
 	var id = li.children[0].id;
 	var rowId = id.substr(id.indexOf('_') + 1);
-	if (!Util.getValue(SourcesWorker.txtFileName + rowId)) {
+	if (!Util.getValue(SourcesWorker.txtFileName + rowId) || Util.getValue('source.uploaded_' + rowId) === '0') {
 		alert('Please choose a zipped UFO file.');
 		Util.setFocus('file_' + rowId);
 		return false;
@@ -648,7 +736,7 @@ SourcesWorker.getSource = function (li) {
 	return obj;
 }
 SourcesWorker.getLocation = function(rowId) {
-				var loc = InternalWorker.getLocation('source.metrics', rowId);
+	var loc = InternalWorker.getLocation('source.metrics', rowId);
 	if (loc == null || loc.dimensions == null || !loc.dimensions.length) {
 		var width = new DesignerSpace.dimension();
 		width.xvalue = 0;
@@ -762,6 +850,8 @@ SourcesWorker.successCallBack = function (rowId, destPath, actualName) {
 		Util.setDisplayInline('source.ui_' + rowId);
 		Util.setValue(SourcesWorker.txtSourceName + rowId, actualName);
 		Util.setValue(SourcesWorker.txtFileName + rowId, destPath);
+		Util.setValue('source.uploaded_' + rowId, '1');
+		InstancesWorker.refreshSources();
 	}, 400);
 }
 SourcesWorker.errorCallBack = function (rowId, error) {
@@ -820,48 +910,59 @@ SourcesWorker.dispose = function () {
 
 
 InternalWorker = function () { }
-InternalWorker.removeGlyphDimenstion = function(rowId, olGlyphs, RemoveGlyphDimensionHandler) {
-							var preFix = olGlyphs;
+InternalWorker.addGlyphMaster = function(rowId, olGlyphs, removeMasterandler) {
+	var preFix = olGlyphs;
 	var val = rowId.split('_')[0];
 	var id = rowId.split('_')[1];
-	var selectGlyphMetric = preFix + '.selMetric_';
-	var liGlyphMetric = preFix + '.metric_';
-	var olMetrics = preFix + '.metrics';
-	var btnRemoveGlyphDimension = preFix + '.metrics.remove_';
-	var btnAddDimension = preFix + '.addMetric_';
-	InternalWorker.removeControl(rowId, selectGlyphMetric, btnRemoveGlyphDimension, liGlyphMetric, RemoveGlyphDimensionHandler);
+	var liGlyphMaster = preFix + '.master_';
+	var olMasters = preFix + '.masters';
+	var btnRemoveGlyphMaster = preFix + '.masters.remove_';
+	var btnAddMaster = preFix + '.addMaster_';
+	InternalWorker.addControl('MasterTemplate', rowId, null, liGlyphMaster, btnRemoveGlyphMaster, olMasters, removeMasterandler);
 }
-InternalWorker.addGlyphDimenstion = function(rowId, olGlyphs, RemoveGlyphDimensionHandler) {
-							var preFix = olGlyphs;
+InternalWorker.removeGlypMaster = function(rowId, olGlyphs, removeGlyphMasterHandler) {
+	var preFix = olGlyphs;
 	var val = rowId.split('_')[0];
 	var id = rowId.split('_')[1];
-	var selectGlyphMetric = preFix + '.selMetric_';
-	var liGlyphMetric = preFix + '.metric_';
-	var olMetrics = preFix + '.metrics';
-	var btnRemoveGlyphDimension = preFix + '.metrics.remove_';
-	var btnAddDimension = preFix + '.addMetric_';
-	InternalWorker.addDimension(rowId, selectGlyphMetric, liGlyphMetric, btnRemoveGlyphDimension, olMetrics, RemoveGlyphDimensionHandler);
+	var selectGlyphMaster = preFix + '.selMaster_';
+	var liGlyphMaster = preFix + '.master_';
+	var olMasters = preFix + '.masters';
+	var btnRemoveGlyphMaster = preFix + '.masters.remove_';
+	var btnAddMaster = preFix + '.addMaster_';
+	InternalWorker.removeControl(rowId, null, btnRemoveGlyphMaster, liGlyphMaster, removeGlyphMasterHandler);
+}
+InternalWorker.addMasterDimension = function(rowId, olGlyphs, removeDimensionHandler) {
+							InternalWorker.addInnerDimension(rowId, olGlyphs, removeDimensionHandler);
+}
+InternalWorker.removeMasterDimension = function(rowId, olGlyphs, removeDimensionHandler) {
+							InternalWorker.removeInnerDimension(rowId, olGlyphs, removeDimensionHandler);
+}
+InternalWorker.addGlyphDimension = function(rowId, olGlyphs, removeDimensionHandler) {
+							InternalWorker.addInnerDimension(rowId, olGlyphs, removeDimensionHandler);
+}
+InternalWorker.removeGlyphDimension = function(rowId, olGlyphs, removeDimensionHandler) {
+							InternalWorker.removeInnerDimension(rowId, olGlyphs, removeDimensionHandler);
 }
 InternalWorker.addGlyph = function(rowId, liGlyph, btnRemoveGlyph, olGlyphs, removeGlyphHandler) {
-											InternalWorker.addControl('GlyphTemplate', rowId, null, liGlyph, btnRemoveGlyph, olGlyphs, removeGlyphHandler);
+	InternalWorker.addControl('GlyphTemplate', rowId, null, liGlyph, btnRemoveGlyph, olGlyphs, removeGlyphHandler);
 }
 InternalWorker.removeGlyph = function(rowId, btnRemoveGlyph, liGlyph, removeGlyphHandler) {
-									InternalWorker.removeControl(rowId, null, btnRemoveGlyph, liGlyph, removeGlyphHandler);
+	InternalWorker.removeControl(rowId, null, btnRemoveGlyph, liGlyph, removeGlyphHandler);
 }
 InternalWorker.addMuteGlyph = function(rowId, liMuteGlyph, btnRemoveMuteGlyph, olMuteGlyphs, removeMuteGlyphHandler) {
-											InternalWorker.addControl('MuteGlyphTemplate', rowId, null, liMuteGlyph, btnRemoveMuteGlyph, olMuteGlyphs, removeMuteGlyphHandler);
+	InternalWorker.addControl('MuteGlyphTemplate', rowId, null, liMuteGlyph, btnRemoveMuteGlyph, olMuteGlyphs, removeMuteGlyphHandler);
 }
 InternalWorker.removeMuteGlyph = function(rowId, btnRemoveMuteGlyph, liMuteGlyph, removeMuteGlyphHandler) {
-									InternalWorker.removeControl(rowId, null, btnRemoveMuteGlyph, liMuteGlyph, removeMuteGlyphHandler);
+	InternalWorker.removeControl(rowId, null, btnRemoveMuteGlyph, liMuteGlyph, removeMuteGlyphHandler);
 }
 InternalWorker.addName = function(rowId, select, liTarget, btnRemove, olTarget, removeNameHandler) {
-													InternalWorker.addControl('NameTemplate', rowId, select, liTarget, btnRemove, olTarget, removeNameHandler);
+	InternalWorker.addControl('NameTemplate', rowId, select, liTarget, btnRemove, olTarget, removeNameHandler);
 }
 InternalWorker.addDimension = function(rowId, select, liTarget, btnRemove, olTarget, removeDimensionHandler) {
-													InternalWorker.addControl('DimensionTemplate', rowId, select, liTarget, btnRemove, olTarget, removeDimensionHandler);
+	InternalWorker.addControl('DimensionTemplate', rowId, select, liTarget, btnRemove, olTarget, removeDimensionHandler);
 }
 InternalWorker.removeControlSet = function(rowId, removePreFix, parentPreFix, removeDimensionHandler) {
-									var olId = parentPreFix + rowId;
+	var olId = parentPreFix + rowId;
 	if (Util.isAvailable(olId)) {
 		var ol = document.getElementById(olId);
 		for (var i = 0; i < ol.children.length; i++) {
@@ -873,23 +974,45 @@ InternalWorker.removeControlSet = function(rowId, removePreFix, parentPreFix, re
 		}
 	}
 }
+InternalWorker.addInnerDimension = function(rowId, ol, removeDimensionHandler) {
+	var preFix = ol;
+	var val = rowId.split('_')[0];
+	var id = rowId.split('_')[1];
+	var selectInnerMetric = preFix + '.selMetric_';
+	var liInnerMetric = preFix + '.metric_';
+	var olMetrics = preFix + '.metrics';
+	var btnRemoveInnerDimension = preFix + '.metrics.remove_';
+	var btnAddDimension = preFix + '.addMetric_';
+	InternalWorker.addDimension(rowId, selectInnerMetric, liInnerMetric, btnRemoveInnerDimension, olMetrics, removeDimensionHandler);
+}
+InternalWorker.removeInnerDimension = function(rowId, ol, removeGlyphDimensionHandler) {
+	var preFix = ol;
+	var val = rowId.split('_')[0];
+	var id = rowId.split('_')[1] + '_' + rowId.split('_')[2];
+	var selectInnerMetric = preFix + '.selMetric_';
+	var liInnerMetric = preFix + '.metric_';
+	var olMetrics = preFix + '.metrics';
+	var btnRemoveInnerDimension = preFix + '.metrics.remove_';
+	var btnAddDimension = preFix + '.addMetric_';
+	InternalWorker.removeControl(rowId, selectInnerMetric, btnRemoveInnerDimension, liInnerMetric, removeGlyphDimensionHandler);
+}
 InternalWorker.addControl = function (templateName, rowId, select, liTarget, btnRemove, olTarget, removeHandler) {
-															var postFix = '';
+	var postFix = '';
 	var val = '';
 	var text = '';
 	var ol = document.getElementById(olTarget + '_' + rowId);
 	if (select != null) {
-	var index = Util.selectedIndex(select + rowId);
-	if (index === -1) {
-		return;
-	}
+		var index = Util.selectedIndex(select + rowId);
+		if (index === -1) {
+			return;
+		}
 		val = Util.selectedValue(select + rowId);
 		text = Util.selectedText(select + rowId);
-	Util.removeOption(select + rowId, index);
-	var n = Util.noOfChildElements(document.getElementById(select + rowId), 'option');
-	if (!n) {
-		Util.noDisplay(select + rowId);
-		Util.setDisplayInline(select + rowId + '.lbl');
+		Util.removeOption(select + rowId, index);
+		var n = Util.noOfChildElements(document.getElementById(select + rowId), 'option');
+		if (!n) {
+			Util.noDisplay(select + rowId);
+			Util.setDisplayInline(select + rowId + '.lbl');
 		}
 	}
 	else {
@@ -1031,7 +1154,7 @@ InternalWorker.getDimension = function (li, olMetrics, rowId) {
 	return dimension;
 }
 InternalWorker.getMuteGlyphs = function(olMuteGlyphs, rowId) {
-						var olMuteGlyphs2 = document.getElementById(olMuteGlyphs + '_' + rowId);
+	var olMuteGlyphs2 = document.getElementById(olMuteGlyphs + '_' + rowId);
 	var n = Util.noOfChildElements(olMuteGlyphs2, 'li');
 	var muteGlyphs = new Array(n);
 	var running = 0;
@@ -1045,7 +1168,7 @@ InternalWorker.getMuteGlyphs = function(olMuteGlyphs, rowId) {
 	return muteGlyphs;
 }
 InternalWorker.getMuteGlyph = function(li, olMuteGlyphs, rowId) {
-								var val = li.getAttribute('data-value');
+	var val = li.getAttribute('data-value');
 	var nm = Util.getValue(olMuteGlyphs + '_' + val + '_' + rowId);
 	if (!nm.trim()) {
 		return null;
@@ -1067,8 +1190,8 @@ InternalWorker.getSetDecimal = function (Id) {
 	Util.setValue(Id, sVal);
 	return sVal;
 }
-InternalWorker.getGlphs = function(olGlyphs, rowId) {
-						var olGlyphs2 = document.getElementById(olGlyphs + '_' + rowId);
+InternalWorker.getGlyphs = function(olGlyphs, rowId) {
+	var olGlyphs2 = document.getElementById(olGlyphs + '_' + rowId);
 	var n = Util.noOfChildElements(olGlyphs2, 'li');
 	var glyphs = new Array(n);
 	var running = 0;
@@ -1082,14 +1205,14 @@ InternalWorker.getGlphs = function(olGlyphs, rowId) {
 	return glyphs;
 }
 InternalWorker.getGlyph = function(li, olGlyphs, rowId) {
-								var val = li.getAttribute('data-value');
+	var val = li.getAttribute('data-value');
 	var nm = Util.getValue(olGlyphs + '.name' + '_' + val + '_' + rowId);
 	if (!nm.trim()) {
 		return null;
 	}
 	var note = Util.getValue(olGlyphs + '.note' + '_' + val + '_' + rowId);
 	var olGlyphMetrics = olGlyphs + '.metrics';
-	var olGlyphMasters = olGlyphs + '.masters' + '_' + val;
+	var olGlyphMasters = olGlyphs + '.masters';
 	var g = new DesignerSpace.glyph();
 	g.name = nm;
 	g.note = note;
@@ -1098,10 +1221,28 @@ InternalWorker.getGlyph = function(li, olGlyphs, rowId) {
 	return g;
 }
 InternalWorker.getMasters = function(olGlyphMasters, rowId) {
-						return null;
+	var olGlyphsMasters2 = document.getElementById(olGlyphMasters + '_' + rowId);
+	var n = Util.noOfChildElements(olGlyphsMasters2, 'li');
+	var masters = new Array(n);
+	var running = 0;
+	for (var i = 0; i < olGlyphsMasters2.children.length; i++) {
+		var li = olGlyphsMasters2.children[i];
+		if (li.tagName.toLowerCase() === 'li') {
+			var master = InternalWorker.getMaster(li, olGlyphMasters, rowId);
+			masters[running++] = master;
+		}
+	}
+	return masters;
+}
+InternalWorker.getMaster = function(li, olGlyphMasters, rowId) {
+	var val = li.getAttribute('data-value');
+	var master = new DesignerSpace.master();
+	master.glyphname = Util.getValue(olGlyphMasters + '.name' + '_' + val + '_' + rowId);
+	master.source = Util.selectedValue(olGlyphMasters + '.selSource' + '_' + val + '_' + rowId);
+	master.location = InternalWorker.getLocation(olGlyphMasters + '.metrics', val + '_' + rowId);
+	return master;
 }
 
-//START of DesignerSpace
 DesignerSpace = {};
 
 
@@ -1529,6 +1670,8 @@ InstancesWorker.btnAddGlyph = 'instance.addGlyph_';
 InstancesWorker.btnRemovGlyph = 'instance.glyphs.remove_';
 InstancesWorker.olGlyphs = 'instance.glyphs';
 InstancesWorker.liGlyph = 'instance.glyph_';
+InstancesWorker.olGlyphsMasters = 'instance.glyphs.masters';
+InstancesWorker.olGlyphMetrics = 'instance.glyphs.metrics';
 InstancesWorker.btnAddInfoMetric = 'instance.addInfoMetric_';
 InstancesWorker.btnRemoveInfoMetric = 'instance.infoMetrics.remove_';
 InstancesWorker.selectInfoMetric = 'instance.selInfoMetric_';
@@ -1554,6 +1697,10 @@ InstancesWorker.addGlyphHandler = null;
 InstancesWorker.removeGlyphHandler = null;
 InstancesWorker.addGlyphDimensionHandler = null;
 InstancesWorker.removeGlyphDimensionHandler = null;
+InstancesWorker.addGlyphMasterHandler = null;
+InstancesWorker.removeGlyphMasterHandler = null;
+InstancesWorker.addMasterDimesnionHandler = null;
+InstancesWorker.removeMasterDimesnionHandler = null;
 InstancesWorker.disposeHandler = null;
 SourcesWorker.sourceTemplate = 'SourceTemplate';
 SourcesWorker.olSources = 'sources';
@@ -1563,6 +1710,7 @@ SourcesWorker.btnRemoveSource = 'source.remove_';
 SourcesWorker.txtSourceName = 'source.name_';
 SourcesWorker.txtFileName = 'source.filename_';
 SourcesWorker.btnAddMetric = 'source.addMetric_';
+SourcesWorker.txtUploaded = 'source.uploaded_';
 SourcesWorker.selectMetric = 'source.selMetric_';
 SourcesWorker.liMetric = 'source.metric_';
 SourcesWorker.btnRemoveMetric = 'source.metrics.remove_';

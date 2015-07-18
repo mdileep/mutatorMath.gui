@@ -1,11 +1,13 @@
 from flask import render_template, request, redirect, url_for, send_from_directory,Response
 import os
 import glob
+from datetime import datetime
 from PythonWeb import app
 from PythonWeb import uploader
 from PythonWeb import mmWrapper
 from PythonWeb import lib
 from PythonWeb import zipHandler
+
 
 def run():
     try:
@@ -23,8 +25,8 @@ def run():
         else:
             rg = False
 
-        #TODO:Validate the xml text against xsd.
         lib.saveToText(toFile,text)
+
         mmWrapper.go(toFile,logFile,3,rg)
         
         arr = instance.split(',')
@@ -76,11 +78,25 @@ def save(allowed,toFileName):
     
 
     destPath = ""
+    if filePath=="":
+        raise ValueError('The given file is not a valid file. Please choose another file.')
+    
+    
+
     if filePath != "" and lib.findFileExt(filePath) == '.zip':
-        destPath = zipHandler.extractZip(filePath,toDir)
+        isValidFile= zipHandler.isValidUFOZip(filePath)
+        if isValidFile:
+            destPath = zipHandler.extractZip(filePath,toDir)
+            return destPath
+        else:
+            raise ValueError('The given zip file is not a valid UFO zip file. Please ensure zip file contains metainfo.plist.')
+                
     else:
-        destPath = lib.findFileNameWithExt(filePath)
-    return destPath
+        #destPath = lib.findFileNameWithExt(filePath)
+        raise ValueError('The given file is not a valid file. Please choose another file.')
+    
+    return destPath# Never Reaches??
+
 
 def showEnvDetails():
 
@@ -98,6 +114,13 @@ def showEnvDetails():
             s=s+"\n Quota Details:"
             s=s+"\n "+content
 
+    last_hourly_cron_ran=os.path.join(app.config['DATA_DIR'],"last_hourly_cron_ran")
+    if os.path.exists(last_hourly_cron_ran):
+        with open(last_hourly_cron_ran, 'r') as content_file:
+            content = content_file.read()
+            s=s+"\n Last Hourly Cron exeuted at:"
+            s=s+" "+content
+    s=s+"\n Now: "+str( datetime.now())
     return lib.pushText(s)
 
 

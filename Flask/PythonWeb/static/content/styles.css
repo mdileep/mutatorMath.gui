@@ -116,12 +116,12 @@ sup {
 	border: 1px solid gray;
 	text-align: center;
 	color: black;
-	width: 30px;
+	width: 60px;
 }
 
 	.text2:focus {
 		font-weight: bold;
-		width: 30px;
+		width: 60px;
 	}
 
 .text {
@@ -129,13 +129,13 @@ sup {
 	border: 1px solid gray;
 	text-align: center;
 	color: black;
-	width: 60px;
+	width: 80px;
 }
 
 	.text:focus {
 		border: 1px solid black;
 		font-weight: bold;
-		width: 60px;
+		width: 80px;
 	}
 
 .space {
@@ -191,14 +191,16 @@ label.space5, label.space7 {
 	font-style: italic;
 	text-align: center;
 	display: inline-block;
-	width:auto;
+	width: auto;
 }
+
 label.space7 {
 	font-size: 12px;
 	text-align: left;
-	font-style:normal;
-	color:black;
+	font-style: normal;
+	color: black;
 }
+
 .select {
 	font-size: 12px;
 	display: inline-block;
@@ -226,7 +228,7 @@ label.space7 {
 	cursor: pointer;
 	color: green;
 	font-size: 12px;
-	display:inline-block;
+	display: inline-block;
 }
 
 .add3 {

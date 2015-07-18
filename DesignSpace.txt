@@ -23,11 +23,11 @@ Instances																[Add Another Instance]
 		Post Script Font Name	[Text Box Optional]
 		Stylemap Family Name	[Text Box Optional]
 		Stylemap Style Name		[Text Box Optional]
-	Define Dimensions			[Dimensions]		
-	Info						[Dimensions]		
-	Kerning						[Dimensions]		
-	Glyphs						[Glyph Control]		[Pending] 
-	Master Dimensions			[Master Control]	[Pending]
+	Define Dimensions			[Dimensions]
+	Info						[Dimensions]
+	Kerning						[Dimensions]
+	Glyphs						[Glyph Control]
+	Master Dimensions			[Master Control]
 
 Mute Glyph Control
 	Name
@@ -43,4 +43,9 @@ Glyph Control					[Add Another Glpyh]
 	Note
 	Masters			[Master Control]				[Add another Master]
 
-Last Reviewed: 14-Jul-2015
+Master Control
+	Name
+	Source
+	Define Dimensions			[Dimensions]
+
+Last Reviewed: 19-Jul-2015 Nothing is pending

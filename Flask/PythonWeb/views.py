@@ -13,7 +13,6 @@ def appHomePage():
 def appEnv():
     return business.showEnvDetails()
 
-
 @app.route('/Uploader')
 @app.route('/uploader')
 def appUploader():

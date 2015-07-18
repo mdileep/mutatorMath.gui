@@ -23,3 +23,21 @@ def zipDirectory(fromDir,toFile):
             zf.write( os.path.join(dirname, filename),os.path.join(relPath, filename), compress_type = zipfile.ZIP_DEFLATED)
     zf.close()
     return toFile
+
+def isDirExists(z, name):
+    return any(x.startswith("%s/" % name.rstrip("/")) for x in z.namelist())
+
+def isFileExists(z, name):
+    return any(x.startswith("%s" % name) for x in z.namelist())
+
+
+def isValidUFOZip(filePath):
+    zf = zipfile.ZipFile(filePath, "r")
+    
+    if isDirExists(zf,"glyphs")==False:
+        raise ValueError('The given file is not a valid UFO Zip file.Please ensure it contains "glyphs" directory.')
+    
+    if isFileExists(zf,"metainfo.plist")==False:
+         raise ValueError('The given file is not a valid UFO Zip file.Please ensure it contains "metainfo.plist" file.')
+
+    return True
