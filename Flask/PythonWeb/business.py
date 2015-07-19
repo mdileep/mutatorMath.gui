@@ -101,7 +101,8 @@ def save(allowed,toFileName):
 def showEnvDetails():
 
     toDir = app.config['UPLOAD_DIR']
-    s= "Upload Directory: "+toDir
+    s="Now: "+str( datetime.now())
+    s= s+"\nUpload Directory: "+toDir
     s= s+"\n Is Exists: " +str(os.path.exists(toDir))
     if os.path.exists(toDir):
         s= s+"\n No. of zip Files(Load): "+str(len(glob.glob1(toDir,"*.zip")))
@@ -111,16 +112,16 @@ def showEnvDetails():
     if os.path.exists(quota):
         with open(quota, 'r') as content_file:
             content = content_file.read()
-            s=s+"\n Quota Details:"
-            s=s+"\n "+content
+            s=s+"\nQuota Details:"
+            s=s+"\n"+content
 
     last_hourly_cron_ran=os.path.join(app.config['DATA_DIR'],"last_hourly_cron_ran")
     if os.path.exists(last_hourly_cron_ran):
         with open(last_hourly_cron_ran, 'r') as content_file:
             content = content_file.read()
-            s=s+"\n Last Hourly Cron exeuted at:"
+            s=s+"\nLast Hourly Cron exeuted at:"
             s=s+" "+content
-    s=s+"\n Now: "+str( datetime.now())
+    
     return lib.pushText(s)
 
 
