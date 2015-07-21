@@ -37,8 +37,8 @@ quota=$(get_quota)
 percentage=$(echo "(${used_space}/${quota})*100" |bc -l|sed 's/^\./0./')
 current_usage=${percentage/\.*}
 echo " "$(date)>$QUOTA_LOG_FILE
-echo "Current gear storage usage is ${current_usage}%">>$QUOTA_LOG_FILE
-echo "Current gear storage usage is ${used_space}">>$QUOTA_LOG_FILE
+echo " Current gear storage usage is ${current_usage}%">>$QUOTA_LOG_FILE
+echo " Current gear storage usage is ${used_space}">>$QUOTA_LOG_FILE
 
 # Above Quota code was originally created by Marek Mahut <mmahut@redhat.com>
 # https://github.com/mmahut/openshift-quota-monitor-cartridge/blob/master/lib/functions

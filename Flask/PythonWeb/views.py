@@ -22,7 +22,7 @@ def appHomePage():
 @app.route('/contact')
 @app.route('/Contact')
 def appContactPage():
-    return renderTemplate('contact.html','about')
+    return renderTemplate('contact.html','contact')
 
 @app.route('/license')
 @app.route('/License')
