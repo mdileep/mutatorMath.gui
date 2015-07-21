@@ -1,1 +1,54 @@
-﻿
+﻿<!DOCTYPE html>
+<html>
+<head>
+	{% block head %}{% endblock %}
+	<link rel="shortcut icon" href="/static/content/favicon.ico" />
+
+	<link rel="stylesheet" type="text/css" href="/static/content/styles.css" />
+	<link rel="stylesheet" type="text/css" href="/static/content/external.css" />
+
+	<script type="text/javascript" src="/static/scripts/External.js"></script>
+	<script type="text/javascript" src="/static/scripts/DesignSpace.Util.js"></script>
+	<script type="text/javascript" src="/static/scripts/DesignSpace.Worker.js"></script>
+	<script type="text/javascript">var Config = {}; Config.SessionId = '{{sessionId}}'; Config.DesignerOnly = false;</script>
+</head>
+<body>
+	<nav class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">Web based GUI for Mutator Math</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					
+
+					<li{% if active == 'about' %} class='active'{%endif %}><a href="/about">Home</a></li>
+					<li{% if active =='gui' %} class='active' {%endif %}><a href="/gui">GUI</a></li>
+					<li{% if active =='contact' %} class='active' {%endif %}><a href="/contact">Contact</a></li>
+					<li{% if active =='license' %} class='active' {%endif %}><a href="/license">License</a></li>
+
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		{% block container %}{% endblock %}
+	</div>
+	
+	{% block templates %}{% endblock %}
+	
+	<hr />
+	<footer class="footer">
+		<div class="container">
+			<div><span id="Build"></span> Served at <b> {{ now }}</b></div>
+		</div>
+	</footer>
+	
+	
+	<script type="text/javascript" src="/static/scripts/external/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/scripts/DesignSpace.app.js"></script>
+
+	{% block footer %}{% endblock %}
+</body>
+</html>

@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 19 00 43 53 IST
+Last Updated on  2015 Jul 21 22 45 37 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-19 00:43:53 HRS IST';Env.Version='0.7.118.0';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-21 22:45:37 HRS IST';Env.Version='0.7.119.0';
 
 
 PageWorker = function () { }
@@ -22,9 +22,12 @@ PageWorker.prototype = {
 
 Worker = function () { }
 Worker.pageInit = function () {
+	if (Util.isAvailable('designSpace')) {
 	SourcesWorker.init();
 	InstancesWorker.init();
 	ComputeWorker.init();
+	}
+	ComputeWorker.setBuildDetails();
 }
 Worker.dispose = function () {
 	SourcesWorker.dispose();

@@ -4,9 +4,31 @@ from PythonWeb import lib
 from PythonWeb import business
 from datetime import datetime
 
+def renderTemplate(htmlPage,navActive):
+    return render_template(htmlPage, now=datetime.now(),sessionId=lib.getNewSessionId(),active=navActive)
+
+@app.route('/gui')
+@app.route('/GUI')
+def appGUIPage():
+    return renderTemplate('gui.html','gui')
+
 @app.route('/')
+@app.route('/about')
+@app.route('/About')
 def appHomePage():
-    return render_template('index.html', now=datetime.now(),sessionId=lib.getNewSessionId())
+    return renderTemplate('about.html','about')
+
+
+@app.route('/contact')
+@app.route('/Contact')
+def appContactPage():
+    return renderTemplate('contact.html','about')
+
+@app.route('/license')
+@app.route('/License')
+def appLicensePage():
+    return renderTemplate('license.html','license')
+
 
 @app.route('/Env')
 @app.route('/env')
