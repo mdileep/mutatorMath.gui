@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 21 22 45 37 IST
+Last Updated on  2015 Jul 22 23 58 26 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-21 22:45:37 HRS IST';Env.Version='0.7.119.0';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-22 23:58:26 HRS IST';Env.Version='0.8.0.1';
 
 
 PageWorker = function () { }
@@ -51,7 +51,6 @@ ComputeWorker.internalInit = function () {
 	else {
 		Util.setUnChecked('designOnly');
 	}
-	ComputeWorker.setBuildDetails();
 	ComputeWorker.compute();
 }
 ComputeWorker.setBuildDetails = function () {
@@ -455,7 +454,7 @@ InstancesWorker.getInstance = function(li, running) {
 	var rowId = id.substr(id.indexOf('_') + 1);
 	var obj = new DesignerSpace.instance();
 	obj.familyname = Util.getValue(InstancesWorker.txtInstanceName + rowId);
-	obj.filename = 'instacne_' + (running + 1) + '_' + Config.SessionId;
+	obj.filename = 'instacne_' + (running + 1) + '_' + Config.SessionId + '.ufo';
 	obj.location = InternalWorker.getLocation('instance.metrics', rowId);
 	obj.postscriptfontname = InstancesWorker.getName('postscriptfontname', rowId);
 	obj.stylemapfamilyname = InstancesWorker.getName('stylemapfamilyname', rowId);

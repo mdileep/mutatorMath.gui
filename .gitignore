@@ -22,6 +22,8 @@ ignore.txt
 web.debug.config
 *.zip
 *.exclude
+superpolator_Axes.jpg
+AxisControl_proposed.png
 
 
 ## Ignore Visual Studio temporary files, build results, and
