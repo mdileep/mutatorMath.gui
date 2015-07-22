@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 22 23 58 26 IST
+Last Updated on  2015 Jul 23 01 30 23 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-22 23:58:26 HRS IST';Env.Version='0.8.0.1';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-23 01:30:23 HRS IST';Env.Version='0.8.0.12';
 
 
 PageWorker = function () { }
@@ -305,6 +305,8 @@ InstancesWorker.registerHandlers = function () {
 		var val = n.toString();
 		var id = rowId;
 		var btnAddMasterDimension = preFix + '.addMetric_' + val + '_' + id;
+		var selGlyphMasterLocation = preFix + '.selMetric_' + val + '_' + id;
+		InternalWorker.loadMetrics(selGlyphMasterLocation);
 		Util.registerClick(btnAddMasterDimension, InstancesWorker.addMasterDimesnionHandler);
 		var selSource = preFix + '.selSource_' + val + '_' + id;
 		SourcesWorker.loadSources(selSource);
@@ -323,6 +325,8 @@ InstancesWorker.registerHandlers = function () {
 		var preFix = 'instance.glyphs';
 		var btnAddGlyphDimension = preFix + '.addMetric_' + val + '_' + id;
 		var btnAddMasterDimension = preFix + '.addMaster_' + val + '_' + id;
+		var selGlyphLocation = preFix + '.selMetric_' + val + '_' + id;
+		InternalWorker.loadMetrics(selGlyphLocation);
 		Util.registerClick(btnAddGlyphDimension, InstancesWorker.addGlyphDimensionHandler);
 		Util.registerClick(btnAddMasterDimension, InstancesWorker.addGlyphMasterHandler);
 	};
@@ -350,6 +354,9 @@ InstancesWorker.addInstance = function () {
 	var instance = document.createElement('li');
 	instance.innerHTML = html;
 	Instances.appendChild(instance);
+	InternalWorker.loadMetrics('instance.selMetric_' + rowId);
+	InternalWorker.loadMetrics('instance.selInfoMetric_' + rowId);
+	InternalWorker.loadMetrics('instance.selKernMetric_' + rowId);
 	var srcElem = document.getElementById('instance_' + rowId);
 	Util.registerClick('instance.addName_' + rowId, InstancesWorker.addNameHandler);
 	Util.registerClick('instance.addMetric_' + rowId, InstancesWorker.addDimensionHandler);
@@ -632,6 +639,7 @@ SourcesWorker.addSource = function () {
 	var source = document.createElement('li');
 	source.innerHTML = html;
 	Sources.appendChild(source);
+	InternalWorker.loadMetrics('source.selMetric_' + rowId);
 	Util.registerClick('source.remove_' + rowId, SourcesWorker.removeHandler);
 	Util.registerClick('muteInfo_' + rowId, SourcesWorker.muteInfoHandler);
 	Util.registerClick('copyInfo_' + rowId, SourcesWorker.copyInfoHandler);
@@ -1243,6 +1251,18 @@ InternalWorker.getMaster = function(li, olGlyphMasters, rowId) {
 	master.source = Util.selectedValue(olGlyphMasters + '.selSource' + '_' + val + '_' + rowId);
 	master.location = InternalWorker.getLocation(olGlyphMasters + '.metrics', val + '_' + rowId);
 	return master;
+}
+InternalWorker.loadMetrics2 = function(selectMetric) {
+	var o1 = Util.addOptionItem('Weight', 'weight', false);
+	var o2 = Util.addOptionItem('Width', 'width', false);
+	var sel = document.getElementById(selectMetric);
+	sel.appendChild(o1);
+	sel.appendChild(o2);
+}
+InternalWorker.loadMetrics = function(selectMetric) {
+			var innerHTML = Util.applyTemplate('MetricsTemplate', { });
+	var sel = document.getElementById(selectMetric);
+	sel.innerHTML = innerHTML;
 }
 
 DesignerSpace = {};

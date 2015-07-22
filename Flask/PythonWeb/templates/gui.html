@@ -99,8 +99,6 @@
 					<label class="space7">Location</label>
 					<label for="source.selMetric_{ID}" class="space5" id="source.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
 					<select id="source.selMetric_{ID}">
-						<option value="width">Width</option>
-						<option value="weight">Weight</option>
 					</select>
 				</span>
 
@@ -180,8 +178,6 @@
 				<label class="space7">Location</label>
 				<label for="instance.selMetric_{ID}" class="space5" id="instance.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
 				<select id="instance.selMetric_{ID}">
-					<option value="width">Width</option>
-					<option value="weight">Weight</option>
 				</select>
 			</span>
 
@@ -196,8 +192,6 @@
 				<label class="space7">Info</label>
 				<label for="instance.selInfoMetric_{ID}" class="space5" id="instance.selInfoMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
 				<select id="instance.selInfoMetric_{ID}">
-					<option value="width">Width</option>
-					<option value="weight">Weight</option>
 				</select>
 				<span class="space"></span>
 				<span class="info">
@@ -211,8 +205,6 @@
 				<label class="space7">Kerning</label>
 				<label for="instance.selKernMetric_{ID}" class="space5" id="instance.selKernMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
 				<select id="instance.selKernMetric_{ID}">
-					<option value="width">Width</option>
-					<option value="weight">Weight</option>
 				</select>
 				<span class="space"></span>
 				<span class="info">
@@ -331,8 +323,6 @@
 				<label class="space7">Location</label>
 				<label for="{prefix}.selMetric_{value}_{ID}" class="space5" id="{prefix}.selMetric_{value}_{ID}.lbl" style="display:none;">No more Metrics</label>
 				<select id="{prefix}.selMetric_{value}_{ID}">
-					<option value="width">Width</option>
-					<option value="weight">Weight</option>
 				</select>
 			</span>
 			<span class="space"></span>
@@ -374,8 +364,6 @@
 				<label class="space7">Location</label>
 				<label for="{prefix}.selMetric_{value}_{ID}" class="space5" id="{prefix}.selMetric_{value}_{ID}.lbl" style="display:none;">No more Metrics</label>
 				<select id="{prefix}.selMetric_{value}_{ID}">
-					<option value="width">Width</option>
-					<option value="weight">Weight</option>
 				</select>
 			</span>
 			<span class="space"></span>
@@ -388,6 +376,16 @@
 				<ol id="{prefix}.metrics_{value}_{ID}" class="metrics"></ol>
 			</div>
 		</div>
+	</script>
+
+	<script type="text/template" id="MetricsTemplate">
+		<option value="weight">Weight</option>
+		<option value="width">Width</option>
+		<!--optical
+		serif
+		slant
+		wobble
+		splatter-->
 	</script>
 
 	<iframe width="0" height="0" name="run" style="display:none;"></iframe>
