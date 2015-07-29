@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 23 01 30 23 IST
+Last Updated on  2015 Jul 30 02 15 34 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-23 01:30:23 HRS IST';Env.Version='0.8.0.12';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-30 02:15:34 HRS IST';Env.Version='0.8.0.67';
 
 
 PageWorker = function () { }
@@ -63,6 +63,8 @@ ComputeWorker.registerEvents = function () {
 	Util.registerClick('btn.run', ComputeWorker.runHandler);
 	Util.registerClick('multipleInstances', ComputeWorker.multipleInstancesHandler);
 	Util.registerClick('designOnly', ComputeWorker.designerOnlyHandler);
+	Util.registerClick('ufoVer2', ComputeWorker.ufO2Handler);
+	Util.registerClick('ufoVer3', ComputeWorker.ufO3Handler);
 }
 ComputeWorker.registerHandlers = function () {
 	ComputeWorker.computeHandler = function(e) {
@@ -79,6 +81,22 @@ ComputeWorker.registerHandlers = function () {
 	};
 	ComputeWorker.disposeHandler = function(e) {
 		ComputeWorker.handleDispose();
+	};
+	ComputeWorker.ufO2Handler = function(e) {
+		if (Util.isChecked('ufoVer2')) {
+			Util.setUnChecked('ufoVer3');
+		}
+		else {
+			Util.setChecked('ufoVer3');
+		}
+	};
+	ComputeWorker.ufO3Handler = function(e) {
+		if (Util.isChecked('ufoVer3')) {
+			Util.setUnChecked('ufoVer2');
+		}
+		else {
+			Util.setChecked('ufoVer2');
+		}
 	};
 }
 ComputeWorker.handleDesignerOnly = function () {
@@ -99,6 +117,7 @@ ComputeWorker.compute = function () {
 	Util.setValue('instance', ComputeWorker.joinList(instances));
 	Util.setValue('sessionId', Config.SessionId);
 	Util.setValue('rg', (Util.isChecked('chkRoungGeo')) ? '1' : '0');
+	Util.setValue('ufoVer', (Util.isChecked('ufoVer2')) ? '2' : '3');
 	document.getElementById('code').innerHTML = textToHtml(xml);
 	prettyPrint();
 	ComputeWorker.saveCopy(instances);
@@ -212,12 +231,16 @@ ComputeWorker.handleDispose = function () {
 	ComputeWorker.multipleInstancesHandler = null;
 	ComputeWorker.designerOnlyHandler = null;
 	ComputeWorker.disposeHandler = null;
+	ComputeWorker.ufO2Handler = null;
+	ComputeWorker.ufO3Handler = null;
 }
 ComputeWorker.deRegisterEvents = function () {
 	Util.deRegisterClick('btn.compute', ComputeWorker.computeHandler);
 	Util.deRegisterClick('btn.run', ComputeWorker.runHandler);
 	Util.deRegisterClick('multipleInstances', ComputeWorker.multipleInstancesHandler);
 	Util.deRegisterClick('designOnly', ComputeWorker.designerOnlyHandler);
+	Util.deRegisterClick('ufoVer2', ComputeWorker.ufO2Handler);
+	Util.deRegisterClick('ufoVer3', ComputeWorker.ufO3Handler);
 }
 ComputeWorker.dispose = function () {
 	ComputeWorker.handleDispose();
@@ -541,6 +564,7 @@ SourcesWorker.deRegisterEvents = function () {
 	Util.deRegisterClick('source.add', SourcesWorker.addHandler);
 }
 SourcesWorker.registerHandlers = function () {
+	InternalWorker.registerHandlers();
 	SourcesWorker.addHandler = function (e) {
 		SourcesWorker.addSource();
 	};
@@ -888,7 +912,7 @@ SourcesWorker.handleDesignerOnly = function () {
 				Util.setDisplayInline('source.ui_' + rowId);
 			}
 			else {
-				if (!Util.getValue(SourcesWorker.txtFileName + rowId)) {
+				if (!Util.getValue(SourcesWorker.txtFileName + rowId) || Util.getValue('source.uploaded_' + rowId) === '0') {
 					Util.setDisplayInline('uploader_' + rowId);
 					Util.noDisplay('source.ui_' + rowId);
 				}
@@ -920,6 +944,70 @@ SourcesWorker.dispose = function () {
 
 
 InternalWorker = function () { }
+InternalWorker.addPointSelctor = function(olTarget, postFix, rowId) {
+							var preFix = olTarget;
+	var Dict = { };
+	Dict['prefix'] = olTarget;
+	Dict['value'] = postFix;
+	var html = Util.applyTemplate('PointSelectorTemplate', Dict);
+	var li = document.createElement('div');
+	li.innerHTML = html;
+	var xy = preFix + '.xy_' + postFix;
+	var t1 = preFix + '.t1_' + postFix;
+	var t6 = preFix + '.t6_' + postFix;
+	document.getElementById(xy).parentNode.appendChild(li);
+	Util.registerClick(t1, InternalWorker.addSelectPointHandler);
+	Util.registerClick(xy, InternalWorker.showSelectPointHandler);
+}
+InternalWorker.registerHandlers = function () {
+	InternalWorker.addSelectPointHandler = function(e) {
+		var elem = (e.srcElement != null) ? e.srcElement : e.target;
+		if (elem.tagName.toLowerCase() === 'span' || elem.className === 't6') {
+			InternalWorker.hideSelectPointHandler(e);
+			return;
+		}
+		var rowId = InternalWorker.findRowId(e);
+		var preFix = InternalWorker.findPreFix(e);
+		var parent = InternalWorker.findParentPrefix(preFix);
+		var t4 = parent + '.t4_' + rowId;
+		var t5 = parent + '.t5_' + rowId;
+		var pos = GetCoordinates(e, t4, t5);
+		var e5 = document.getElementById(t5);
+		var xy = parent + '.xy_' + rowId;
+		var x = parent + '.x_' + rowId;
+		var y = parent + '.y_' + rowId;
+		var eXY = document.getElementById(xy);
+		var xVal = (pos[0] - 3) / (101);
+		var yVal = (pos[1] - 3) / (101);
+		if (xVal < 0) {
+			xVal = 0;
+		}
+		if (yVal < 0) {
+			yVal = 0;
+		}
+		eXY.innerHTML = '(' + (xVal).toFixed(2) + ' , ' + (yVal).toFixed(2) + ')';
+		Util.setValue(x, (xVal).toFixed(2));
+		Util.setValue(y, (yVal).toFixed(2));
+	};
+	InternalWorker.hideSelectPointHandler = function(e) {
+		InternalWorker.showHidePointer(e, false);
+	};
+	InternalWorker.showSelectPointHandler = function(e) {
+		InternalWorker.showHidePointer(e, true);
+	};
+}
+InternalWorker.showHidePointer = function(e, show) {
+					var rowId = InternalWorker.findRowId(e);
+	var preFix = InternalWorker.findPreFix(e);
+	var parent = InternalWorker.findParentPrefix(preFix);
+	var t1 = parent + '.t1_' + rowId;
+	if (!show) {
+		Util.noDisplay(t1);
+	}
+	else {
+		Util.setDisplay(t1);
+	}
+}
 InternalWorker.addGlyphMaster = function(rowId, olGlyphs, removeMasterandler) {
 	var preFix = olGlyphs;
 	var val = rowId.split('_')[0];
@@ -967,8 +1055,12 @@ InternalWorker.removeMuteGlyph = function(rowId, btnRemoveMuteGlyph, liMuteGlyph
 }
 InternalWorker.addName = function(rowId, select, liTarget, btnRemove, olTarget, removeNameHandler) {
 	InternalWorker.addControl('NameTemplate', rowId, select, liTarget, btnRemove, olTarget, removeNameHandler);
-}
+	}
 InternalWorker.addDimension = function(rowId, select, liTarget, btnRemove, olTarget, removeDimensionHandler) {
+													var postFix = InternalWorker.addControl('DimensionTemplate2', rowId, select, liTarget, btnRemove, olTarget, removeDimensionHandler);
+	InternalWorker.addPointSelctor(olTarget, postFix, rowId);
+}
+InternalWorker.addDimensionLegacy = function(rowId, select, liTarget, btnRemove, olTarget, removeDimensionHandler) {
 	InternalWorker.addControl('DimensionTemplate', rowId, select, liTarget, btnRemove, olTarget, removeDimensionHandler);
 }
 InternalWorker.removeControlSet = function(rowId, removePreFix, parentPreFix, removeDimensionHandler) {
@@ -1014,7 +1106,7 @@ InternalWorker.addControl = function (templateName, rowId, select, liTarget, btn
 	if (select != null) {
 		var index = Util.selectedIndex(select + rowId);
 		if (index === -1) {
-			return;
+			return null;
 		}
 		val = Util.selectedValue(select + rowId);
 		text = Util.selectedText(select + rowId);
@@ -1041,7 +1133,7 @@ InternalWorker.addControl = function (templateName, rowId, select, liTarget, btn
 	var targetId = liTarget + postFix;
 	if (document.getElementById(targetId) != null) {
 		Util.setFocusOnEditableChildById(targetId);
-		return;
+		return null;
 	}
 	var Dict = { };
 	Dict['ID'] = rowId;
@@ -1058,6 +1150,7 @@ InternalWorker.addControl = function (templateName, rowId, select, liTarget, btn
 	InternalWorker.toggleHead(ol);
 	Util.setFocusOnEditableChildById(targetId);
 	Util.registerClick(btnRemove + val + '_' + rowId, removeHandler);
+	return postFix;
 }
 InternalWorker.removeControl = function (rowId, select, btnRemove, parentPreFix, removeDimensionHanlder) {
 	Util.deRegisterClick(btnRemove + rowId, removeDimensionHanlder);
@@ -1111,6 +1204,16 @@ InternalWorker.findCheckedRowId = function (preFix, parent) {
 		}
 	}
 	return null;
+}
+InternalWorker.findPreFix = function(e) {
+				var elem = (e.srcElement != null) ? e.srcElement : e.target;
+	var elemId = elem.id;
+	var preFix = elemId.substr(0, elemId.indexOf('_'));
+	return preFix;
+}
+InternalWorker.findParentPrefix = function(preFix) {
+				var val = preFix.substr(0, preFix.lastIndexOf('.'));
+	return val;
 }
 InternalWorker.findRowId = function (e) {
 	var elem = (e.srcElement != null) ? e.srcElement : e.target;
@@ -1665,10 +1768,14 @@ ComputeWorker.chkMultipleInstances = 'multipleInstances';
 ComputeWorker.chkKeepResults = 'keepResults';
 ComputeWorker.chkRoungGeo = 'chkRoungGeo';
 ComputeWorker.divBuild = 'Build';
+ComputeWorker.chkUFO3 = 'ufoVer3';
+ComputeWorker.chkUFO2 = 'ufoVer2';
 ComputeWorker.runHandler = null;
 ComputeWorker.computeHandler = null;
 ComputeWorker.multipleInstancesHandler = null;
 ComputeWorker.designerOnlyHandler = null;
+ComputeWorker.ufO2Handler = null;
+ComputeWorker.ufO3Handler = null;
 ComputeWorker.disposeHandler = null;
 ComputeWorker.computeInProgress = false;
 ComputeWorker.instancesList = [];
@@ -1769,3 +1876,4 @@ SourcesWorker.removeMuteGlyphHandler = null;
 SourcesWorker.fileSelectedHandler = null;
 SourcesWorker.disposeHandler = null;
 SourcesWorker.uploadTracker = null;
+InternalWorker.addSelectPointHandler = null;

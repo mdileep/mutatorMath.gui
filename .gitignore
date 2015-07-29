@@ -9,6 +9,7 @@ packages/
 robofab-ufo3k/
 Zip/
 Trim/
+tests/
 
 #No Longer  Supported
 DesignSpace2.Sln

@@ -170,6 +170,14 @@ sup {
 	min-width: 60px;
 }
 
+.space8 {
+	font-size: 12px;
+	font-weight: bold;
+	display: inline-block;
+	min-width: 60px;
+	color:blue;
+	cursor:pointer;
+}
 .space6 {
 	font-size: 12px;
 	font-weight: bold;
@@ -308,3 +316,68 @@ form {
 	font-size: 10px;
 	font-weight: bold;
 }
+/*t1,t2,t3,t4,t5,t6 are for Point Selector*/
+.t1 {
+	position: relative;
+	width: 120px;
+	clear: both;
+	z-index: 10000;
+	border-width: 1px;
+	border-style: solid;
+	border-color: threedhighlight threedshadow threedshadow threedhighlight;
+	background: threedface;
+}
+.t2 {
+	width: 123px;
+	height: 155px;
+}
+.t3 {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: threedshadow threedhighlight threedhighlight threedshadow;
+}
+.t4 {
+	width: 101px;
+	height: 101px;
+	background-color:white;/*May use Image*/
+	background-position: 0px 0px;
+	background-repeat: no-repeat;
+}
+.t5 {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 120px;
+	height: 155px;
+	cursor: crosshair;
+	background-image: url('cross.gif');
+	background-position: 4px 104px;
+	background-repeat: no-repeat;
+}
+.t6 {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	display: block;
+	padding: 0px 15px;
+	height: 18px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: threedhighlight threedshadow threedshadow threedhighlight;
+	color: buttontext;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	font-stretch: normal;
+	font-size: 12px;
+	line-height: normal;
+	font-family: sans-serif;
+	text-align: center;
+	cursor: pointer;
+}
+	.t6 span {
+		line-height: 18px;
+	}

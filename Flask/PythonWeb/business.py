@@ -19,16 +19,23 @@ def run():
         toFile = sessionId + ".designspace"
         logFile = sessionId + ".log"
         toFile = os.path.join(toDir,toFile)
+        ver= request.form['ufoVer'] 
 
         if rg == "1":
             rg = True
         else:
             rg = False
+        
+
+        if ufoVer=="2":
+            ver=2 #Doing White listing so  not Parsing as int.
+        else:
+            ver=3
+            
 
         lib.saveToText(toFile,text)
+        mmWrapper.go(toFile,logFile,ufoVer,rg)
 
-        mmWrapper.go(toFile,logFile,3,rg)
-        
         arr = instance.split(',')
         for instanceFile in arr:
             zipHandler.zipDirectory(os.path.join(toDir,instanceFile),os.path.join(toDir,instanceFile + '.zip'))

@@ -58,9 +58,11 @@
 				<div class="h2">&nbsp;</div>
 				<div class="tools">
 					<input type="checkbox" id="keepResults" name="keepResults" /> <label for="keepResults">Preserve Results</label><sup title="Links to the results of the lastest run will be preseved during the run.">+</sup>
+					<span class="space2"></span>
+					<input type="checkbox" id="ufoVer2" checked="checked" name="ufoVer2" /> <label for="ufoVer">UFO  Version: 2</label>
 					<span class="space"></span>
-					<input type="checkbox" id="ufoVer" checked="checked" disabled="disabled" name="ufoVer" /> <label for="ufoVer">UFO  Version: 3</label>
-					<span class="space"></span>
+					<input type="checkbox" id="ufoVer3" name="ufoVer3" /> <label for="ufoVer">UFO  Version: 3</label>
+					<span class="space2"></span>
 					<input type="checkbox" id="roundGeo" checked="checked" name="roundGeo" /> <label for="roundGeo">Round Geometry</label><sup title="The result UFO glyph points will be rounded off to nearest integer">+</sup>
 					<span class="space"></span>
 					<button style="display:none" class="add3" id="btn.compute" title="Compute">Design Space</button>
@@ -283,6 +285,38 @@
 				</div>
 			</script>
 
+			<script type="text/template" id="DimensionTemplate2">
+				<div id="metric_{value}_{ID}">
+
+					<label class="space4">{text}</label>
+
+					<span class="space3"></span>
+
+					<label title="Click here to Select the Metrics for {text}" class="space8" id="{prefix}.xy_{value}_{ID}">(0.00 , 0.00)</label>
+
+					<span class="space3"></span>
+					<input type="hidden" min="0" max="50" step="0.1" id="{prefix}.x_{value}_{ID}" class="text2" value="" />
+					<input type="hidden" min="0" max="20" step="0.1" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
+
+					<span class="info">
+						<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
+					</span>
+
+				</div>
+			</script>
+
+			<script type="text/template" id="PointSelectorTemplate">
+				<div class="t1" id="{prefix}.t1_{value}">
+					<div class="t2" id="{prefix}.t2_{value}">
+						<div class="t3">
+							<div class="t4" id="{prefix}.t4_{value}"></div>
+						</div>
+						<div class="t5" id="{prefix}.t5_{value}"></div>
+						<div class="t6" id="{prefix}.t6_{value}">OK</div>
+					</div>
+				</div>
+			</script>
+
 			<script type="text/template" id="NameTemplate">
 				<div id="name_{value}_{ID}">
 					<label class="space6">{text}</label>
@@ -411,18 +445,22 @@
 			<script type="text/template" id="MetricsTemplate">
 				<option value="weight">Weight</option>
 				<option value="width">Width</option>
-						<!--optical
-						serif
-						slant
-						wobble
-						splatter-->
+				<!--optical
+				serif
+				slant
+				wobble
+				splatter-->
 			</script>
+
+
+
 
 			<iframe width="0" height="0" name="run" style="display:none;"></iframe>
 			<form action="/run" method="post" id="frmRun" target="run">
 				<input type="hidden" name="txt.xml" id="txt.xml" />
 				<input type="hidden" name="instance" id="instance" />
 				<input type="hidden" name="rg" id="rg" />
+				<input type="hidden" name="ufoVer" id="ufoVer" />
 				<input type="hidden" name="sessionId" id="sessionId" />
 			</form>
 		</div>
@@ -439,4 +477,3 @@
 	<script type="text/javascript" src="/JS/DesignSpace.app.js"></script>
 </body>
 </html>
-
