@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Jul 30 02 15 34 IST
+Last Updated on  2015 Aug 14 02 24 59 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-07-30 02:15:34 HRS IST';Env.Version='0.8.0.67';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-08-14 02:24:59 HRS IST';Env.Version='0.8.0.83';
 
 
 PageWorker = function () { }
@@ -971,20 +971,17 @@ InternalWorker.registerHandlers = function () {
 		var parent = InternalWorker.findParentPrefix(preFix);
 		var t4 = parent + '.t4_' + rowId;
 		var t5 = parent + '.t5_' + rowId;
-		var pos = GetCoordinates(e, t4, t5);
+		var offSet = 12;
+		var pos = GetCoordinates(e, t4, t5, offSet, offSet);
 		var e5 = document.getElementById(t5);
 		var xy = parent + '.xy_' + rowId;
 		var x = parent + '.x_' + rowId;
 		var y = parent + '.y_' + rowId;
 		var eXY = document.getElementById(xy);
-		var xVal = (pos[0] - 3) / (101);
-		var yVal = (pos[1] - 3) / (101);
-		if (xVal < 0) {
-			xVal = 0;
-		}
-		if (yVal < 0) {
-			yVal = 0;
-		}
+		var xVal = (pos[0] - offSet) / (100);
+		var yVal = (pos[1] - offSet) / (100);
+		xVal = InternalWorker.keepInLimits(xVal, 0, 1);
+		yVal = InternalWorker.keepInLimits(yVal, 0, 1);
 		eXY.innerHTML = '(' + (xVal).toFixed(2) + ' , ' + (yVal).toFixed(2) + ')';
 		Util.setValue(x, (xVal).toFixed(2));
 		Util.setValue(y, (yVal).toFixed(2));
@@ -995,6 +992,15 @@ InternalWorker.registerHandlers = function () {
 	InternalWorker.showSelectPointHandler = function(e) {
 		InternalWorker.showHidePointer(e, true);
 	};
+}
+InternalWorker.keepInLimits = function(xVal, lowerLimit, upperLimit) {
+								if (xVal < lowerLimit) {
+		return lowerLimit;
+	}
+	if (xVal > upperLimit) {
+		return upperLimit;
+	}
+	return xVal;
 }
 InternalWorker.showHidePointer = function(e, show) {
 					var rowId = InternalWorker.findRowId(e);

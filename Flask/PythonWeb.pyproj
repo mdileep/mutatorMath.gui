@@ -55,6 +55,7 @@
     <Content Include="PythonWeb\static\content\cross.gif" />
     <Content Include="PythonWeb\static\content\external.css" />
     <Content Include="PythonWeb\static\content\favicon.ico" />
+    <Content Include="PythonWeb\static\content\graph.png" />
     <Content Include="PythonWeb\static\content\hs.png" />
     <Content Include="PythonWeb\static\content\styles.css" />
     <Content Include="PythonWeb\static\fonts\glyphicons-halflings-regular.eot" />

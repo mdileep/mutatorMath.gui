@@ -99,5 +99,65 @@ PR.registerLangHandler(PR.createSimpleLexer([["pln", /^[\t\n\r \xa0]+/, null, "\
 //# sourceMappingURL=jquery.min.map
 
 /*Select the Point*/
-function FindPosition(e) { if ("undefined" != typeof e.offsetParent) { for (var t = 0, n = 0; e; e = e.offsetParent) t += e.offsetLeft, n += e.offsetTop; return [t, n] } return [e.x, e.y] }
-function GetCoordinates(e, t, n) { var o, d = 0, c = 0; if (o = FindPosition(document.getElementById(t)), !e) var e = window.event; e.pageX || e.pageY ? (d = e.pageX, c = e.pageY) : (e.clientX || e.clientY) && (d = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft, c = e.clientY + document.body.scrollTop + document.documentElement.scrollTop), d -= o[0], c -= o[1], 0 > d && (d = 3), 0 > c && (c = 3); var i = document.getElementById(t).offsetWidth, f = document.getElementById(t).offsetHeight; d > i && (d = i + 3), c > f && (c = f + 3); document.getElementById(n).style.backgroundPosition = d + "px" + " " + c + "px"; document.getElementById(n).style.backgroundPositionX = d + "px"; document.getElementById(n).style.backgroundPositionY = c + "px"; return [d, c]; }
+function FindPosition(oElement) {
+	if (typeof (oElement.offsetParent) != "undefined") {
+		for (var posX = 0, posY = 0; oElement; oElement = oElement.offsetParent) {
+			posX += oElement.offsetLeft;
+			posY += oElement.offsetTop;
+		}
+		return [posX, posY];
+	}
+	else {
+		return [oElement.x, oElement.y];
+	}
+}
+
+function GetCoordinates(e, t, p, x, y) {
+
+	var PosX = 0;
+	var PosY = 0;
+	var ImgPos;
+	ImgPos = FindPosition(document.getElementById(t));
+
+	if (!e) var e = window.event;
+
+	if (e.pageX || e.pageY) {
+		PosX = e.pageX;
+		PosY = e.pageY;
+	}
+	else if (e.clientX || e.clientY) {
+		PosX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+		PosY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+	}
+
+	PosX = PosX - ImgPos[0] + x;
+	PosY = PosY - ImgPos[1] + y;
+
+	if (PosX < x) {
+		PosX = x;
+	}
+
+	if (PosY < y) {
+		PosY = y;
+	}
+
+	var limtX = document.getElementById(t).offsetWidth;
+	var limtY = document.getElementById(t).offsetHeight;
+
+	if (PosX > limtX + x) {
+		PosX = limtX + x;
+	}
+
+
+	if (PosY > limtY + y) {
+		PosY = limtY + y;
+	}
+
+
+	document.getElementById(p).style.backgroundPositionX = PosX + "px";
+	document.getElementById(p).style.backgroundPositionY = PosY + "px";
+
+	var _p = "" + PosX + "px" + " " + PosY + "px";
+	document.getElementById(p).style.backgroundPosition = _p;
+	return [PosX, PosY];
+}

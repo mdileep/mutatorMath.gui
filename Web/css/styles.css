@@ -83,7 +83,6 @@ sup {
 
 .sources {
 	clear: both;
-	overflow: auto;
 }
 
 	.sources li {
@@ -245,11 +244,19 @@ label.space7 {
 	font-size: 12px;
 }
 
-
 .remove {
 	cursor: pointer;
 	color: red;
 	font-size: 14px;
+	background-image: url('delete.png');
+	background-repeat: no-repeat;
+	background-color: transparent;
+	border: 0px;
+	height: 32px;
+	width: 32px;
+	text-indent: 32px;
+	overflow: hidden;
+	display: inline-block;
 }
 
 	.remove:hover {
@@ -261,7 +268,15 @@ label.space7 {
 	cursor: pointer;
 	color: green;
 	font-size: 24px;
-	min-height: 36px;
+	height: 42px;
+	width: 42px;
+	background-image: url('plus.png');
+	background-repeat: no-repeat;
+	background-color: transparent;
+	border: 0px;
+	text-indent: 42px;
+	overflow: hidden;
+	display: inline-block;
 }
 
 	.add:hover {
@@ -322,7 +337,6 @@ form {
 /*t1,t2,t3,t4,t5,t6 are for Point Selector*/
 .t1 {
 	position: relative;
-	width: 120px;
 	clear: both;
 	z-index: 10000;
 	border-width: 1px;
@@ -331,46 +345,49 @@ form {
 	background: threedface;
 }
 
+.t1, .t5 {
+	width: 135px;
+	height: 135px;
+}
+
 .t2 {
-	width: 123px;
-	height: 155px;
 }
 
 .t3 {
 	position: absolute;
-	left: 10px;
-	top: 10px;
+	left: 20px;
+	top: 20px;
 	border-width: 1px;
 	border-style: solid;
 	border-color: threedshadow threedhighlight threedhighlight threedshadow;
 }
 
 .t4 {
-	width: 101px;
-	height: 101px;
-	background-color: white; /*May use Image*/
+	width: 100px;
+	height: 100px;
+	background-image: url('graph.png');
 	background-position: 0px 0px;
-	background-repeat: no-repeat;
+	background-repeat: repeat;
 }
 
 .t5 {
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	width: 120px;
-	height: 155px;
 	cursor: crosshair;
 	background-image: url('cross.gif');
-	background-position: 4px 104px;
+	background-position: 12px 12px;
 	background-repeat: no-repeat;
 }
 
 .t6 {
 	position: absolute;
+	
 	right: 10px;
 	bottom: 10px;
-	display: block;
-	padding: 0px 15px;
+
+	display: none;
+	padding: 2px 15px;
 	height: 18px;
 	border-width: 1px;
 	border-style: solid;
@@ -385,6 +402,36 @@ form {
 	font-family: sans-serif;
 	text-align: center;
 	cursor: pointer;
-	line-height: 18px;
 }
 
+.origin {
+	width: 8px;
+	height: 8px;
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	background: url('origin.png');
+	overflow: hidden;
+	text-indent: 4px;
+	z-index: 1;
+	display:none;
+}
+
+.axis-x {
+	width: 100%;
+	height: 20px;
+	font-size: 16px;
+	color: red;
+	text-align: center;
+}
+
+.axis-y {
+	width: 20px;
+	height: 100%;
+	font-size: 16px;
+	vertical-align: middle;
+	color: red;
+	top:60px;
+	position:absolute;
+	margin-left:4px;
+}
