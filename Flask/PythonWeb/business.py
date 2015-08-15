@@ -19,13 +19,12 @@ def run():
         toFile = sessionId + ".designspace"
         logFile = sessionId + ".log"
         toFile = os.path.join(toDir,toFile)
-        ver= request.form['ufoVer'] 
+        ufoVer= request.form['ufoVer'] 
 
         if rg == "1":
             rg = True
         else:
             rg = False
-        
 
         if ufoVer=="2":
             ver=2 #Doing White listing so  not Parsing as int.
@@ -34,7 +33,7 @@ def run():
             
 
         lib.saveToText(toFile,text)
-        mmWrapper.go(toFile,logFile,ufoVer,rg)
+        mmWrapper.go(toFile,logFile,ver,rg)
 
         arr = instance.split(',')
         for instanceFile in arr:

@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Aug 14 02 24 59 IST
+Last Updated on  2015 Aug 15 02 58 22 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-08-14 02:24:59 HRS IST';Env.Version='0.8.0.83';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-08-15 02:58:22 HRS IST';Env.Version='0.8.0.87';
 
 
 PageWorker = function () { }
@@ -51,6 +51,7 @@ ComputeWorker.internalInit = function () {
 	else {
 		Util.setUnChecked('designOnly');
 	}
+	ComputeWorker.handlerShowLess();
 	ComputeWorker.compute();
 }
 ComputeWorker.setBuildDetails = function () {
@@ -65,6 +66,7 @@ ComputeWorker.registerEvents = function () {
 	Util.registerClick('designOnly', ComputeWorker.designerOnlyHandler);
 	Util.registerClick('ufoVer2', ComputeWorker.ufO2Handler);
 	Util.registerClick('ufoVer3', ComputeWorker.ufO3Handler);
+	Util.registerClick('showLess', ComputeWorker.toggleLessControlsHandler);
 }
 ComputeWorker.registerHandlers = function () {
 	ComputeWorker.computeHandler = function(e) {
@@ -78,6 +80,9 @@ ComputeWorker.registerHandlers = function () {
 	};
 	ComputeWorker.designerOnlyHandler = function(e) {
 		ComputeWorker.handleDesignerOnly();
+	};
+	ComputeWorker.toggleLessControlsHandler = function(e) {
+		ComputeWorker.handlerShowLess();
 	};
 	ComputeWorker.disposeHandler = function(e) {
 		ComputeWorker.handleDispose();
@@ -98,6 +103,14 @@ ComputeWorker.registerHandlers = function () {
 			Util.setChecked('ufoVer2');
 		}
 	};
+}
+ComputeWorker.handlerShowLess = function () {
+	if (Util.isChecked('showLess')) {
+		AddStyle('.less{ display:none; }', 'less');
+	}
+	else {
+		AddStyle('.less{  }', 'less');
+	}
 }
 ComputeWorker.handleDesignerOnly = function () {
 	SourcesWorker.handleDesignerOnly();
@@ -233,6 +246,7 @@ ComputeWorker.handleDispose = function () {
 	ComputeWorker.disposeHandler = null;
 	ComputeWorker.ufO2Handler = null;
 	ComputeWorker.ufO3Handler = null;
+	ComputeWorker.toggleLessControlsHandler = null;
 }
 ComputeWorker.deRegisterEvents = function () {
 	Util.deRegisterClick('btn.compute', ComputeWorker.computeHandler);
@@ -241,6 +255,7 @@ ComputeWorker.deRegisterEvents = function () {
 	Util.deRegisterClick('designOnly', ComputeWorker.designerOnlyHandler);
 	Util.deRegisterClick('ufoVer2', ComputeWorker.ufO2Handler);
 	Util.deRegisterClick('ufoVer3', ComputeWorker.ufO3Handler);
+	Util.deRegisterClick('showLess', ComputeWorker.toggleLessControlsHandler);
 }
 ComputeWorker.dispose = function () {
 	ComputeWorker.handleDispose();
@@ -1771,6 +1786,7 @@ ComputeWorker.divRunning = 'running';
 ComputeWorker.lblDownloadLinks = 'lbl.downloadLinks';
 ComputeWorker.chkDesignOnly = 'designOnly';
 ComputeWorker.chkMultipleInstances = 'multipleInstances';
+ComputeWorker.chkShowLess = 'showLess';
 ComputeWorker.chkKeepResults = 'keepResults';
 ComputeWorker.chkRoungGeo = 'chkRoungGeo';
 ComputeWorker.divBuild = 'Build';
@@ -1779,6 +1795,7 @@ ComputeWorker.chkUFO2 = 'ufoVer2';
 ComputeWorker.runHandler = null;
 ComputeWorker.computeHandler = null;
 ComputeWorker.multipleInstancesHandler = null;
+ComputeWorker.toggleLessControlsHandler = null;
 ComputeWorker.designerOnlyHandler = null;
 ComputeWorker.ufO2Handler = null;
 ComputeWorker.ufO3Handler = null;
@@ -1883,3 +1900,5 @@ SourcesWorker.fileSelectedHandler = null;
 SourcesWorker.disposeHandler = null;
 SourcesWorker.uploadTracker = null;
 InternalWorker.addSelectPointHandler = null;
+InternalWorker.hideSelectPointHandler = null;
+InternalWorker.showSelectPointHandler = null;

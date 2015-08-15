@@ -161,3 +161,23 @@ function GetCoordinates(e, t, p, x, y) {
 	document.getElementById(p).style.backgroundPosition = _p;
 	return [PosX, PosY];
 }
+AddStyle = function (str, id) {
+	var el = document.getElementById(id);
+	if (el != null) {
+		if (el.styleSheet) {
+			el.styleSheet.cssText = "";//IE only
+		}
+		else { document.getElementsByTagName('head')[0].removeChild(el); }
+	}
+	el = document.createElement('style');
+	el.type = "text/css";
+	el.media = 'screen';
+	el.id = id;
+	if (el.styleSheet) {
+		el.styleSheet.cssText = str;//IE only
+	}
+	else {
+		el.appendChild(document.createTextNode(str));
+	}
+	document.getElementsByTagName('head')[0].appendChild(el);
+}
