@@ -100,7 +100,7 @@
 	</div>
 
 
-	<div id="output" >
+	<div id="output">
 		<div class="subhead">
 			<div class="mega-octicon octicon-file-code h2-sources">Design Space Document</div>
 		</div>
@@ -130,12 +130,11 @@
 <div style="display:none" id="Templates">
 	<script type="text/template" id="SourceTemplate">
 		<div id="source_{ID}" class="source">
+			<span class="info" style="vertical-align:top;">
+				<button class="mega-octicon octicon-trashcan remove" id="source.remove_{ID}" title="Delete"></button>
+			</span>
+			<span class="space3"></span>
 			<div class="mainSource" id="source.ui_{ID}">
-
-				<span class="info" style="vertical-align:top;">
-					<button class="mega-octicon octicon-trashcan remove" id="source.remove_{ID}" title="Delete"></button>
-				</span>
-
 				<input type="text" id="source.name_{ID}" class="text" value="Master{ID}" readonly="readonly" />
 				<input type="hidden" id="source.filename_{ID}" class="text" value="source_{ID}_{SID}" />
 				<input type="hidden" id="source.uploaded_{ID}" class="text" value="0" />
@@ -208,12 +207,11 @@
 
 	<script type="text/template" id="InstanceTemplate">
 		<div id="instance_{ID}" class="instance">
+			<span class="info">
+				<button class="mega-octicon octicon-trashcan remove" id="instance.remove_{ID}" title="Delete"></button>
+			</span>
+			<span class="space3"></span>
 			<div class="mainInstance">
-				<span class="info">
-					<button class="mega-octicon octicon-trashcan remove" id="instance.remove_{ID}" title="Delete"></button>
-				</span>
-				<span class="space3"></span>
-
 				<input type="text" id="instance.name_{ID}" class="text" value="Family" />
 
 				<span class="space2"></span>
