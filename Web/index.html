@@ -5,6 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="JS/external/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="/css/styles.css" />
 	<link rel="stylesheet" type="text/css" href="/JS/external/prettify.css" />
+	<link rel="stylesheet" type="text/css" href="css/octicon/octicons.css" />
 	<script type="text/javascript">var Config = {}; Config.SessionId = '0011221100'; Config.DesignerOnly = true;</script>
 	<script type="text/javascript" src="/JS/External.js"></script>
 	<script type="text/javascript" src="/JS/DesignSpace.Util.js"></script>
@@ -29,456 +30,514 @@
 	</nav>
 
 	<div class="container">
-		<div class="spacer"><h2>Designer</h2></div>
+		<div class="spacer"><h2 class="mega-octicon octicon-paintcan h2-designer">Designer</h2></div>
+
+
 		<div id="designSpace" class="canvas">
 			<div class="subhead">
-				<div class="h2">&nbsp;</div>
-				<div class="tools">
-					<span class="info">
-						<input type="checkbox" id="multipleInstances" checked="checked" name="multipleInstances" /> <label for="multipleInstances">Multiple Instances</label><sup title="Some of the controls will get reset.">+</sup>
-						<span class="space"></span>
-						<input type="checkbox" id="showLess" name="showLess"  /> <label for="showLess">Show Less Controls</label><sup title="Shows few important controls only">+</sup>
-						<span class="space"></span>
-						<input type="checkbox" id="designOnly" name="designOnly" checked="checked" /> <label for="designOnly">Design only</label><sup title="On Selecting Design only requests won't be submitted to Server">+</sup>
-					</span>
-				</div>
+				<div class="mega-octicon octicon-settings h2-sources">Settings</div>
 			</div>
 
+
+			<ol class="tops">
+				<li>
+					<div class="top">
+						<div class="mainTop">
+							<input type="checkbox" id="multipleInstances" checked="checked" name="multipleInstances" /> <label for="multipleInstances">Multiple Instances</label><sup title="Some of the controls will get reset."></sup>
+							<span class="space"></span>
+							<input type="checkbox" id="showLess" name="showLess" /> <label for="showLess">Simple UI</label><sup title="Shows few important controls only"></sup>
+							<span class="space"></span>
+							<input type="checkbox" id="designOnly" name="designOnly" checked="checked" /> <label for="designOnly">Design only</label><sup title="On Selecting Design only requests won't be submitted to Server"></sup>
+						</div>
+					</div>
+				</li>
+			</ol>
+
 			<div class="subhead">
-				<div class="h2">Sources</div>
-				<div class="tools"><button class="add" id="source.add" title="Add">+</button></div>
+				<div class="mega-octicon octicon-plug h2-sources">Sources</div>
+				<div class="tools"><button class="mega-octicon octicon-plus add" id="source.add" title="Add"></button></div>
 			</div>
+
 			<ol id="sources" class="sources"></ol>
 
 			<div class="subhead">
-				<div class="h2">Instances</div>
-				<div class="tools"><button class="add" id="instance.add" title="Add">+</button></div>
+				<div class="mega-octicon octicon-pin h2-sources">Instances</div>
+				<div class="tools"><button class="mega-octicon octicon-plus add" id="instance.add" title="Add"></button></div>
 			</div>
 
 			<ol id="instances" class="sources"></ol>
 
 			<div class="subhead">
-				<div class="h2">&nbsp;</div>
-				<div class="tools">
-					<input type="checkbox" id="keepResults" name="keepResults" /> <label for="keepResults">Preserve Results</label><sup title="Links to the results of the lastest run will be preseved during the run.">+</sup>
-					<span class="space2"></span>
-					<input type="checkbox" id="ufoVer2" checked="checked" name="ufoVer2" /> <label for="ufoVer">UFO  Version: 2</label>
-					<span class="space"></span>
-					<input type="checkbox" id="ufoVer3" name="ufoVer3" /> <label for="ufoVer">UFO  Version: 3</label>
-					<span class="space2"></span>
-					<input type="checkbox" id="roundGeo" checked="checked" name="roundGeo" /> <label for="roundGeo">Round Geometry</label><sup title="The result UFO glyph points will be rounded off to nearest integer">+</sup>
-					<span class="space"></span>
-					<button style="display:none" class="add3" id="btn.compute" title="Compute">Design Space</button>
-					<button class="add3" id="btn.run" title="Download Mutated Math Output">Run</button>
-				</div>
+				<div class="mega-octicon octicon-rocket add">Launcher</div>
 			</div>
+			<ol class="tops">
+				<li>
+					<div class="top">
+						<div class="mainTop">
+							<input type="checkbox" id="keepResults" name="keepResults" /> <label for="keepResults">Preserve Results</label><sup title="Links to the results of the lastest run will be preseved during the run."></sup>
+							<span class="space2"></span>
+							<input type="checkbox" id="ufoVer2" checked="checked" name="ufoVer2" /> <label for="ufoVer">UFO  Version: 2</label>
+							<span class="space"></span>
+							<input type="checkbox" id="ufoVer3" name="ufoVer3" /> <label for="ufoVer">UFO  Version: 3</label>
+							<span class="space2"></span>
+							<input type="checkbox" id="roundGeo" checked="checked" name="roundGeo" /> <label for="roundGeo">Round Geometry</label><sup title="The result UFO glyph points will be rounded off to nearest integer"></sup>
+							<span class="space"></span>
+							<button style="display:none" class="add3" id="btn.compute" title="Compute">Design Space</button>
+							<button class="mega-octicon octicon-gear run" id="btn.run" title="Download Mutated Math Output">Run</button>
+						</div>
+					</div>
+				</li>
+			</ol>
+
+			<div id="running" style="display:none;">
+				<div class="subhead">
+					<div class="mega-octicon octicon-beaker add">Processing..</div>
+				</div>
+				<ol class="tops">
+					<li>
+						<div class="top">
+							<div class="mainTop3">
+								<span class="running">Please wait while processing the request.</span>
+							</div>
+						</div>
+					</li>
+				</ol>
+			</div>
+
+			<div id="downloads" style="display:none;">
+				<div class="subhead" id="lbl.downloadLinks">
+					<div class="mega-octicon octicon-desktop-download add">Downloads</div>
+				</div>
+
+				<ol class="tops">
+					<li>
+						<div class="top">
+							<div class="mainTop2">
+								<ol id="downloadLinks" class="sources"></ol>
+							</div>
+						</div>
+					</li>
+				</ol>
+			</div>
+
+
+			<div id="output">
+				<div class="subhead">
+					<div class="mega-octicon octicon-file-code h2-sources">Design Space Document</div>
+				</div>
+				<ol class="tops">
+					<li>
+						<div class="top">
+							<div class="mainTop2">
+								<pre class="prettyprint lang-xml" id="code"></pre>
+							</div>
+						</div>
+					</li>
+				</ol>
+			</div>
+			<hr />
+			<footer class="footer">
+				<div class="container">
+					<div id="Build"></div>
+				</div>
+			</footer>
 		</div>
-		<span class="running" style="display:none;" id="running">Please wait while processing the request.</span>
-		<label class="spacer" style="display:none;" id="lbl.downloadLinks"><h2>Downloads from Latest Run</h2></label>
-		<ol id="downloadLinks" class="sources"></ol>
-		<div class="spacer"><h2>Design Space Document</h2></div>
-
-		<div class="output" id="output">
-			<pre class="prettyprint lang-xml" id="code"></pre>
-		</div>
 
 
-	</div>
+		<div style="display:none" id="Templates">
+			<script type="text/template" id="SourceTemplate">
+				<div id="source_{ID}" class="source">
+					<div class="mainSource" id="source.ui_{ID}">
 
-	<div style="display:none" id="Templates">
-		<script type="text/template" id="SourceTemplate">
-			<div id="source_{ID}" class="source">
+						<span class="info" style="vertical-align:top;">
+							<button class="mega-octicon octicon-trashcan remove" id="source.remove_{ID}" title="Delete"></button>
+						</span>
 
-				<span class="info" style="vertical-align:top;">
-					<button class="remove" id="source.remove_{ID}" title="Delete">X</button>
-				</span>
+						<input type="text" id="source.name_{ID}" class="text" value="Master{ID}" readonly="readonly" />
+						<input type="hidden" id="source.filename_{ID}" class="text" value="source_{ID}_{SID}" />
+						<input type="hidden" id="source.uploaded_{ID}" class="text" value="0" />
+						<span class="info less">
+							<span class="space3"></span>
+							<span class="info">
+								<input type="checkbox" id="copyInfo_{ID}" name="copyInfo_{ID}" /> <label for="copyInfo_{ID}">Copy Info</label>
+								<span class="space3"></span>
+								<input type="checkbox" id="muteInfo_{ID}" name="muteInfo_{ID}" /> <label for="muteInfo_{ID}">Mute Info</label>
+							</span>
+						</span>
+						<span class="space2"></span>
 
-				<div class="mainsource" id="source.ui_{ID}">
-					<input type="text" id="source.name_{ID}" class="text" value="Master{ID}" readonly="readonly" />
-					<input type="hidden" id="source.filename_{ID}" class="text" value="source_{ID}_{SID}" />
-					<input type="hidden" id="source.uploaded_{ID}" class="text" value="0" />
-					<span class="info less">
+						<span class="less">
+							<input type="checkbox" id="copyLib_{ID}" name="copyLib_{ID}" /> <label for="copyLib_{ID}">Copy Lib</label>
+							<span class="space"></span>
+							<input type="checkbox" id="copyGroups_{ID}" name="copyGroups_{ID}" /> <label for="copyGroups_{ID}">Copy Groups</label>
+							<span class="space"></span>
+							<input type="checkbox" id="muteKerning_{ID}" name="muteKerning_{ID}" /> <label for="muteKerning_{ID}">Mute Kerning</label>
+							<span class="space2"></span>
+						</span>
+
+						<span class="select2">
+							<label class="space7">Location</label>
+							<label for="source.selMetric_{ID}" class="space5" id="source.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
+							<select id="source.selMetric_{ID}"></select>
+						</span>
+
+						<span class="space"></span>
+						<span class="info">
+							<button class="octicon octicon-plus add2" id="source.addMetric_{ID}" title="Add"></button>
+						</span>
+
+						<span class="less">
+							<span class="space2"></span>
+							<span class="select2">
+								<label class="space7">Mute a Glyph</label>
+								<span class="space"></span>
+								<span class="info">
+									<button class="octicon octicon-plus add2" id="source.addMuteGlyph_{ID}" title="Add"></button>
+								</span>
+							</span>
+						</span>
+
+						<div class="dimensions">
+							<h4 style="display:none;">Dimensions</h4>
+							<ol id="source.metrics_{ID}" class="metrics"></ol>
+						</div>
+
+						<div class="dimensions less">
+							<h4 style="display:none;">Glyphs to be muted </h4>
+							<ol id="source.muteGlyphs_{ID}" class="metrics"></ol>
+						</div>
+					</div>
+
+					<div class="uploader" id="uploader_{ID}">
+						<label class="blue" for="form_{ID}">Please choose a zipped UFO file.</label>
+						<br />
+						<form action="/upload.zip" method="post" enctype="multipart/form-data" id="form_{ID}" target="frame_{ID}">
+							<input type="file" name="file" id="file_{ID}" />
+							<input type="hidden" name="id" id="id_{ID}" value="{ID}" />
+							<input type="hidden" name="sessionId" id="sessionId_{ID}" value="{ID}" />
+						</form>
+						<iframe name="frame_{ID}" width="0" height="0" style="display:none;"></iframe>
+					</div>
+					<span class="loading" style="display:none;" id="processing_{ID}">Please wait while uploading the file.</span>
+				</div>
+			</script>
+
+
+			<script type="text/template" id="InstanceTemplate">
+				<div id="instance_{ID}" class="instance">
+					<div class="mainInstance">
+						<span class="info">
+							<button class="mega-octicon octicon-trashcan remove" id="instance.remove_{ID}" title="Delete"></button>
+						</span>
 						<span class="space3"></span>
-					<span class="info">
-						<input type="checkbox" id="copyInfo_{ID}"  name="copyInfo_{ID}" /> <label for="copyInfo_{ID}">Copy Info</label>
-						<span class="space3"></span>
-						<input type="checkbox" id="muteInfo_{ID}" name="muteInfo_{ID}" /> <label for="muteInfo_{ID}">Mute Info</label>
-					</span>
-				</span>
+
+						<input type="text" id="instance.name_{ID}" class="text" value="Family" />
+
+						<span class="space2"></span>
+						<span class="select">
+							<label for="instance.selMetric_{ID}" class="space5" id="instance.selName_{ID}.lbl" style="display:none;">No more Names</label>
+							<select id="instance.selName_{ID}">
+								<option value="stylename">Style</option>
+								<option value="postscriptfontname">Post Script Font</option>
+								<option value="stylemapfamilyname">Stylemap Family</option>
+								<option value="stylemapstylename">Stylemap Style</option>
+							</select>
+						</span>
+						<span class="space"></span>
+
+						<span class="info">
+							<button class="octicon octicon-plus add2" id="instance.addName_{ID}" title="Add"></button>
+						</span>
+
+						<span class="space2"></span>
+
+						<span class="select2">
+							<label class="space7">Location</label>
+							<label for="instance.selMetric_{ID}" class="space5" id="instance.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
+							<select id="instance.selMetric_{ID}"></select>
+						</span>
+
+						<span class="space"></span>
+						<span class="info">
+							<button class="octicon octicon-plus add2" id="instance.addMetric_{ID}" title="Add"></button>
+						</span>
+						<span class="less">
+							<span class="space2"></span>
+
+							<span class="select2">
+								<label class="space7">Info</label>
+								<label for="instance.selInfoMetric_{ID}" class="space5" id="instance.selInfoMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
+								<select id="instance.selInfoMetric_{ID}"></select>
+								<span class="space"></span>
+								<span class="info">
+									<button class="octicon octicon-plus add2" id="instance.addInfoMetric_{ID}" title="Add"></button>
+								</span>
+							</span>
+
+							<span class="space2"></span>
+
+							<span class="select2">
+								<label class="space7">Kerning</label>
+								<label for="instance.selKernMetric_{ID}" class="space5" id="instance.selKernMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
+								<select id="instance.selKernMetric_{ID}"></select>
+								<span class="space"></span>
+								<span class="info">
+									<button class="octicon octicon-plus add2" id="instance.addKernMetric_{ID}" title="Add"></button>
+								</span>
+							</span>
+
+							<span class="space2"></span>
+
+
+							<span class="select2">
+								<label class="space7">Glyph</label>
+								<span class="space"></span>
+								<span class="info">
+									<button class="octicon octicon-plus add2" id="instance.addGlyph_{ID}" title="Add"></button>
+								</span>
+							</span>
+						</span>
+
+						<div class="dimensions">
+							<h4 style="display:none;">Names</h4>
+							<ol id="instance.names_{ID}" class="metrics"></ol>
+						</div>
+
+						<div class="dimensions">
+							<h4 style="display:none;">Dimensions</h4>
+							<ol id="instance.metrics_{ID}" class="metrics"></ol>
+						</div>
+
+						<div class="dimensions less">
+							<h4 style="display:none;">Info Dimensions</h4>
+							<ol id="instance.infoMetrics_{ID}" class="metrics"></ol>
+						</div>
+
+						<div class="dimensions less">
+							<h4 style="display:none;">Kerning Dimensions</h4>
+							<ol id="instance.kernMetrics_{ID}" class="metrics"></ol>
+						</div>
+
+						<div class="dimensions less">
+							<h4 style="display:none;">Glyphs</h4>
+							<ol id="instance.glyphs_{ID}" class="metrics"></ol>
+						</div>
+					</div>
+
+				</div>
+			</script>
+
+			<script type="text/template" id="DimensionTemplate">
+				<div id="metric_{value}_{ID}">
+
+					<label class="space4">{text}</label>
+
+					<span class="space3"></span>
+
+					<span class="space5">X-Val:</span>
+
+					<input type="number" min="0" max="50" step="0.1" id="{prefix}.x_{value}_{ID}" class="text2" value="" />
+
+					<span class="space3"></span>
+
+					<span class="space5">Y-Val:</span>
+					<input type="number" min="0" max="20" step="0.1" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
+
 					<span class="space2"></span>
 
-					<span class="less">
-						<input type="checkbox" id="copyLib_{ID}" name="copyLib_{ID}" /> <label for="copyLib_{ID}">Copy Lib</label>
-						<span class="space"></span>
-						<input type="checkbox" id="copyGroups_{ID}" name="copyGroups_{ID}" /> <label for="copyGroups_{ID}">Copy Groups</label>
-						<span class="space"></span>
-						<input type="checkbox" id="muteKerning_{ID}" name="muteKerning_{ID}" /> <label for="muteKerning_{ID}">Mute Kerning</label>
-						<span class="space2"></span>
+					<span class="info">
+						<button class="octicon octicon-trashcan remove" id="{prefix}.remove_{value}_{ID}" title="Delete"></button>
 					</span>
+
+				</div>
+			</script>
+
+			<script type="text/template" id="DimensionTemplate2">
+				<div id="metric_{value}_{ID}" class="dimensionContainer">
+
+					<label class="space4">{text}</label>
+
+					<span class="space3"></span>
+
+					<label title="Click here to Select the Metrics for {text}" class="space8" id="{prefix}.xy_{value}_{ID}">(0.00 , 0.00)</label>
+
+					<span class="space3"></span>
+					<input type="hidden" min="0" max="50" step="0.1" id="{prefix}.x_{value}_{ID}" class="text2" value="" />
+					<input type="hidden" min="0" max="20" step="0.1" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
+
+					<span class="info">
+						<button class="octicon octicon-trashcan remove" id="{prefix}.remove_{value}_{ID}" title="Delete"></button>
+					</span>
+
+				</div>
+			</script>
+
+			<script type="text/template" id="PointSelectorTemplate">
+				<div class="t1" id="{prefix}.t1_{value}">
+					<div class="octicon octicon-arrow-right axis-x">X</div>
+					<div class="octicon octicon-arrow-down  axis-y">Y</div>
+					<div class="origin">.</div>
+					<div class="t2" id="{prefix}.t2_{value}">
+						<div class="t3">
+							<div class="t4" id="{prefix}.t4_{value}"></div>
+						</div>
+						<div class="t5" id="{prefix}.t5_{value}"></div>
+
+						<div class="t6" id="{prefix}.t6_{value}">OK</div>
+					</div>
+				</div>
+			</script>
+
+			<script type="text/template" id="NameTemplate">
+				<div id="name_{value}_{ID}">
+					<label class="space6">{text}</label>
+					<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
+					<span class="space2"></span>
+					<span class="info">
+						<button class="octicon octicon-trashcan remove" id="{prefix}.remove_{value}_{ID}" title="Delete"></button>
+					</span>
+				</div>
+			</script>
+
+			<script type="text/template" id="MuteGlyphTemplate">
+				<div id="muteGlyph_{value}_{ID}">
+					<label class="space6">Glyph Name</label>
+					<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
+					<span class="space2"></span>
+					<span class="info">
+						<button class="octicon octicon-trashcan remove" id="{prefix}.remove_{value}_{ID}" title="Delete"></button>
+					</span>
+				</div>
+			</script>
+
+			<script type="text/template" id="DowloadTemplate">
+				{PreText} :
+				<a target="_blank" href="{Link}">{Text}</a>
+			</script>
+			<script type="text/template" id="DowloadTemplate2">
+				{PreText} :
+				<a target="_blank" href="{VLink}">{View}</a>
+				<span class="space2"></span>
+				<a target="_blank" href="{DLink}">{Download}</a>
+			</script>
+
+			<script type="text/template" id="GlyphTemplate">
+				<div id="glyph_{value}_{ID}">
+					<span class="info">
+						<button class="octicon octicon-trashcan remove" id="{prefix}.remove_{value}_{ID}" title="Delete"></button>
+					</span>
+
+					<span class="space"></span>
+
+					<label class="space6">Glyph Name</label>
+					<input type="text" id="{prefix}.name_{value}_{ID}" class="text" value="Glyph{value}" />
+					<span class="space2"></span>
+
+					<span class="select2">
+						<label class="space7" for="{prefix}.note_{value}_{ID}">Note</label>
+						<input type="text" id="{prefix}.note_{value}_{ID}" class="text" value="" />
+					</span>
+
+					<span class="space2"></span>
 
 					<span class="select2">
 						<label class="space7">Location</label>
-						<label for="source.selMetric_{ID}" class="space5" id="source.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
-						<select id="source.selMetric_{ID}"></select>
+						<label for="{prefix}.selMetric_{value}_{ID}" class="space5" id="{prefix}.selMetric_{value}_{ID}.lbl" style="display:none;">No more Metrics</label>
+						<select id="{prefix}.selMetric_{value}_{ID}"></select>
 					</span>
-
 					<span class="space"></span>
 					<span class="info">
-						<button class="add2" id="source.addMetric_{ID}" title="Add">+</button>
+						<button class="octicon octicon-plus add2" id="{prefix}.addMetric_{value}_{ID}" title="Add"></button>
 					</span>
 
-					<span class="less">
-						<span class="space2"></span>
-						<span class="select2">
-							<label class="space7">Mute a Glyph</label>
-							<span class="space"></span>
-							<span class="info">
-								<button class="add2" id="source.addMuteGlyph_{ID}" title="Add">+</button>
-							</span>
-						</span>
+
+					<span class="space2"></span>
+
+					<span class="info">
+						<label class="space7">Masters</label>
+						<span class="space"></span>
+						<button class="octicon octicon-plus add2" id="{prefix}.addMaster_{value}_{ID}" title="Add"></button>
 					</span>
+
+
 
 					<div class="dimensions">
 						<h4 style="display:none;">Dimensions</h4>
-						<ol id="source.metrics_{ID}" class="metrics"></ol>
+						<ol id="{prefix}.metrics_{value}_{ID}" class="metrics"></ol>
 					</div>
 
-					<div class="dimensions less">
-						<h4 style="display:none;">Glyphs to be muted </h4>
-						<ol id="source.muteGlyphs_{ID}" class="metrics"></ol>
+					<div class="dimensions">
+						<h4 style="display:none;">Masters</h4>
+						<ol id="{prefix}.masters_{value}_{ID}" class="metrics"></ol>
 					</div>
 				</div>
-				<span class="space3"></span>
-				<div class="uploader" id="uploader_{ID}">
-					<label class="blue" for="form_{ID}">Please choose a zipped UFO file.</label>
-					<br />
-					<form action="/upload.zip" method="post" enctype="multipart/form-data" id="form_{ID}" target="frame_{ID}">
-						<input type="file" name="file" id="file_{ID}" />
-						<input type="hidden" name="id" id="id_{ID}" value="{ID}" />
-						<input type="hidden" name="sessionId" id="sessionId_{ID}" value="{ID}" />
-					</form>
-					<iframe name="frame_{ID}" width="0" height="0" style="display:none;"></iframe>
-				</div>
-				<span class="loading" style="display:none;" id="processing_{ID}">Please wait while uploading the file.</span>
-			</div>
-		</script>
+			</script>
 
-
-		<script type="text/template" id="InstanceTemplate">
-			<div id="instance_{ID}" class="instance">
-
-				<span class="info">
-					<button class="remove" id="instance.remove_{ID}" title="Delete">X</button>
-				</span>
-				<span class="space3"></span>
-
-				<input type="text" id="instance.name_{ID}" class="text" value="Family" />
-
-				<span class="space2"></span>
-				<span class="select">
-					<label for="instance.selMetric_{ID}" class="space5" id="instance.selName_{ID}.lbl" style="display:none;">No more Names</label>
-					<select id="instance.selName_{ID}">
-						<option value="stylename">Style</option>
-						<option value="postscriptfontname">Post Script Font</option>
-						<option value="stylemapfamilyname">Stylemap Family</option>
-						<option value="stylemapstylename">Stylemap Style</option>
-					</select>
-				</span>
-				<span class="space"></span>
-
-				<span class="info">
-					<button class="add2" id="instance.addName_{ID}" title="Add">+</button>
-				</span>
-
-				<span class="space2"></span>
-
-				<span class="select2">
-					<label class="space7">Location</label>
-					<label for="instance.selMetric_{ID}" class="space5" id="instance.selMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
-					<select id="instance.selMetric_{ID}"></select>
-				</span>
-
-				<span class="space"></span>
-				<span class="info">
-					<button class="add2" id="instance.addMetric_{ID}" title="Add">+</button>
-				</span>
-				<span class="less">
-					<span class="space2"></span>
-
-					<span class="select2">
-						<label class="space7">Info</label>
-						<label for="instance.selInfoMetric_{ID}" class="space5" id="instance.selInfoMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
-						<select id="instance.selInfoMetric_{ID}"></select>
-						<span class="space"></span>
-						<span class="info">
-							<button class="add2" id="instance.addInfoMetric_{ID}" title="Add">+</button>
-						</span>
+			<script type="text/template" id="MasterTemplate">
+				<div id="master_{value}_{ID}">
+					<span class="info">
+						<button class="octicon octicon-trashcan remove" id="{prefix}.remove_{value}_{ID}" title="Delete"></button>
 					</span>
 
-					<span class="space2"></span>
-
-					<span class="select2">
-						<label class="space7">Kerning</label>
-						<label for="instance.selKernMetric_{ID}" class="space5" id="instance.selKernMetric_{ID}.lbl" style="display:none;">No more Metrics</label>
-						<select id="instance.selKernMetric_{ID}"></select>
-						<span class="space"></span>
-						<span class="info">
-							<button class="add2" id="instance.addKernMetric_{ID}" title="Add">+</button>
-						</span>
-					</span>
-
-					<span class="space2"></span>
-
-
-					<span class="select2">
-						<label class="space7">Glyph</label>
-						<span class="space"></span>
-						<span class="info">
-							<button class="add2" id="instance.addGlyph_{ID}" title="Add">+</button>
-						</span>
-					</span>
-				</span>
-
-				<div class="dimensions">
-					<h4 style="display:none;">Names</h4>
-					<ol id="instance.names_{ID}" class="metrics"></ol>
-				</div>
-
-				<div class="dimensions">
-					<h4 style="display:none;">Dimensions</h4>
-					<ol id="instance.metrics_{ID}" class="metrics"></ol>
-				</div>
-
-				<div class="dimensions less">
-					<h4 style="display:none;">Info Dimensions</h4>
-					<ol id="instance.infoMetrics_{ID}" class="metrics"></ol>
-				</div>
-
-				<div class="dimensions less">
-					<h4 style="display:none;">Kerning Dimensions</h4>
-					<ol id="instance.kernMetrics_{ID}" class="metrics"></ol>
-				</div>
-
-				<div class="dimensions less">
-					<h4 style="display:none;">Glyphs</h4>
-					<ol id="instance.glyphs_{ID}" class="metrics"></ol>
-				</div>
-			</div>
-		</script>
-
-		<script type="text/template" id="DimensionTemplate">
-			<div id="metric_{value}_{ID}">
-
-				<label class="space4">{text}</label>
-
-				<span class="space3"></span>
-
-				<span class="space5">X-Val:</span>
-
-				<input type="number" min="0" max="50" step="0.1" id="{prefix}.x_{value}_{ID}" class="text2" value="" />
-
-				<span class="space3"></span>
-
-				<span class="space5">Y-Val:</span>
-				<input type="number" min="0" max="20" step="0.1" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
-
-				<span class="space2"></span>
-
-				<span class="info">
-					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-				</span>
-
-			</div>
-		</script>
-
-		<script type="text/template" id="DimensionTemplate2">
-			<div id="metric_{value}_{ID}">
-
-				<label class="space4">{text}</label>
-
-				<span class="space3"></span>
-
-				<label title="Click here to Select the Metrics for {text}" class="space8" id="{prefix}.xy_{value}_{ID}">(0.00 , 0.00)</label>
-
-				<span class="space3"></span>
-				<input type="hidden" min="0" max="50" step="0.1" id="{prefix}.x_{value}_{ID}" class="text2" value="" />
-				<input type="hidden" min="0" max="20" step="0.1" id="{prefix}.y_{value}_{ID}" class="text2" value="" />
-
-				<span class="info">
-					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-				</span>
-
-			</div>
-		</script>
-
-		<script type="text/template" id="PointSelectorTemplate">
-			<div class="t1" id="{prefix}.t1_{value}">
-				<div class="axis-x">X &rArr;</div>
-				<div class="axis-y">Y &dArr;</div>
-				<div class="origin">.</div>
-				<div class="t2" id="{prefix}.t2_{value}">
-					<div class="t3">
-						<div class="t4" id="{prefix}.t4_{value}"></div>
-					</div>
-					<div class="t5" id="{prefix}.t5_{value}"></div>
-
-					<div class="t6" id="{prefix}.t6_{value}">OK</div>
-				</div>
-			</div>
-		</script>
-
-		<script type="text/template" id="NameTemplate">
-			<div id="name_{value}_{ID}">
-				<label class="space6">{text}</label>
-				<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
-				<span class="space2"></span>
-				<span class="info">
-					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-				</span>
-			</div>
-		</script>
-
-		<script type="text/template" id="MuteGlyphTemplate">
-			<div id="muteGlyph_{value}_{ID}">
-				<label class="space6">Glyph Name</label>
-				<input type="text" id="{prefix}_{value}_{ID}" class="text" value="" />
-				<span class="space2"></span>
-				<span class="info">
-					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-				</span>
-			</div>
-		</script>
-
-		<script type="text/template" id="DowloadTemplate">
-			{PreText} :
-			<a target="_blank" href="{Link}">{Text}</a>
-		</script>
-		<script type="text/template" id="DowloadTemplate2">
-			{PreText} :
-			<a target="_blank" href="{VLink}">{View}</a>
-			<span class="space2"></span>
-			<a target="_blank" href="{DLink}">{Download}</a>
-		</script>
-
-		<script type="text/template" id="GlyphTemplate">
-			<div id="glyph_{value}_{ID}">
-				<span class="info">
-					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-				</span>
-
-				<span class="space"></span>
-
-				<label class="space6">Glyph Name</label>
-				<input type="text" id="{prefix}.name_{value}_{ID}" class="text" value="Glyph{value}" />
-				<span class="space2"></span>
-
-				<span class="select2">
-					<label class="space7" for="{prefix}.note_{value}_{ID}">Note</label>
-					<input type="text" id="{prefix}.note_{value}_{ID}" class="text" value="" />
-				</span>
-
-				<span class="space2"></span>
-
-				<span class="select2">
-					<label class="space7">Location</label>
-					<label for="{prefix}.selMetric_{value}_{ID}" class="space5" id="{prefix}.selMetric_{value}_{ID}.lbl" style="display:none;">No more Metrics</label>
-					<select id="{prefix}.selMetric_{value}_{ID}"></select>
-				</span>
-				<span class="space"></span>
-				<span class="info">
-					<button class="add2" id="{prefix}.addMetric_{value}_{ID}" title="Add">+</button>
-				</span>
-
-
-				<span class="space2"></span>
-
-				<span class="info">
-					<label class="space7">Masters</label>
 					<span class="space"></span>
-					<button class="add2" id="{prefix}.addMaster_{value}_{ID}" title="Add">+</button>
-				</span>
+
+					<label class="space6">Glyph Name</label>
+					<input type="text" id="{prefix}.name_{value}_{ID}" class="text" value="Glyph{value}" />
+
+					<span class="space2"></span>
+
+					<span class="select2">
+						<label class="space7">Source</label>
+						<label for="{prefix}.selSource_{value}_{ID}" class="space5" id="{prefix}.selSource_{value}_{ID}.lbl" style="display:none;">No more Sources</label>
+						<select id="{prefix}.selSource_{value}_{ID}"></select>
+					</span>
+
+					<span class="space2"></span>
 
 
+					<span class="select2">
+						<label class="space7">Location</label>
+						<label for="{prefix}.selMetric_{value}_{ID}" class="space5" id="{prefix}.selMetric_{value}_{ID}.lbl" style="display:none;">No more Metrics</label>
+						<select id="{prefix}.selMetric_{value}_{ID}"></select>
+					</span>
+					<span class="space"></span>
+					<span class="info">
+						<button class="octicon octicon-plus add2" id="{prefix}.addMetric_{value}_{ID}" title="Add"></button>
+					</span>
+					<span class="space"></span>
 
-				<div class="dimensions">
-					<h4 style="display:none;">Dimensions</h4>
-					<ol id="{prefix}.metrics_{value}_{ID}" class="metrics"></ol>
+					<div class="dimensions">
+						<h4 style="display:none;">Dimensions</h4>
+						<ol id="{prefix}.metrics_{value}_{ID}" class="metrics"></ol>
+					</div>
 				</div>
+			</script>
 
-				<div class="dimensions">
-					<h4 style="display:none;">Masters</h4>
-					<ol id="{prefix}.masters_{value}_{ID}" class="metrics"></ol>
-				</div>
-			</div>
-		</script>
-
-		<script type="text/template" id="MasterTemplate">
-			<div id="master_{value}_{ID}">
-				<span class="info">
-					<button class="remove" id="{prefix}.remove_{value}_{ID}" title="Delete">X</button>
-				</span>
-
-				<span class="space"></span>
-
-				<label class="space6">Glyph Name</label>
-				<input type="text" id="{prefix}.name_{value}_{ID}" class="text" value="Glyph{value}" />
-
-				<span class="space2"></span>
-
-				<span class="select2">
-					<label class="space7">Source</label>
-					<label for="{prefix}.selSource_{value}_{ID}" class="space5" id="{prefix}.selSource_{value}_{ID}.lbl" style="display:none;">No more Sources</label>
-					<select id="{prefix}.selSource_{value}_{ID}"></select>
-				</span>
-
-				<span class="space2"></span>
-
-
-				<span class="select2">
-					<label class="space7">Location</label>
-					<label for="{prefix}.selMetric_{value}_{ID}" class="space5" id="{prefix}.selMetric_{value}_{ID}.lbl" style="display:none;">No more Metrics</label>
-					<select id="{prefix}.selMetric_{value}_{ID}"></select>
-				</span>
-				<span class="space"></span>
-				<span class="info">
-					<button class="add2" id="{prefix}.addMetric_{value}_{ID}" title="Add">+</button>
-				</span>
-				<span class="space"></span>
-
-				<div class="dimensions">
-					<h4 style="display:none;">Dimensions</h4>
-					<ol id="{prefix}.metrics_{value}_{ID}" class="metrics"></ol>
-				</div>
-			</div>
-		</script>
-
-		<script type="text/template" id="MetricsTemplate">
-			<option value="weight">Weight</option>
-			<option value="width">Width</option>
-			<!--optical
+			<script type="text/template" id="MetricsTemplate">
+				<option value="weight">Weight</option>
+				<option value="width">Width</option>
+				<!--optical
 			serif
 			slant
 			wobble
 			splatter-->
-		</script>
-		<iframe width="0" height="0" name="run" style="display:none;"></iframe>
-		<form action="/run" method="post" id="frmRun" target="run">
-			<input type="hidden" name="txt.xml" id="txt.xml" />
-			<input type="hidden" name="instance" id="instance" />
-			<input type="hidden" name="rg" id="rg" />
-			<input type="hidden" name="ufoVer" id="ufoVer" />
-			<input type="hidden" name="sessionId" id="sessionId" />
-		</form>
-	</div>
-
-	<hr />
-	<footer class="footer">
-		<div class="container">
-			<div id="Build"></div>
+			</script>
+			<iframe width="0" height="0" name="run" style="display:none;"></iframe>
+			<form action="/run" method="post" id="frmRun" target="run">
+				<input type="hidden" name="txt.xml" id="txt.xml" />
+				<input type="hidden" name="instance" id="instance" />
+				<input type="hidden" name="rg" id="rg" />
+				<input type="hidden" name="ufoVer" id="ufoVer" />
+				<input type="hidden" name="sessionId" id="sessionId" />
+			</form>
 		</div>
-	</footer>
+		
+	</div>
 
 	<script type="text/javascript" src="JS/external/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/JS/DesignSpace.app.js"></script>
+
+
+
 </body>
 </html>

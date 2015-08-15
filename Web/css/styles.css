@@ -43,6 +43,7 @@ h1 {
 
 label {
 	font-size: 11px;
+	color: black;
 }
 
 sup {
@@ -81,8 +82,21 @@ sup {
 	height: 40px;
 }
 
+.tops {
+	clear: both;
+	list-style-type: none;
+}
+
+	.tops li {
+		margin: 10px;
+		font-size: 12px;
+	}
+
+
+
 .sources {
 	clear: both;
+	list-style-type: none;
 }
 
 	.sources li {
@@ -103,10 +117,17 @@ sup {
 
 
 .metrics {
+	display: inline-block;
+	width: 98%;
 }
 
 	.metrics li {
-		list-style-type: lower-latin;
+		list-style-type: none;
+		margin: 10px;
+		display: block;
+		float: left;
+		max-width: 98%;
+		min-width: 30%;
 	}
 
 .text2 {
@@ -139,27 +160,12 @@ sup {
 .space {
 	margin-left: 5px;
 	margin-right: 5px;
-	/*border-left: 1px solid gray;
-	border-right: 1px solid gray;*/
 }
 
 .spacer {
 	width: 100%;
 	margin: 2px;
 	text-align: center;
-	/*border-top: 1px solid gray;
-	border-bottom: 1px solid gray;*/
-}
-
-.space2 {
-	margin-left: 5px;
-	margin-right: 5px;
-	border-left: 2px solid gray;
-	border-right: 2px solid gray;
-}
-
-.space3 {
-	margin-left: 5px;
 }
 
 .space4 {
@@ -247,39 +253,23 @@ label.space7 {
 .remove {
 	cursor: pointer;
 	color: red;
-	font-size: 14px;
-	background-image: url('delete.png');
-	background-repeat: no-repeat;
-	background-color: transparent;
-	border: 0px;
-	height: 32px;
-	width: 32px;
-	text-indent: 32px;
-	overflow: hidden;
-	display: inline-block;
 }
 
 	.remove:hover {
 		font-weight: bold;
 	}
 
-
-.add {
-	cursor: pointer;
-	color: green;
-	font-size: 24px;
-	height: 42px;
-	width: 42px;
-	background-image: url('plus.png');
-	background-repeat: no-repeat;
-	background-color: transparent;
-	border: 0px;
-	text-indent: 42px;
-	overflow: hidden;
-	display: inline-block;
+.run {
+	min-width: 120px;
 }
 
-	.add:hover {
+.add, .run {
+	cursor: pointer;
+	color: green;
+	overflow: hidden;
+}
+
+	.add:hover, .run:hover {
 		font-weight: bold;
 	}
 
@@ -302,7 +292,7 @@ code {
 	margin: 5px;
 }
 
-.uploader, .loading {
+.uploader, .loading, .running {
 	display: inline-block;
 	vertical-align: top;
 }
@@ -317,10 +307,8 @@ code {
 	vertical-align: top;
 }
 
-.mainsource {
+.mainSource {
 	display: none;
-	vertical-align: top;
-	margin-left: 2px;
 }
 
 form {
@@ -343,7 +331,10 @@ form {
 	border-style: solid;
 	border-color: threedhighlight threedshadow threedshadow threedhighlight;
 	background: threedface;
+	margin-left: 10%;
+	margin-right: 10%;
 }
+
 
 .t1, .t5 {
 	width: 135px;
@@ -382,10 +373,8 @@ form {
 
 .t6 {
 	position: absolute;
-	
 	right: 10px;
 	bottom: 10px;
-
 	display: none;
 	padding: 2px 15px;
 	height: 18px;
@@ -414,7 +403,6 @@ form {
 	overflow: hidden;
 	text-indent: 4px;
 	z-index: 1;
-	
 }
 
 .axis-x {
@@ -423,17 +411,108 @@ form {
 	font-size: 16px;
 	color: red;
 	text-align: center;
-	font-weight:bold;
+	font-weight: bold;
 }
 
 .axis-y {
 	width: 20px;
 	height: 100%;
 	font-size: 16px;
-	font-weight:bold;
+	font-weight: bold;
 	vertical-align: middle;
 	color: red;
-	top:60px;
-	position:absolute;
-	margin-left:4px;
+	top: 60px;
+	position: absolute;
+	margin-left: 4px;
+}
+
+.mainTop3 { /*mainTop-center makes sense*/
+	text-align: center;
+}
+.mainTop2 {
+	text-align: left;
+}
+.mainTop {
+	text-align: right;
+}
+
+.mainSource, .mainInstance, .mainTop, .mainTop2, .mainTop3, .uploader, .loading {
+	background-color: #f7f7f7;
+	margin: 10px;
+	padding: 10px;
+	width: 98%;
+	border-radius: 3px;
+}
+
+.dimensionContainer {
+	border-radius: 3px;
+	background-color: #f7f7f7;
+	margin: 10px;
+	padding: 10px;
+}
+
+.source, .instance, .top {
+	font-size: 14px;
+	color: #7b878c;
+	background: #e7ecee;
+	border: 1px solid #d2d9dd;
+	border-radius: 3px;
+	margin: 10px;
+	width: 100%;
+}
+
+.metrics {
+	color: #7b878c;
+	background: #e7ecee;
+	border: 1px solid #d2d9dd;
+	border-radius: 3px;
+}
+
+.space3 {
+	display: inline-block;
+	width: 1px;
+	height: 18px;
+	margin-right: 3px;
+	margin-left: 3px;
+	vertical-align: middle;
+	background-color: #ddd;
+	font-size: 24px;
+}
+
+.space2 {
+	display: inline-block;
+	width: 2px;
+	height: 18px;
+	margin-right: 5px;
+	margin-left: 5px;
+	vertical-align: middle;
+	background-color: #ccc;
+	font-size: 28px;
+}
+
+.h2-sources {
+	color: black;
+	text-align: left;
+	font-weight: bold;
+	float: left;
+	width: 50%;
+}
+
+.h2-designer {
+	color: green;
+	text-align: center;
+	font-weight: bold;
+}
+
+.dimensions {
+	display: none;
+}
+
+h4 {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+select, li, h4 {
+	color: #111;
 }

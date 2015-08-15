@@ -46,6 +46,7 @@
     <Folder Include=".openshift\cron\minutely" />
     <Folder Include="PythonWeb\static\" />
     <Folder Include="PythonWeb\static\content\" />
+    <Folder Include="PythonWeb\static\content\octicon\" />
     <Folder Include="PythonWeb\static\fonts\" />
     <Folder Include="PythonWeb\static\scripts\" />
     <Folder Include="PythonWeb\static\scripts\external\" />

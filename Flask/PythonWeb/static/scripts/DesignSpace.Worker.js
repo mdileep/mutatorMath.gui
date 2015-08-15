@@ -1,9 +1,9 @@
 /*
 Author: Dileep Miriyala (m.dileep@gmail.com)
 https://github.com/mdileep/mutatorMath.gui
-Last Updated on  2015 Aug 15 02 58 22 IST
+Last Updated on  2015 Aug 16 03 08 41 IST
 */
-var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-08-15 02:58:22 HRS IST';Env.Version='0.8.0.87';
+var Env={}; Env.Product='mutatorMath.gui'; Env.LastUpdated='2015-08-16 03:08:41 HRS IST';Env.Version='0.8.1.14';
 
 
 PageWorker = function () { }
@@ -156,9 +156,10 @@ ComputeWorker.run = function () {
 		var Ol = document.getElementById('downloadLinks');
 		Ol.innerHTML = '';
 		Util.noDisplay('lbl.downloadLinks');
+		Util.noDisplay('downloads');
 	}
 	if (isValid && !Config.DesignerOnly) {
-		Util.setDisplayInline('running');
+		Util.setDisplay('running');
 		ComputeWorker.computeInProgress = true;
 		var frm = document.getElementById('frmRun');
 		frm.submit();
@@ -191,6 +192,8 @@ ComputeWorker.showDownloadLinks = function(showInstances) {
 	var li2 = ComputeWorker.getDowloadLink2('Log File', '/view/' + Config.SessionId + '.log', '[View]', '/download/' + Config.SessionId + '.log', '[Download]');
 	Ol.appendChild(li2);
 	Util.setDisplayInline('lbl.downloadLinks');
+	Util.setDisplay('downloadLinks');
+	Util.setDisplay('downloads');
 }
 ComputeWorker.getDowloadLink2 = function(PreText, VLink, Text, DLink, Download) {
 	var Dic = { };
@@ -1248,6 +1251,7 @@ InternalWorker.toggleHead = function (ol) {
 	if (h4 != null) {
 		h4.style.display = (n >= 1) ? 'block' : 'none';
 	}
+	h4.parentNode.style.display = h4.style.display;
 }
 InternalWorker.isChecked = function (id) {
 	if (Util.isDisabled(id)) {
@@ -1784,6 +1788,7 @@ ComputeWorker.downloadTemplate = 'DowloadTemplate';
 ComputeWorker.downloadTemplate2 = 'DowloadTemplate2';
 ComputeWorker.divRunning = 'running';
 ComputeWorker.lblDownloadLinks = 'lbl.downloadLinks';
+ComputeWorker.divDownloads = 'downloads';
 ComputeWorker.chkDesignOnly = 'designOnly';
 ComputeWorker.chkMultipleInstances = 'multipleInstances';
 ComputeWorker.chkShowLess = 'showLess';
